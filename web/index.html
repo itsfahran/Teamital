@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Workforce tools that keep your team in sync — track attendance, GPS, leave and tasks with Teamital.">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta property="og:title" content="Teamital — Workforce tools that keep your team in sync">
+  <meta property="og:description" content="Track attendance, tasks, and hours in real time — by person, shift, and site.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://teamital.com/">
+  <link rel="canonical" href="https://teamital.com/">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Teamital">
+
+  <link rel="icon" type="image/png" href="brand-logo.png"/>
+  <link rel="shortcut icon" type="image/png" href="brand-logo.png"/>
+  <link rel="apple-touch-icon" href="brand-logo.png">
+
+  <title>Teamital — Workforce tools that keep your team in sync</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Logo first for instant LCP; Flutter loads after first paint. -->
+  <link rel="preload" href="preload-logo.png" as="image">
+  <link rel="preconnect" href="https://eflactvgiuvuehpzkufy.supabase.co" crossorigin>
+  <link rel="dns-prefetch" href="https://eflactvgiuvuehpzkufy.supabase.co">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: 100%;
+      background: #FFFFFF;
+    }
+    #shell {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFFFFF;
+      transition: opacity 0.25s ease;
+    }
+    #shell img {
+      width: min(88vw, 420px);
+      height: auto;
+      display: block;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.82; transform: scale(0.985); }
+    }
+    #shell.gone {
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="shell" aria-busy="true" aria-label="Loading Teamital">
+    <img src="preload-logo.png" width="420" height="180" alt="Teamital" decoding="async" fetchpriority="high">
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (r) { r.unregister(); });
+      }).catch(function () {});
+    }
+
+    window.addEventListener('flutter-first-frame', function () {
+      var shell = document.getElementById('shell');
+      if (!shell) return;
+      shell.classList.add('gone');
+      setTimeout(function () {
+        if (shell.parentNode) shell.parentNode.removeChild(shell);
+      }, 280);
+    });
+
+    function bootFlutter() {
+      var s = document.createElement('script');
+      s.src = 'flutter_bootstrap.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(bootFlutter, { timeout: 800 });
+    } else {
+      setTimeout(bootFlutter, 50);
+    }
+  </script>
+</body>
+</html>

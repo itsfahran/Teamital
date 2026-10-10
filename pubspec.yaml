@@ -1,0 +1,49 @@
+﻿name: web_teamital
+description: Teamital marketing website (public pages only)
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  google_fonts: ^6.2.1
+  supabase_flutter: ^2.9.1
+  flutter_dotenv: ^6.0.0
+  http: ^1.2.2
+  url_launcher: ^6.3.2
+  flutter_svg: ^2.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - google_fonts/
+    - assets/env/client.env
+    - assets/logo.jpg
+    - assets/logo_sm.png
+    - assets/brand_logo.png
+    - assets/header_logo.png
+    - assets/brand_logo_web.png
+    - assets/employee_tracking_app_16.svg
+    - assets/employee_tracking_app_16-removebg-preview.png
+    - assets/app-store.png
+    - assets/play-store.png
+    - assets/window-store.png
+    - assets/images.jpg
+    - assets/home/estimates.jpg
+    - assets/home/workload.jpg
+    - assets/home/devices.jpg
+    - assets/undraw_device-sync_d9ei.svg
+    - assets/undraw_chatting_29rn.svg
+    - assets/undraw_engineering-team_13ax.svg
+    - assets/undraw_working-together_r43a.svg
+    - assets/undraw_questions_52ic.svg
