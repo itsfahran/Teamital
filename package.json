@@ -1,0 +1,27 @@
+{
+  "name": "web-teamital",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Teamital marketing website + admin panel (Next.js, TypeScript, Supabase)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.4",
+    "next": "^15.3.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "material-icons": "^1.13.12",
+    "typescript": "^5.8.3"
+  }
+}

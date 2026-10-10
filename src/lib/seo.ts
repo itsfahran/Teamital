@@ -1,0 +1,61 @@
+import type { Metadata } from 'next';
+import { getCmsPage, type CmsPageContent } from './cms';
+import { SITE } from './config';
+
+const BRAND = 'Teamital';
+const DEFAULT_DESCRIPTION =
+  'Complete workforce intelligence in one place — attendance, GPS, leave, tasks and live insights.';
+
+/** Static per-route defaults (port of WebSeo._defaults). */
+const DEFAULTS: Record<string, [string, string]> = {
+  '/': [`${BRAND} — Complete Workforce Intelligence in One Place`, DEFAULT_DESCRIPTION],
+  '/pricing': [`Pricing | ${BRAND}`, 'Teamital plans for teams of every size.'],
+  '/contact': [`Contact | ${BRAND}`, 'Talk to the Teamital team.'],
+  '/privacy-policy': [`Privacy Policy | ${BRAND}`, 'How Teamital handles personal data under GDPR.'],
+  '/delete-account': [`Delete account | ${BRAND}`, 'How to request deletion of your Teamital account.'],
+  '/about': [`About | ${BRAND}`, 'About Teamital workforce intelligence.'],
+  '/features': [`Features | ${BRAND}`, 'Teamital attendance, GPS, leave and task features.'],
+  '/security-policy': [`Security Policy | ${BRAND}`, 'How Teamital protects customer and workforce data.'],
+  '/terms-and-conditions': [`Terms & Conditions | ${BRAND}`, 'Terms for using Teamital.'],
+  '/cookie-policy': [`Cookie Policy | ${BRAND}`, 'How Teamital uses cookies and similar technologies.'],
+  '/careers': [`Careers | ${BRAND}`, 'Careers at Teamital.'],
+  '/blog': [`Blog | ${BRAND}`, 'Guides on attendance, GPS and HR ops.'],
+  '/how-it-works': [`How it works | ${BRAND}`, 'How Teamital workforce tracking works.'],
+};
+
+function fromCms(page: CmsPageContent): [string, string] {
+  const title = page.metaTitle.trim()
+    ? page.metaTitle.trim()
+    : page.title.trim()
+      ? `${page.title.trim()} | ${BRAND}`
+      : `${BRAND} — Workforce Intelligence`;
+  const desc = page.metaDescription.trim()
+    ? page.metaDescription.trim()
+    : page.h1.trim()
+      ? page.h1.trim()
+      : DEFAULT_DESCRIPTION;
+  return [title, desc];
+}
+
+function build(path: string, title: string, description: string): Metadata {
+  const url = path === '/' ? SITE.publicSiteUrl : `${SITE.publicSiteUrl}${path}`;
+  return {
+    title: { absolute: title },
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: 'website' },
+  };
+}
+
+/** Metadata for a route; CMS SEO (when a published page exists) wins over the static defaults. */
+export async function metadataFor(path: string, cmsSlug?: string): Promise<Metadata> {
+  if (cmsSlug) {
+    const page = await getCmsPage(cmsSlug);
+    if (page) {
+      const [t, d] = fromCms(page);
+      return build(path, t, d);
+    }
+  }
+  const [t, d] = DEFAULTS[path] ?? [`${SITE.displayName} — Workforce Intelligence`, DEFAULT_DESCRIPTION];
+  return build(path, t, d);
+}
