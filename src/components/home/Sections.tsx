@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ROUTES } from '@/lib/config';
-import { Icon, SmartLink, cx } from '../ui';
+import { SmartLink, cx } from '../ui';
+import { FaIcon as Icon } from '../FaIcon';
 import { CountUp } from './CountUp';
 
 type Tone = 'blue' | 'violet' | 'green' | 'amber' | 'rose' | 'sky';

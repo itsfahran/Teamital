@@ -296,3 +296,10 @@
 @media (prefers-reduced-motion: reduce) {
   .hs-bento-glow, .hs-dark-glow, .hs-dark-card, .hs-dark-chip { animation: none; }
 }
+
+/* Font Awesome inline glyphs used in these sections */
+.fa-svg { display: inline-block; flex: none; vertical-align: middle; }
+.hs-role:hover .hs-role-link .fa-svg { transform: translateX(5px); }
+.hs-role-link .fa-svg { transition: transform 200ms ease; }
+.hs-faq-plus .fa-svg { transition: transform 260ms ease; }
+.hs-feat-arrow.fa-svg { color: var(--t-fg); }
