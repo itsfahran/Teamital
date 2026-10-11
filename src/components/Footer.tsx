@@ -1,6 +1,5 @@
-import { ROUTES, SITE } from '@/lib/config';
+import { appAbsolute, ROUTES, SITE, STORE_LINKS } from '@/lib/config';
 import { BRAND_ICONS, type BrandIconName } from './brand-icons';
-import { StoreBadgeRow } from './StoreBadges';
 import { BrandLogo, Icon, SmartLink } from './ui';
 
 const SOCIALS: Array<{ name: BrandIconName; label: string; url: string }> = [
@@ -42,6 +41,13 @@ const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
       ['Delete account', ROUTES.deleteAccount],
     ],
   },
+];
+
+const PLATFORMS: Array<{ name: BrandIconName | 'web'; label: string; url: string }> = [
+  { name: 'apple', label: 'iOS · App Store', url: STORE_LINKS.appStore },
+  { name: 'android', label: 'Android · Google Play', url: STORE_LINKS.playStore },
+  { name: 'windows', label: 'Windows · Microsoft Store', url: STORE_LINKS.microsoftStore },
+  { name: 'web', label: 'Web app', url: appAbsolute(ROUTES.signIn) },
 ];
 
 function SocialIcon({ name }: { name: BrandIconName }) {
@@ -114,14 +120,30 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="ft-app">
-          <div className="ft-app-copy">
-            <div className="ft-app-title">Get the Teamital app</div>
-            <div className="ft-app-sub">Clock in on Android, iOS, Windows or the web.</div>
-          </div>
-          <div className="ft-badges">
-            <StoreBadgeRow compact />
-          </div>
+        <div className="ft-avail">
+          <span className="ft-avail-label">Available for:</span>
+          <ul className="ft-avail-icons">
+            {PLATFORMS.map((p) => (
+              <li key={p.name}>
+                <a
+                  href={p.url}
+                  target={p.name === 'web' ? undefined : '_blank'}
+                  rel={p.name === 'web' ? undefined : 'noopener noreferrer'}
+                  aria-label={p.label}
+                  className="ft-avail-btn"
+                  data-tip={p.label}
+                >
+                  {p.name === 'web' ? (
+                    <Icon name="language" size={30} />
+                  ) : (
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true">
+                      <path d={BRAND_ICONS[p.name]} />
+                    </svg>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="ft-bottom">
