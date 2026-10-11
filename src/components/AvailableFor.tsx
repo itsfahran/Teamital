@@ -10,10 +10,10 @@ const PLATFORMS: Array<{ name: BrandIconName | 'web'; label: string; url: string
 ];
 
 /** Centered "Available for:" row of real platform logos (no background). */
-export function AvailableFor() {
+export function AvailableFor({ label = 'Available for:', align = 'center' }: { label?: string; align?: 'center' | 'left' }) {
   return (
-    <div className="avail">
-      <span className="avail-label">Available for:</span>
+    <div className={align === 'left' ? 'avail avail-left' : 'avail'}>
+      <span className="avail-label">{label}</span>
       <ul className="avail-icons">
         {PLATFORMS.map((p) => (
           <li key={p.name}>

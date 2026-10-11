@@ -115,6 +115,9 @@ function HeroCopy({ cms }: { cms: Cms }) {
           Cancel anytime
         </li>
       </ul>
+      <div className="hc-avail">
+        <AvailableFor label="Available on:" align="left" />
+      </div>
     </div>
   );
 }
@@ -359,9 +362,6 @@ function Hero({ cms }: { cms: Cms }) {
         </div>
         <div className="hero-vis">{variant === 'split-dashboard' ? <HeroDashboardCard /> : <HeroMockup />}</div>
       </div>
-      <div className="hero-avail">
-        <AvailableFor />
-      </div>
     </div>
   );
 }
@@ -376,7 +376,7 @@ const HERO_WITH_OWN_ROW = (cms: Cms) => {
 function Platforms() {
   return (
     <div className="plat">
-      <AvailableFor />
+      <AvailableFor label="Available on:" />
     </div>
   );
 }

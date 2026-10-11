@@ -279,6 +279,7 @@ img {
 
 /* "Available for:" row: centered, no background */
 .avail { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.avail-left { justify-content: flex-start; }
 .avail-label { font-size: 18px; font-weight: 500; color: #4b5563; letter-spacing: 0.1px; }
 .avail-icons { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: 8px; }
 .avail-btn {
