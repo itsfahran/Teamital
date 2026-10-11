@@ -70,11 +70,11 @@ export function Footer() {
             </p>
             <ul className="ft-contact">
               <li>
-                <Icon name="mail_outline" size={18} color="#93C5FD" />
+                <Icon name="mail_outline" size={18} color="#1A56DB" />
                 <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
               </li>
               <li>
-                <Icon name="location_on" size={18} color="#93C5FD" />
+                <Icon name="location_on" size={18} color="#1A56DB" />
                 <span>Kandoy House, 2 Fairview Strand, Clontarf West, Dublin, D03 R8P3, Ireland</span>
               </li>
             </ul>

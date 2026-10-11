@@ -362,44 +362,37 @@ img {
 /* ───────────── Footer ───────────── */
 .ft {
   position: relative;
-  background:
-    radial-gradient(900px 320px at 8% -10%, rgba(26, 86, 219, 0.28), transparent 70%),
-    radial-gradient(700px 260px at 100% 0%, rgba(14, 165, 233, 0.14), transparent 70%),
-    #0b1220;
-  color: #cbd5e1;
+  background: #fff;
+  color: #4b5563;
+  border-top: 1px solid #e5e7eb;
   padding: 0 48px 28px;
 }
-.ft-accent { height: 3px; margin: 0 -48px; background: linear-gradient(90deg, #1a56db, #0ea5e9 60%, #1a56db); }
+.ft-accent { height: 3px; margin: -1px -48px 0; background: linear-gradient(90deg, #1a56db, #0ea5e9 60%, #1a56db); }
 .ft-inner { max-width: 1180px; margin: 0 auto; padding-top: 56px; }
 
 .ft-main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr); gap: 56px; }
 .ft-brand { min-width: 0; }
-.ft-logo-box {
-  display: inline-block;
-  background: #fff;
-  border-radius: 14px;
-  padding: 10px 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-}
-.ft-logo-box .brand-logo { height: 72px; width: 240px; }
-.ft-tag { margin-top: 18px; max-width: 380px; font-size: 14px; line-height: 1.65; color: #94a3b8; }
+.ft-logo-box { display: inline-block; margin-left: -6px; }
+.ft-logo-box .brand-logo { height: 72px; width: 240px; object-position: left center; }
+.ft-tag { margin-top: 14px; max-width: 380px; font-size: 14px; line-height: 1.65; color: #6b7280; }
 
 .ft-contact { list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-.ft-contact li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; line-height: 1.5; color: #cbd5e1; }
+.ft-contact li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; line-height: 1.5; color: #374151; }
 .ft-contact .mi { margin-top: 1px; }
-.ft-contact a:hover { color: #fff; text-decoration: underline; }
+.ft-contact a:hover { color: #1a56db; text-decoration: underline; }
 
 .ft-social { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
 .ft-social-btn {
+  --brand: #1a56db;
   width: 42px;
   height: 42px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--brand);
+  background: #f3f6fb;
+  border: 1px solid #e5e7eb;
   transition: transform 180ms ease, background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
 }
 .ft-social-btn svg { width: 19px; height: 19px; }
@@ -407,21 +400,22 @@ img {
 .ft-social-btn:focus-visible {
   transform: translateY(-3px);
   color: #fff;
+  background: var(--brand);
   border-color: transparent;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 18px rgba(17, 24, 39, 0.18);
 }
-.ft-social-linkedin:hover, .ft-social-linkedin:focus-visible { background: #0a66c2; }
-.ft-social-x:hover, .ft-social-x:focus-visible { background: #000; border-color: rgba(255, 255, 255, 0.35); }
-.ft-social-youtube:hover, .ft-social-youtube:focus-visible { background: #ff0000; }
-.ft-social-facebook:hover, .ft-social-facebook:focus-visible { background: #1877f2; }
+.ft-social-linkedin { --brand: #0a66c2; }
+.ft-social-x { --brand: #000; }
+.ft-social-youtube { --brand: #ff0000; }
+.ft-social-facebook { --brand: #1877f2; }
+.ft-social-instagram { --brand: #dc2743; }
+.ft-social-pinterest { --brand: #e60023; }
+.ft-social-tiktok { --brand: #010101; }
 .ft-social-instagram:hover, .ft-social-instagram:focus-visible {
   background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 }
-.ft-social-pinterest:hover, .ft-social-pinterest:focus-visible { background: #e60023; }
 .ft-social-tiktok:hover, .ft-social-tiktok:focus-visible {
-  background: #010101;
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: -2px -2px 0 #25f4ee, 2px 2px 0 #fe2c55, 0 8px 18px rgba(0, 0, 0, 0.35);
+  box-shadow: -2px -2px 0 #25f4ee, 2px 2px 0 #fe2c55, 0 8px 18px rgba(17, 24, 39, 0.18);
 }
 
 .ft-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
@@ -431,44 +425,44 @@ img {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #93c5fd;
+  color: #1a56db;
   margin-bottom: 18px;
 }
 .ft-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-.ft-link { font-size: 14px; color: #cbd5e1; transition: color 150ms ease, padding-left 150ms ease; }
-.ft-link:hover, .ft-link:focus-visible { color: #fff; padding-left: 4px; }
+.ft-link { font-size: 14px; color: #4b5563; transition: color 150ms ease, padding-left 150ms ease; }
+.ft-link:hover, .ft-link:focus-visible { color: #1a56db; padding-left: 4px; }
 
 .ft-app {
   margin-top: 48px;
   padding: 24px 28px;
   border-radius: 18px;
-  background: linear-gradient(135deg, rgba(26, 86, 219, 0.22), rgba(14, 165, 233, 0.1));
-  border: 1px solid rgba(147, 197, 253, 0.18);
+  background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+  border: 1px solid #dbeafe;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
   flex-wrap: wrap;
 }
-.ft-app-title { font-size: 17px; font-weight: 700; color: #fff; }
-.ft-app-sub { margin-top: 4px; font-size: 13.5px; color: #94a3b8; }
+.ft-app-title { font-size: 17px; font-weight: 700; color: #111827; }
+.ft-app-sub { margin-top: 4px; font-size: 13.5px; color: #6b7280; }
 .ft-badges { overflow-x: auto; scrollbar-width: none; max-width: 100%; }
 .ft-badges::-webkit-scrollbar { display: none; }
 
 .ft-bottom {
   margin-top: 36px;
   padding-top: 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
 }
-.ft-copy { font-size: 13px; color: #64748b; }
+.ft-copy { font-size: 13px; color: #6b7280; }
 .ft-bottom-links { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 13px; }
-.ft-bottom-links a { color: #94a3b8; }
-.ft-bottom-links a:hover { color: #fff; }
+.ft-bottom-links a { color: #6b7280; }
+.ft-bottom-links a:hover { color: #1a56db; }
 
 @media (max-width: 960px) {
   .ft-main { grid-template-columns: 1fr; gap: 40px; }
@@ -476,7 +470,7 @@ img {
 }
 @media (max-width: 699.98px) {
   .ft { padding: 0 20px 24px; }
-  .ft-accent { margin: 0 -20px; }
+  .ft-accent { margin: -1px -20px 0; }
   .ft-inner { padding-top: 40px; }
   .ft-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
   .ft-app { padding: 20px; }
