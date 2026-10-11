@@ -81,17 +81,7 @@ export function WhiteLabelPage() {
       <section className="wl-sec wl-sec-tint">
         <div className="wl-in">
           <SectionHead title={WL.why.title} intro={WL.why.intro} />
-          <div className="wl-grid wl-grid-4">
-            {WL.why.cards.map((c, i) => (
-              <Aos key={c.title} delay={(i % 4) * 60}>
-                <div className="wl-card">
-                  <Tile icon={c.icon} tone={c.tone ?? 'blue'} />
-                  <h3>{c.title}</h3>
-                  <p>{c.text}</p>
-                </div>
-              </Aos>
-            ))}
-          </div>
+          <BuildShowcase items={WL.why.cards} compact />
           <div className="wl-center">
             <SmartLink href={CONTACT} className="hero-btn hero-btn-primary">
               <span>{WL.why.cta}</span>

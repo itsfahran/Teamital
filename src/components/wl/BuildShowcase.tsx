@@ -8,13 +8,13 @@ import { Icon, cx } from '../ui';
  * Left: three named cards (25%). Right: a panel (75%) where the hovered / focused / tapped
  * card's content pops up with an animation.
  */
-export function BuildShowcase({ items }: { items: IconCard[] }) {
+export function BuildShowcase({ items, compact = false }: { items: IconCard[]; compact?: boolean }) {
   const [active, setActive] = useState(0);
   const cur = items[active];
 
   return (
-    <div className="bs">
-      <div className="bs-list" role="tablist" aria-label="Brand, customers and pricing">
+    <div className={cx('bs', compact && 'bs-compact')}>
+      <div className="bs-list" role="tablist" aria-label="Topics">
         {items.map((it, i) => (
           <button
             key={it.title}

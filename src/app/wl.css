@@ -175,6 +175,20 @@
   .bs-pop, .bs-pop > *, .bs-pop-ico, .bs-glow { animation: none; }
 }
 
+/* Compact variant: many names in the left column */
+.bs-compact .bs-list { gap: 8px; }
+.bs-compact .bs-card { padding: 10px 12px; border-radius: 14px; gap: 10px; }
+.bs-compact .bs-card-ico { width: 36px; height: 36px; border-radius: 11px; }
+.bs-compact .bs-card-name { font-size: 13.5px; font-weight: 600; }
+.bs-compact .bs-card-on { transform: translateX(6px); }
+.bs-compact .bs-stage { min-height: 520px; }
+.bs-compact .bs-list { padding-right: 18px; }
+@media (max-width: 900px) {
+  .bs-compact .bs-stage { min-height: 0; }
+  .bs-compact .bs-card { min-width: 260px; }
+}
+.wl-center + .bs, .bs + .wl-center { margin-top: 44px; }
+
 /* Card grids */
 .wl-grid { display: grid; gap: 22px; }
 .wl-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
