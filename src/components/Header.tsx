@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { appAbsolute, ROUTES, STORE_LINKS } from '@/lib/config';
+import { BRAND_ICONS } from './brand-icons';
 import { BrandLogo, Icon, SmartLink, cx } from './ui';
 
-type MegaItem = { icon: string; title: string; subtitle: string; href?: string; external?: boolean; filled?: boolean };
+type MegaItem = { icon: string; title: string; subtitle: string; href?: string; external?: boolean };
 type MegaCol = { title: string; items: MegaItem[] };
 type MegaMenu = { id: string; label: string; columns: MegaCol[] };
 
@@ -106,7 +107,9 @@ const MENUS: MegaMenu[] = [
   },
 ];
 
-/** Which top-level tab is highlighted for a given path (mirrors WebSitePage). */
+const TONES = ['blue', 'violet', 'green', 'amber', 'rose', 'sky'] as const;
+
+/** Which top-level tab is highlighted for a given path. */
 function currentFor(path: string): string {
   if (path === '/') return 'home';
   if (path === ROUTES.pricing) return 'pricing';
@@ -117,20 +120,59 @@ function currentFor(path: string): string {
   return 'home';
 }
 
-/** Bootstrapped breakpoint: width below which the compact (hamburger) header shows. */
+/** Width below which the compact (hamburger) header shows. */
 export type CompactBelow = 0 | 900 | 980;
+
+/** Material Icons has no Apple logo, so the real glyph is drawn inline. */
+function GlyphIcon({ name, size, className }: { name: string; size: number; className?: string }) {
+  if (name === 'apple') {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true" className={className}>
+        <path d={BRAND_ICONS.apple} />
+      </svg>
+    );
+  }
+  return <Icon name={name} size={size} className={className} />;
+}
 
 export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) {
   const pathname = usePathname() || '/';
   const current = currentFor(pathname);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [sheet, setSheet] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const rootRef = useRef<HTMLElement>(null);
 
   // Close menus on navigation.
   useEffect(() => {
     setOpenMenu(null);
     setSheet(false);
   }, [pathname]);
+
+  // Shrink + shadow once the page scrolls.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Outside click / Escape closes the mega menu.
+  useEffect(() => {
+    if (!openMenu) return;
+    const onDown = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpenMenu(null);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenMenu(null);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [openMenu]);
 
   useEffect(() => {
     document.body.style.overflow = sheet ? 'hidden' : '';
@@ -139,189 +181,197 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
     };
   }, [sheet]);
 
-  const closeMenu = () => setOpenMenu(null);
+  const closeAll = () => {
+    setOpenMenu(null);
+    setSheet(false);
+  };
   const open = MENUS.find((m) => m.id === openMenu);
 
   const tab = (id: string, label: string, href: string) => (
-    <div className="hdr-tabwrap" key={id}>
+    <li className="hdr-li" key={id}>
       <Link
         href={href}
-        onClick={closeMenu}
-        className={cx('hdr-tab', current === id && 'hdr-tab-active')}
+        onClick={closeAll}
+        className={cx('hdr-tab', current === id && !openMenu && 'hdr-tab-active')}
+        aria-current={current === id ? 'page' : undefined}
       >
         {label}
       </Link>
-    </div>
+    </li>
   );
 
-  const renderItem = (item: MegaItem, mobile = false) => {
+  const renderItem = (item: MegaItem, tone: string, mobile = false) => {
     const clickable = Boolean(item.href);
-    const inner = mobile ? (
-      <>
-        {item.icon === 'apple' ? (
-          <AppleGlyph size={24} color="#4b5c92" />
-        ) : (
-          <Icon name={item.icon} size={24} color="#4b5c92" />
-        )}
-        <span className="sheet-tile-text">
-          <span className="sheet-tile-title">{item.title}</span>
-          <span className="sheet-tile-sub">{item.subtitle}</span>
-        </span>
-      </>
-    ) : (
-      <div className="mega-row">
-        <div className="mega-ico">
-          {item.icon === 'apple' ? (
-            <AppleGlyph size={18} color="#1A56DB" />
-          ) : (
-            <Icon name={item.icon} size={18} color="#1A56DB" />
-          )}
-        </div>
-        <div className="mega-txt">
-          <div className={cx('mega-title', !clickable && 'mega-title-dim')}>{item.title}</div>
-          <div className="mega-sub">{item.subtitle}</div>
-        </div>
-      </div>
+    const tile = (
+      <span className={cx('tile', `tone-${tone}`, mobile && 'tile-sm')}>
+        <GlyphIcon name={item.icon} size={mobile ? 20 : 22} />
+      </span>
     );
-    const wrapCls = mobile ? 'sheet-tile' : 'mega-item';
+    const text = (
+      <span className="mi-text">
+        <span className="mi-title">{item.title}</span>
+        <span className="mi-sub">{item.subtitle}</span>
+      </span>
+    );
+    const arrow = clickable ? <Icon name="arrow_forward" size={18} className="mi-arrow" /> : null;
+    const cls = cx(mobile ? 'sheet-item' : 'mega-item', clickable ? 'is-link' : 'is-soon');
+    const body = (
+      <>
+        {tile}
+        {text}
+        {arrow}
+      </>
+    );
     if (!clickable) {
       return (
-        <div key={item.title} className={cx(wrapCls, mobile && 'sheet-tile-off')}>
-          {inner}
+        <div key={item.title} className={cls}>
+          {body}
         </div>
       );
     }
     if (item.external) {
       return (
-        <a
-          key={item.title}
-          href={item.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cx(wrapCls, 'is-link')}
-          onClick={() => setSheet(false)}
-        >
-          {inner}
+        <a key={item.title} href={item.href} target="_blank" rel="noopener noreferrer" className={cls} onClick={closeAll}>
+          {body}
         </a>
       );
     }
     return (
-      <SmartLink
-        key={item.title}
-        href={item.href!}
-        className={cx(wrapCls, 'is-link')}
-        onClick={() => {
-          setOpenMenu(null);
-          setSheet(false);
-        }}
-      >
-        {inner}
+      <SmartLink key={item.title} href={item.href!} className={cls} onClick={closeAll}>
+        {body}
       </SmartLink>
     );
   };
 
   return (
-    <header className="hdr" data-bp={compactBelow}>
+    <header ref={rootRef} className={cx('hdr', scrolled && 'hdr-scrolled', openMenu && 'hdr-open')} data-bp={compactBelow}>
+      {openMenu && <div className="hdr-scrim" aria-hidden="true" />}
+
       {/* Wide bar */}
       <div className="hdr-bar hdr-wide">
-        <div className="hdr-slot hdr-slot-left">
-          <Link href="/" onClick={closeMenu} className="hdr-logo">
-            <BrandLogo height={132} />
-          </Link>
-        </div>
-        <div className="hdr-center">
-          <nav className="hdr-nav">
+        <Link href="/" onClick={closeAll} className="hdr-logo" aria-label="Teamital home">
+          <BrandLogo height={72} />
+        </Link>
+
+        <nav className="hdr-nav" aria-label="Primary">
+          <ul className="hdr-list">
             {tab('home', 'Home', '/')}
             {MENUS.map((m) => {
               const isOpen = openMenu === m.id;
               const active = isOpen || current === m.id;
               return (
-                <div className="hdr-tabwrap" key={m.id}>
+                <li className="hdr-li" key={m.id}>
                   <button
                     type="button"
-                    className={cx('hdr-tab', active && 'hdr-tab-active')}
+                    className={cx('hdr-tab', active && 'hdr-tab-active', isOpen && 'hdr-tab-open')}
                     onClick={() => setOpenMenu(isOpen ? null : m.id)}
                     aria-expanded={isOpen}
+                    aria-haspopup="true"
                   >
                     {m.label}
-                    <Icon
-                      name={isOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
-                      size={18}
-                      color={active ? '#1A56DB' : '#6B7280'}
-                    />
+                    <Icon name="keyboard_arrow_down" size={18} className="hdr-chev" />
                   </button>
-                </div>
+                </li>
               );
             })}
             {tab('howItWorks', 'How It Works', ROUTES.howItWorks)}
             {tab('pricing', 'Pricing', ROUTES.pricing)}
-          </nav>
-        </div>
-        <div className="hdr-slot hdr-slot-right">
-          <a href={appAbsolute(ROUTES.signIn)} className="btn-text">
+          </ul>
+        </nav>
+
+        <div className="hdr-actions">
+          <a href={appAbsolute(ROUTES.signIn)} className="hdr-signin">
+            <Icon name="login" size={18} />
             Sign in
           </a>
-          <a href={appAbsolute(ROUTES.signUp)} className="btn-filled hdr-cta">
-            Start free trial
+          <a href={appAbsolute(ROUTES.signUp)} className="hdr-cta">
+            <span>Start free trial</span>
+            <Icon name="arrow_forward" size={18} className="hdr-cta-arrow" />
           </a>
         </div>
       </div>
 
       {/* Compact bar */}
       <div className="hdr-bar hdr-compact">
-        <Link href="/" className="hdr-logo hdr-logo-compact">
-          <BrandLogo height={104} />
+        <Link href="/" className="hdr-logo hdr-logo-compact" aria-label="Teamital home">
+          <BrandLogo height={60} />
         </Link>
         <span style={{ flex: 1 }} />
-        <button type="button" className="hdr-burger" aria-label="Menu" onClick={() => setSheet(true)}>
-          <Icon name="menu" size={24} color="#111827" />
+        <button type="button" className="hdr-burger" aria-label="Open menu" onClick={() => setSheet(true)}>
+          <Icon name="menu" size={24} />
         </button>
       </div>
 
+      {/* Mega menu (overlays the page) */}
       {open && (
-        <div className="mega hdr-wide">
+        <div className="mega hdr-wide" key={open.id} role="menu">
           <div className="mega-inner">
-            {open.columns.map((col, i) => (
-              <Fragment key={col.title}>
-                {i > 0 && <div className="mega-div" />}
-                <div className="mega-col">
-                  <div className="mega-col-title">{col.title.toUpperCase()}</div>
-                  {col.items.map((it) => renderItem(it))}
-                </div>
-              </Fragment>
-            ))}
+            <div className="mega-cols">
+              {open.columns.map((col, ci) => (
+                <Fragment key={col.title}>
+                  {ci > 0 && <div className="mega-div" />}
+                  <div className="mega-col">
+                    <div className="mega-col-title">{col.title}</div>
+                    {col.items.map((it, ii) => renderItem(it, TONES[(ci * 3 + ii) % TONES.length]))}
+                  </div>
+                </Fragment>
+              ))}
+            </div>
+            <div className="mega-foot">
+              <span className="mega-foot-t">
+                <Icon name="auto_awesome" size={18} />
+                Not sure where to start? We will walk you through it.
+              </span>
+              <span className="mega-foot-links">
+                <Link href={ROUTES.pricing} onClick={closeAll}>
+                  See pricing
+                </Link>
+                <Link href={ROUTES.contact} onClick={closeAll} className="mega-foot-btn">
+                  Talk to our team
+                  <Icon name="arrow_forward" size={16} />
+                </Link>
+              </span>
+            </div>
           </div>
         </div>
       )}
 
+      {/* Mobile sheet */}
       {sheet && (
         <div className="sheet-scrim" onClick={() => setSheet(false)}>
-          <div className="sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+          <div className="sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Menu">
+            <div className="sheet-top">
+              <span className="sheet-grab" aria-hidden="true" />
+              <button type="button" className="sheet-close" aria-label="Close menu" onClick={() => setSheet(false)}>
+                <Icon name="close" size={22} />
+              </button>
+            </div>
             <div className="sheet-body">
-              <div className="sheet-logo">
-                <BrandLogo height={108} />
+              <div className="sheet-quick">
+                <Link href="/" className={cx('sheet-chip', current === 'home' && 'sheet-chip-on')} onClick={closeAll}>
+                  Home
+                </Link>
+                <Link href={ROUTES.howItWorks} className={cx('sheet-chip', current === 'howItWorks' && 'sheet-chip-on')} onClick={closeAll}>
+                  How It Works
+                </Link>
+                <Link href={ROUTES.pricing} className={cx('sheet-chip', current === 'pricing' && 'sheet-chip-on')} onClick={closeAll}>
+                  Pricing
+                </Link>
               </div>
-              <Link href="/" className="sheet-tile is-link" onClick={() => setSheet(false)}>
-                <span className="sheet-tile-text">
-                  <span className="sheet-tile-title">Home</span>
-                </span>
-              </Link>
-              {MENUS.map((m) => m.columns.map((c) => c.items.map((it) => renderItem(it, true))))}
-              <Link href={ROUTES.howItWorks} className="sheet-tile is-link" onClick={() => setSheet(false)}>
-                <span className="sheet-tile-text">
-                  <span className="sheet-tile-title">How It Works</span>
-                </span>
-              </Link>
-              <Link href={ROUTES.pricing} className="sheet-tile is-link" onClick={() => setSheet(false)}>
-                <span className="sheet-tile-text">
-                  <span className="sheet-tile-title">Pricing</span>
-                </span>
-              </Link>
-              <hr className="sheet-hr" />
-              <a href={appAbsolute(ROUTES.signIn)} className="btn-outlined sheet-btn">
+              {MENUS.map((m) => (
+                <section key={m.id} className="sheet-sec">
+                  <h3 className="sheet-h">{m.label}</h3>
+                  {m.columns.flatMap((c, ci) =>
+                    c.items.map((it, ii) => renderItem(it, TONES[(ci * 3 + ii) % TONES.length], true)),
+                  )}
+                </section>
+              ))}
+            </div>
+            <div className="sheet-cta">
+              <a href={appAbsolute(ROUTES.signIn)} className="sheet-btn sheet-btn-ghost">
                 Sign in
               </a>
-              <a href={appAbsolute(ROUTES.signUp)} className="btn-filled sheet-btn sheet-btn-filled">
+              <a href={appAbsolute(ROUTES.signUp)} className="sheet-btn sheet-btn-primary">
                 Start free trial
               </a>
             </div>
@@ -329,14 +379,5 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
         </div>
       )}
     </header>
-  );
-}
-
-/** Material Icons has no Apple logo, so this draws the same glyph Flutter's Icons.apple shows. */
-function AppleGlyph({ size, color }: { size: number; color: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true">
-      <path d="M17.05 12.04c-.03-2.82 2.3-4.17 2.4-4.24-1.31-1.91-3.34-2.17-4.06-2.2-1.73-.18-3.37 1.02-4.25 1.02-.88 0-2.23-.99-3.67-.96-1.89.03-3.63 1.1-4.6 2.79-1.96 3.4-.5 8.43 1.41 11.19.93 1.35 2.05 2.86 3.51 2.81 1.41-.06 1.94-.91 3.64-.91 1.7 0 2.18.91 3.67.88 1.52-.03 2.48-1.38 3.4-2.74 1.07-1.57 1.51-3.09 1.54-3.17-.03-.01-2.95-1.13-2.99-4.47zM14.27 3.88c.77-.94 1.29-2.24 1.15-3.54-1.11.05-2.46.74-3.25 1.68-.71.83-1.34 2.16-1.17 3.43 1.24.1 2.5-.63 3.27-1.57z" />
-    </svg>
   );
 }
