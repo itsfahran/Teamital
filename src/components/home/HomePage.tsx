@@ -7,6 +7,18 @@ import { AvailableFor } from '../AvailableFor';
 import { Typewriter } from '../Typewriter';
 import { Icon, Pill, SmartLink, cx } from '../ui';
 import { HeroVisual } from './HeroVisual';
+import {
+  CtaSection,
+  FaqSection,
+  FeaturesSection,
+  HowItWorksSection,
+  RolesSection,
+  SecuritySection,
+  StatsSection,
+  TestimonialsSection,
+  ToolkitSection,
+  WhyUsSection,
+} from './Sections';
 import { HomeSlotView } from './HomeSlots';
 import { PrivacyRibbons } from './PrivacyRibbons';
 
@@ -381,247 +393,6 @@ function Platforms() {
   );
 }
 
-function Features() {
-  const items: Array<[string, string, string]> = [
-    ['fingerprint', 'Trusted clock-in', 'Face, fingerprint and GPS checks keep attendance honest.'],
-    ['bar_chart', 'Realtime charts', 'Web dashboards update as your team clocks in and out.'],
-    ['forum', 'HR chat', 'Employees reach HR without leaving the app.'],
-  ];
-  return (
-    <Wrap>
-      <div className="two-880">
-        <div className="two-880-art two-880-art-features">
-          <Svg name="undraw_engineering-team_13ax.svg" height={260} fill />
-        </div>
-        <div className="two-880-body">
-          <SectionTitle title="Built for modern teams" subtitle="One product for attendance, tasks, leave and insights." />
-          <div className="gap-28" />
-          <CardGrid items={items} />
-        </div>
-      </div>
-    </Wrap>
-  );
-}
-
-function HowItWorksSection() {
-  const steps = [
-    ['1', 'Create company', 'Sign up and invite your workforce in minutes.'],
-    ['2', 'Clock with confidence', 'Employees punch in with GPS, face or biometric checks.'],
-    ['3', 'See live insights', 'Managers track hours, leave and tasks from the web dashboard.'],
-  ];
-  return (
-    <section className="sec-white">
-      <div className="sec-white-in">
-        <div className="hiw-top">
-          <div className="hiw-title">
-            <SectionTitle title="How it works" subtitle="Three steps from signup to live ops." />
-          </div>
-          <div className="hiw-art">
-            <Svg name="undraw_working-together_r43a.svg" height={180} />
-          </div>
-        </div>
-        <div className="gap-28" />
-        <div className="steps-wrap">
-          <div className="steps">
-            {steps.map(([n, t, d]) => (
-              <div className="step" key={n}>
-                <div className="step-n">{n}</div>
-                <div className="step-t">{t}</div>
-                <div className="step-d">{d}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Roles() {
-  return (
-    <Wrap>
-      <SectionTitle title="Built for every role" subtitle="The right tools for admins, staff and partners." />
-      <div className="gap-28" />
-      <CardGrid
-        items={[
-          ['business', 'Company admins', 'Departments, employees, attendance maps and exports.'],
-          ['badge', 'Employees', 'Clock in/out, tasks, leave requests and HR chat.'],
-          ['hub', 'White-label partners', 'Resell with your brand and manage tenant companies.'],
-        ]}
-      />
-    </Wrap>
-  );
-}
-
-function SecuritySection() {
-  return (
-    <section className="sec-white">
-      <div className="sec-white-in sec-sec">
-        <div className="sec-sec-copy">
-          <SectionTitle
-            title="Security you can trust"
-            subtitle="Role-based access, secure auth and audit-friendly records."
-          />
-          <div className="gap-20" />
-          <Bullet>Encrypted auth sessions via Supabase</Bullet>
-          <Bullet>Role gates for admin, employee &amp; partners</Bullet>
-          <Bullet>GPS / biometric verification options</Bullet>
-          <Bullet>Attendance history ready for exports</Bullet>
-        </div>
-        <div className="sec-sec-art">
-          <Svg name="undraw_device-sync_d9ei.svg" height={220} fill />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Testimonials() {
-  const quotes = [
-    ['“Clock-in finally works for our field team.”', 'Ops Manager'],
-    ['“Web dashboards help us spot late days early.”', 'HR Lead'],
-    ['“Employees love the leave + chat flow.”', 'Company Admin'],
-  ];
-  return (
-    <Wrap>
-      <SectionTitle title="Loved by growing teams" subtitle="Simple words from teams who track attendance every day." />
-      <div className="gap-28" />
-      <div className="quote-wrap">
-        <div className="quotes">
-          {quotes.map(([q, r]) => (
-            <div className="quote" key={r}>
-              <div className="quote-q">{q}</div>
-              <div className="quote-r">{r}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </Wrap>
-  );
-}
-
-function WhyUs() {
-  return (
-    <Wrap>
-      <SectionTitle title="Why teams switch to us" subtitle="Clear outcomes for HR, ops and field supervisors." />
-      <div className="gap-28" />
-      <CardGrid
-        items={[
-          ['verified_user', 'Honest attendance', 'GPS and biometric checks cut buddy punching and fake punches.'],
-          ['speed', 'Live ops view', 'Managers see who is in, late, or on leave without spreadsheet chase.'],
-          ['devices', 'One stack everywhere', 'Web, Android, iOS and desktop share the same workforce data.'],
-        ]}
-      />
-    </Wrap>
-  );
-}
-
-function Integrations() {
-  const chips: Array<[string, string]> = [
-    ['GPS', 'location_on'],
-    ['Face ID', 'face_retouching_natural'],
-    ['Fingerprint', 'fingerprint'],
-    ['Leave', 'beach_access'],
-    ['Tasks', 'task_alt'],
-    ['Reports', 'ios_share'],
-  ];
-  return (
-    <section className="sec-white">
-      <div className="sec-white-in">
-        <SectionTitle
-          title="Built-in workforce toolkit"
-          subtitle="No patchwork of apps — attendance, leave, tasks and chat together."
-        />
-        <div className="gap-24" />
-        <div className="chips">
-          {chips.map(([label, icon]) => (
-            <div className="chip" key={label}>
-              <Icon name={icon} size={20} color="#1A56DB" />
-              <span>{label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function StatsBand() {
-  const stats = [
-    ['99.9%', 'Uptime focus'],
-    ['4', 'Platforms'],
-    ['1', 'Source of truth'],
-    ['24/7', 'Live clock data'],
-  ];
-  return (
-    <div className="stats">
-      <div className="stats-in">
-        <div className="stats-box">
-          <div className="stats-wrap">
-            <div className="stats-grid">
-              {stats.map(([v, l]) => (
-                <div className="stat" key={l}>
-                  <div className="stat-v">{v}</div>
-                  <div className="stat-l">{l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Faq() {
-  const faqs = [
-    ['Does it work on mobile and web?', 'Yes — Android, iOS, web and desktop share the same Teamital experience.'],
-    ['Can employees clock in with GPS?', 'Yes. Admins can require GPS (and biometric/face) for clock-in and clock-out.'],
-    ['Is there a company admin dashboard?', 'Company admins manage employees, attendance, leave, tasks and reports from the web.'],
-  ];
-  return (
-    <section className="sec-white sec-faq">
-      <div className="sec-faq-in">
-        <div className="faq">
-          <div className="faq-side">
-            <SectionTitle title="FAQ" subtitle="Quick answers before you sign up." />
-            <div className="faq-art">
-              <Svg name="undraw_questions_52ic.svg" height={220} />
-            </div>
-          </div>
-          <div className="faq-list">
-            {faqs.map(([q, a]) => (
-              <details className="faq-item" key={q}>
-                <summary>
-                  <span>{q}</span>
-                  <Icon name="expand_more" size={24} color="#45464f" className="faq-chev" />
-                </summary>
-                <div className="faq-a">{a}</div>
-              </details>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CtaBand() {
-  return (
-    <div className="cta">
-      <div className="cta-in">
-        <div className="cta-box">
-          <div className="cta-t">Ready to track your workforce?</div>
-          <div className="cta-s">Create your company account in minutes.</div>
-          <SmartLink href={ROUTES.signUp} className="btn-filled cta-btn">
-            Sign up now
-          </SmartLink>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ───────────────────────── Custom H2 / H3 ───────────────────────── */
 
 function H2Section({ cms }: { cms: Cms }) {
@@ -860,18 +631,18 @@ export function HomePage({ cms }: { cms: Cms }) {
           <Platforms />
         </Aos>
       )}
-      <Aos>{isCustom(cms?.h2Variant.trim() ?? '') ? <H2Section cms={cms} /> : <Features />}</Aos>
+      <Aos>{isCustom(cms?.h2Variant.trim() ?? '') ? <H2Section cms={cms} /> : <FeaturesSection />}</Aos>
       <Aos>{isCustom(cms?.h3Variant.trim() ?? '') ? <H3Section cms={cms} /> : <HowItWorksSection />}</Aos>
-      <Aos>{slotOr(4, <Roles />)}</Aos>
+      <Aos>{slotOr(4, <RolesSection />)}</Aos>
       <Aos>{slotOr(5, <SecuritySection />)}</Aos>
-      <Aos>{slotOr(6, <Testimonials />)}</Aos>
-      <Aos>{slotOr(7, <WhyUs />)}</Aos>
-      <Aos>{slotOr(8, <Integrations />)}</Aos>
-      <Aos>{slotOr(9, <StatsBand />)}</Aos>
+      <Aos>{slotOr(6, <TestimonialsSection />)}</Aos>
+      <Aos>{slotOr(7, <WhyUsSection />)}</Aos>
+      <Aos>{slotOr(8, <ToolkitSection />)}</Aos>
+      <Aos>{slotOr(9, <StatsSection />)}</Aos>
       <Aos>
-        <Faq />
+        <FaqSection />
       </Aos>
-      <Aos>{slotOr(10, <CtaBand />)}</Aos>
+      <Aos>{slotOr(10, <CtaSection />)}</Aos>
     </SitePage>
   );
 }

@@ -9,6 +9,7 @@ import './blog.css';
 import './guide.css';
 import './wl.css';
 import './policy.css';
+import './home-sections.css';
 import './admin.css';
 import { SITE } from '@/lib/config';
 import { ToastProvider } from '@/components/Toast';
