@@ -3,6 +3,7 @@ import { ROUTES } from '@/lib/config';
 import { Aos } from '../Aos';
 import { SitePage } from '../SitePage';
 import { Icon, SmartLink, cx } from '../ui';
+import { BuildShowcase } from './BuildShowcase';
 import { PartnerVisual } from './PartnerVisual';
 
 const CONTACT = ROUTES.contact;
@@ -71,19 +72,7 @@ export function WhiteLabelPage() {
                 <p key={p.slice(0, 24)}>{p}</p>
               ))}
             </div>
-            <div className="wl-rows">
-              {WL.build.pillars.map((p) => (
-                <Aos key={p.title}>
-                  <div className="wl-row">
-                    <div className="wl-row-name">
-                      <Tile icon={p.icon} tone={p.tone ?? 'blue'} />
-                      <h3>{p.title}</h3>
-                    </div>
-                    <p className="wl-row-text">{p.text}</p>
-                  </div>
-                </Aos>
-              ))}
-            </div>
+            <BuildShowcase items={WL.build.pillars} />
           </div>
         </div>
       </section>
