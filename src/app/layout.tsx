@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import { Roboto } from 'next/font/google';
 import './globals.css';
 import './site.css';
+import './hero-visual.css';
 import './admin.css';
 import { SITE } from '@/lib/config';
 import { ToastProvider } from '@/components/Toast';

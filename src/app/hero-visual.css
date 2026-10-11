@@ -1,0 +1,201 @@
+/* ───── Hero: brand pill ───── */
+.hc-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 4px 14px rgba(26, 86, 219, 0.1);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1a56db;
+}
+.hc-brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+}
+
+/* ───── Hero visual (animated chat + widgets) ───── */
+.hv {
+  position: relative;
+  min-height: 500px;
+  padding: 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hv-blob { position: absolute; border-radius: 50%; filter: blur(48px); opacity: 0.55; pointer-events: none; }
+.hv-blob-a { width: 300px; height: 300px; background: #93c5fd; top: 4%; right: 6%; animation: hv-drift 9s ease-in-out infinite alternate; }
+.hv-blob-b { width: 240px; height: 240px; background: #c4b5fd; bottom: 2%; left: 4%; animation: hv-drift 11s ease-in-out infinite alternate-reverse; }
+@keyframes hv-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(18px, -14px) scale(1.08); }
+}
+
+.hv-chat {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 390px);
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 28px;
+  box-shadow: 0 30px 60px -20px rgba(26, 86, 219, 0.35), 0 8px 24px rgba(17, 24, 39, 0.06);
+  overflow: hidden;
+}
+.hv-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  background: linear-gradient(to bottom, #fff, #f8fafc);
+}
+.hv-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  flex: none;
+  background: linear-gradient(135deg, #1a56db, #0ea5e9);
+  color: #fff;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hv-head-txt { flex: 1; min-width: 0; }
+.hv-name { font-size: 14px; font-weight: 700; color: #111827; }
+.hv-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6b7280; }
+.hv-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: hv-pulse 2s ease-out infinite; }
+@keyframes hv-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+  100% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+}
+
+.hv-msgs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  min-height: 330px;
+  background: #fbfcfe;
+}
+.hv-row { display: flex; }
+.hv-row-in { justify-content: flex-start; }
+.hv-row-out { justify-content: flex-end; }
+.hv-bubble { max-width: 82%; padding: 10px 14px; font-size: 13px; line-height: 1.45; }
+.hv-bubble-in { background: #eef2f7; color: #1f2937; border-radius: 16px 16px 16px 4px; }
+.hv-bubble-out {
+  background: linear-gradient(135deg, #1a56db, #2f6df0);
+  color: #fff;
+  border-radius: 16px 16px 4px 16px;
+  box-shadow: 0 6px 14px rgba(26, 86, 219, 0.3);
+}
+.hv-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 10px 10px;
+  border-radius: 16px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+}
+.hv-card-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.hv-card-t { display: block; font-size: 13px; font-weight: 700; color: #065f46; }
+.hv-card-m { display: block; font-size: 11.5px; color: #047857; }
+.hv-typing { display: inline-flex; gap: 5px; padding: 12px 14px; }
+.hv-typing span { width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; animation: hv-bounce 1.1s ease-in-out infinite; }
+.hv-typing span:nth-child(2) { animation-delay: 0.15s; }
+.hv-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes hv-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Messages appear one after another and loop (14s cycle) */
+.hv-pop { opacity: 0; animation: hv-pop 14s ease-out infinite both; animation-delay: calc(var(--i) * 1.5s); }
+@keyframes hv-pop {
+  0% { opacity: 0; transform: translateY(14px) scale(0.96); }
+  4% { opacity: 1; transform: none; }
+  86% { opacity: 1; transform: none; }
+  94%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+
+.hv-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 16px 16px;
+  padding: 8px 8px 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #9ca3af;
+  background: #fff;
+}
+.hv-send { width: 32px; height: 32px; border-radius: 50%; background: #1a56db; display: flex; align-items: center; justify-content: center; }
+
+.hv-float {
+  position: absolute;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 12px 14px;
+  box-shadow: 0 18px 36px -12px rgba(17, 24, 39, 0.25);
+  animation: hv-float 6s ease-in-out infinite alternate;
+}
+.hv-float-a { top: 6%; right: -2%; display: flex; align-items: center; gap: 10px; }
+.hv-float-b { left: -3%; top: 44%; width: 170px; animation-delay: -2s; }
+.hv-float-c { right: -1%; bottom: 5%; width: 190px; animation-delay: -4s; }
+@keyframes hv-float {
+  from { transform: translateY(-8px); }
+  to { transform: translateY(8px); }
+}
+.hv-float-ico { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex: none; }
+.hv-float-ico-green { background: linear-gradient(135deg, #10b981, #059669); }
+.hv-float-t { display: block; font-size: 13px; font-weight: 700; color: #111827; white-space: nowrap; }
+.hv-float-m { display: block; font-size: 11.5px; color: #6b7280; }
+.hv-timer { margin: 2px 0 8px; font-size: 22px; font-weight: 800; color: #1a56db; font-variant-numeric: tabular-nums; }
+.hv-bar { height: 6px; border-radius: 6px; background: #e5e7eb; overflow: hidden; }
+.hv-bar div { height: 100%; width: 78%; border-radius: 6px; background: linear-gradient(to right, #1a56db, #0ea5e9); animation: hv-grow 3.2s ease-in-out infinite alternate; }
+@keyframes hv-grow {
+  from { width: 58%; }
+  to { width: 82%; }
+}
+.hv-bars { display: flex; align-items: flex-end; gap: 6px; margin-top: 8px; height: 40px; }
+.hv-bars span { flex: 1; border-radius: 4px; background: linear-gradient(to top, #1a56db, #60a5fa); transform-origin: bottom; animation: hv-bar 2.4s ease-in-out infinite alternate; }
+@keyframes hv-bar {
+  from { transform: scaleY(0.7); }
+  to { transform: scaleY(1); }
+}
+
+@media (max-width: 959.98px) {
+  .hv { min-height: 0; padding: 16px 0 8px; }
+  .hv-float-a { right: 0; top: -2%; }
+  .hv-float-b { display: none; }
+  .hv-float-c { right: 0; bottom: -2%; }
+}
+@media (max-width: 480px) {
+  .hv-float-c { display: none; }
+  .hv-msgs { min-height: 300px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hv-pop, .hv-float, .hv-blob, .hv-bar div, .hv-bars span, .hv-dot, .hv-typing span { animation: none; opacity: 1; }
+}

@@ -6,6 +6,7 @@ import { SitePage } from '../SitePage';
 import { AvailableFor } from '../AvailableFor';
 import { Typewriter } from '../Typewriter';
 import { Icon, Pill, SmartLink, cx } from '../ui';
+import { HeroVisual } from './HeroVisual';
 import { HomeSlotView } from './HomeSlots';
 import { PrivacyRibbons } from './PrivacyRibbons';
 
@@ -80,7 +81,10 @@ function HeroCopy({ cms }: { cms: Cms }) {
   const secondary = cms?.button2Label.trim() ? cms.button2Label : 'Sign in';
   return (
     <div className="hc">
-      <div className="hc-brand">Teamital</div>
+      <div className="hc-brand">
+        <span className="hc-brand-dot" />
+        Teamital · Workforce intelligence
+      </div>
       <div className="hc-h1">{h1 || 'Workforce tools that'}</div>
       <Typewriter fontSize={40} />
       <p className="hc-body">
@@ -102,9 +106,7 @@ function HeroCopy({ cms }: { cms: Cms }) {
 function HeroMockup() {
   return (
     <Aos fromRight>
-      <div className="hero-mock">
-        <Svg name="undraw_chatting_29rn.svg" height={360} fill />
-      </div>
+      <HeroVisual />
     </Aos>
   );
 }
