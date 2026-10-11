@@ -90,7 +90,7 @@ const MENUS: MegaMenu[] = [
       {
         title: 'Learn',
         items: [
-          { icon: 'article', title: 'Blog', subtitle: 'Guides on attendance and GPS' },
+          { icon: 'article', title: 'Blog', subtitle: 'Guides on attendance and GPS', href: ROUTES.blog },
           { icon: 'menu_book', title: 'Guides', subtitle: 'How attendance & workforce tools work' },
           { icon: 'new_releases', title: 'Product Updates', subtitle: 'What is new in Teamital' },
         ],
@@ -116,7 +116,7 @@ function currentFor(path: string): string {
   if (path === ROUTES.howItWorks) return 'howItWorks';
   if (path === ROUTES.contact) return 'contact';
   if (path === ROUTES.features) return 'Features';
-  if (path === ROUTES.blog) return 'Resources';
+  if (path === ROUTES.blog || path.startsWith(`${ROUTES.blog}/`)) return 'Resources';
   return 'home';
 }
 

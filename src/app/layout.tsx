@@ -5,6 +5,7 @@ import './globals.css';
 import './header.css';
 import './site.css';
 import './hero-visual.css';
+import './blog.css';
 import './admin.css';
 import { SITE } from '@/lib/config';
 import { ToastProvider } from '@/components/Toast';
