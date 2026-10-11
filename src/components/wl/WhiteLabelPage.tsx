@@ -91,24 +91,42 @@ export function WhiteLabelPage() {
         </div>
       </section>
 
-      {/* Partner portal */}
+      {/* Partner portal: sticky contents list + numbered timeline (same pattern as the guides) */}
       <section className="wl-sec">
         <div className="wl-in">
           <SectionHead title={WL.portal.title} intro={WL.portal.intro} />
-          <div className="wl-grid wl-grid-3">
-            {WL.portal.items.map((c, i) => (
-              <Aos key={c.title} delay={(i % 3) * 60}>
-                <div className="wl-feature">
-                  <span className={cx('tile', `tone-${tones[i % tones.length]}`)}>
-                    <Icon name={c.icon} size={22} />
-                  </span>
-                  <div>
-                    <h3>{c.title}</h3>
+          <div className="guide-in wl-portal">
+            <aside className="gtoc" aria-label="Partner portal sections">
+              <div className="gtoc-t">In this portal</div>
+              <ol>
+                {WL.portal.items.map((c, i) => (
+                  <li key={c.title}>
+                    <a href={`#portal-${i + 1}`}>
+                      <span className="gtoc-n">{i + 1}</span>
+                      {c.title}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+            <ol className="gsteps">
+              {WL.portal.items.map((c, i) => (
+                <li className="gstep" id={`portal-${i + 1}`} key={c.title}>
+                  <div className="gstep-rail">
+                    <span className="gstep-n tone-blue">{i + 1}</span>
+                  </div>
+                  <div className="gstep-card">
+                    <div className="gstep-head">
+                      <span className="tile tone-blue">
+                        <Icon name={c.icon} size={22} />
+                      </span>
+                      <h3>{c.title}</h3>
+                    </div>
                     <p>{c.text}</p>
                   </div>
-                </div>
-              </Aos>
-            ))}
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>

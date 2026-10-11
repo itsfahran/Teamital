@@ -359,3 +359,10 @@
 .wlv-plan { margin-top: 4px; font-size: 15px; font-weight: 800; color: #1a56db; white-space: nowrap; }
 @media (max-width: 1000px) { .wlv { min-height: 0; } .wlv-f-b { display: none; } }
 @media (max-width: 520px) { .wlv-body { grid-template-columns: 1fr; } .wlv-side { display: none; } .wlv-f-c { display: none; } }
+
+/* Partner portal timeline (reuses the guide step styles) */
+.wl-portal { max-width: 1080px; }
+.wl-portal .gtoc { top: 104px; }
+.wl-portal .gstep { scroll-margin-top: 110px; }
+.wl-portal .gstep-head h3 { font-size: 19px; line-height: 1.3; font-weight: 700; color: #0f172a; }
+.wl-portal .gstep:last-child .gstep-card { margin-bottom: 0; }
