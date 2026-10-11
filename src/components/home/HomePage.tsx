@@ -92,13 +92,29 @@ function HeroCopy({ cms }: { cms: Cms }) {
           'Clock in with GPS and biometrics, manage leave and tasks, and see live workforce insights — on every device.'}
       </p>
       <div className="hc-btns">
-        <SmartLink href={ROUTES.signUp} className="btn-filled hc-btn">
-          {primary}
+        <SmartLink href={ROUTES.signUp} className="hero-btn hero-btn-primary">
+          <span>{primary}</span>
+          <Icon name="arrow_forward" size={20} color="#fff" className="hero-btn-arrow" />
         </SmartLink>
-        <SmartLink href={ROUTES.signIn} className="btn-outlined hc-btn hc-btn-out">
-          {secondary}
+        <SmartLink href={ROUTES.signIn} className="hero-btn hero-btn-ghost">
+          <Icon name="login" size={20} color="#1A56DB" />
+          <span>{secondary}</span>
         </SmartLink>
       </div>
+      <ul className="hc-trust">
+        <li>
+          <Icon name="check_circle" size={18} color="#10B981" />
+          No credit card required
+        </li>
+        <li>
+          <Icon name="check_circle" size={18} color="#10B981" />
+          14-day free trial
+        </li>
+        <li>
+          <Icon name="check_circle" size={18} color="#10B981" />
+          Cancel anytime
+        </li>
+      </ul>
     </div>
   );
 }
