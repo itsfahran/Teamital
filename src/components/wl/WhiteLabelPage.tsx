@@ -65,21 +65,21 @@ export function WhiteLabelPage() {
       <section className="wl-sec">
         <div className="wl-in">
           <div className="wl-build">
+            <h2 className="wl-build-title">{WL.build.title}</h2>
             <div className="wl-build-copy">
-              <h2>{WL.build.title}</h2>
               {WL.build.paragraphs.map((p) => (
                 <p key={p.slice(0, 24)}>{p}</p>
               ))}
             </div>
-            <div className="wl-pillars">
+            <div className="wl-rows">
               {WL.build.pillars.map((p) => (
                 <Aos key={p.title}>
-                  <div className="wl-pillar">
-                    <Tile icon={p.icon} tone={p.tone ?? 'blue'} />
-                    <div>
+                  <div className="wl-row">
+                    <div className="wl-row-name">
+                      <Tile icon={p.icon} tone={p.tone ?? 'blue'} />
                       <h3>{p.title}</h3>
-                      <p>{p.text}</p>
                     </div>
+                    <p className="wl-row-text">{p.text}</p>
                   </div>
                 </Aos>
               ))}
