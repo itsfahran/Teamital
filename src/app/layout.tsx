@@ -6,6 +6,7 @@ import './header.css';
 import './site.css';
 import './hero-visual.css';
 import './blog.css';
+import './guide.css';
 import './admin.css';
 import { SITE } from '@/lib/config';
 import { ToastProvider } from '@/components/Toast';

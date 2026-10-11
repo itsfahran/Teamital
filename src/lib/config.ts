@@ -60,6 +60,9 @@ export const ROUTES = {
   careers: '/careers',
   blog: '/blog',
   howItWorks: '/how-it-works',
+  guides: '/guide',
+  guideCompanies: '/guide/companies',
+  guideEmployees: '/guide/employees',
 } as const;
 
 /** Slugs handled by dedicated routes: never served from the CMS. */
@@ -67,5 +70,5 @@ export const RESERVED_SLUGS = new Set([
   'sign-in', 'sign-up', 'confirm-signup', 'forgot-password', 'pricing', 'contact',
   'privacy-policy', 'delete-account', 'reset-password', 'about', 'features', 'security',
   'security-policy', 'terms', 'terms-and-conditions', 'cookies', 'cookie-policy', 'careers',
-  'blog', 'how-it-works', 'home', 'api', 'assets', 'admin', 'login',
+  'blog', 'how-it-works', 'home', 'api', 'assets', 'admin', 'login', 'guide',
 ]);

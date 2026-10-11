@@ -213,7 +213,7 @@ img {
 .ft-accent { height: 3px; margin: -1px -48px 0; background: linear-gradient(90deg, #1a56db, #0ea5e9 60%, #1a56db); }
 .ft-inner { max-width: 1180px; margin: 0 auto; padding-top: 56px; }
 
-.ft-main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr); gap: 56px; }
+.ft-main { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 2.4fr); gap: 48px; }
 .ft-brand { min-width: 0; }
 .ft-logo-box { display: inline-block; margin-left: -6px; }
 .ft-logo-box .brand-logo { height: 72px; width: 240px; object-position: left center; }
@@ -261,7 +261,7 @@ img {
   box-shadow: -2px -2px 0 #25f4ee, 2px 2px 0 #fe2c55, 0 8px 18px rgba(17, 24, 39, 0.18);
 }
 
-.ft-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.ft-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
 .ft-col { min-width: 0; }
 .ft-col-title {
   font-size: 12px;

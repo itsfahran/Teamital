@@ -21,6 +21,9 @@ const DEFAULTS: Record<string, [string, string]> = {
   '/careers': [`Careers | ${BRAND}`, 'Careers at Teamital.'],
   '/blog': [`Blog | ${BRAND}`, 'Guides on attendance, GPS and HR ops.'],
   '/how-it-works': [`How it works | ${BRAND}`, 'How Teamital workforce tracking works.'],
+  '/guide': [`Guides | ${BRAND}`, 'Step-by-step guides for companies and employees using Teamital.'],
+  '/guide/companies': [`Guide for Companies | ${BRAND}`, 'How to set up Teamital for your company: employees, attendance rules, shifts, leave and reports.'],
+  '/guide/employees': [`Guide for Employees | ${BRAND}`, 'How employees use Teamital: clock in and out, hours, leave, tasks and chat.'],
 };
 
 function fromCms(page: CmsPageContent): [string, string] {

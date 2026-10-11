@@ -29,6 +29,13 @@ const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
       ['About us', ROUTES.about],
       ['Contact', ROUTES.contact],
       ['Careers', ROUTES.careers],
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      ['Guide for Companies', ROUTES.guideCompanies],
+      ['Guide for Employees', ROUTES.guideEmployees],
       ['Blog', ROUTES.blog],
     ],
   },
