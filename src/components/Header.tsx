@@ -142,6 +142,20 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
   const [sheet, setSheet] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const rootRef = useRef<HTMLElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  };
+  const openOnHover = (id: string | null) => {
+    cancelClose();
+    setOpenMenu(id);
+  };
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 90);
+  };
 
   // Close menus on navigation.
   useEffect(() => {
@@ -188,7 +202,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
   const open = MENUS.find((m) => m.id === openMenu);
 
   const tab = (id: string, label: string, href: string) => (
-    <li className="hdr-li" key={id}>
+    <li className="hdr-li" key={id} onMouseEnter={() => openOnHover(null)}>
       <Link
         href={href}
         onClick={closeAll}
@@ -245,7 +259,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
 
   return (
     <header ref={rootRef} className={cx('hdr', scrolled && 'hdr-scrolled', openMenu && 'hdr-open')} data-bp={compactBelow}>
-      {openMenu && <div className="hdr-scrim" aria-hidden="true" />}
+      {openMenu && <div className="hdr-scrim" aria-hidden="true" onMouseEnter={scheduleClose} />}
 
       {/* Wide bar */}
       <div className="hdr-bar hdr-wide">
@@ -260,7 +274,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
               const isOpen = openMenu === m.id;
               const active = isOpen || current === m.id;
               return (
-                <li className="hdr-li" key={m.id}>
+                <li className="hdr-li" key={m.id} onMouseEnter={() => openOnHover(m.id)}>
                   <button
                     type="button"
                     className={cx('hdr-tab', active && 'hdr-tab-active', isOpen && 'hdr-tab-open')}
@@ -304,7 +318,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
 
       {/* Mega menu (overlays the page) */}
       {open && (
-        <div className="mega hdr-wide" key={open.id} role="menu">
+        <div className="mega hdr-wide" key={open.id} role="menu" onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
           <div className="mega-inner">
             <div className="mega-cols">
               {open.columns.map((col, ci) => (
