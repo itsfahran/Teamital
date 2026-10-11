@@ -24,7 +24,10 @@ export function HeroVisual() {
 
       <div className="hv-chat">
         <div className="hv-head">
-          <div className="hv-avatar">T</div>
+          <div className="hv-avatar">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/logo.jpg" alt="" width={46} height={46} />
+          </div>
           <div className="hv-head-txt">
             <div className="hv-name">Teamital HR</div>
             <div className="hv-status">
@@ -74,7 +77,7 @@ export function HeroVisual() {
 
       <div className="hv-float hv-float-a">
         <span className="hv-float-ico hv-float-ico-green">
-          <Icon name="location_on" size={20} color="#fff" />
+          <Icon name="gps_fixed" size={22} color="#fff" />
         </span>
         <span>
           <span className="hv-float-t">GPS verified</span>
