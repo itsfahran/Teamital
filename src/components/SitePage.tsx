@@ -14,6 +14,7 @@ export function SitePage({
   theme = 'seed',
   background = '#F5F7FA',
   footer = true,
+  overlayHeader = false,
 }: {
   children: ReactNode;
   compactBelow?: CompactBelow;
@@ -21,10 +22,12 @@ export function SitePage({
   theme?: 'seed' | 'app';
   background?: string;
   footer?: boolean;
+  /** Let the first section (hero) extend underneath the floating navbar. */
+  overlayHeader?: boolean;
 }) {
   return (
     <div className={cx('page', `theme-${theme}`)} style={{ background }}>
-      <div className={cx('page-header', stickyHeader && 'page-header-sticky')}>
+      <div className={cx('page-header', stickyHeader && 'page-header-sticky', overlayHeader && 'page-header-overlay')}>
         <Header compactBelow={compactBelow} />
       </div>
       {children}

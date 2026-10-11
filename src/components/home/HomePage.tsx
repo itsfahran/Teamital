@@ -851,7 +851,7 @@ export function HomePage({ cms }: { cms: Cms }) {
   };
 
   return (
-    <SitePage compactBelow={980}>
+    <SitePage compactBelow={980} overlayHeader>
       <Aos>
         <Hero cms={cms} />
       </Aos>
