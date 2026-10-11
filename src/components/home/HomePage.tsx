@@ -3,7 +3,7 @@ import type { CmsPageContent } from '@/lib/cms';
 import { ROUTES } from '@/lib/config';
 import { Aos } from '../Aos';
 import { SitePage } from '../SitePage';
-import { StoreBadgeRow } from '../StoreBadges';
+import { AvailableFor } from '../AvailableFor';
 import { Typewriter } from '../Typewriter';
 import { Icon, Pill, SmartLink, cx } from '../ui';
 import { HomeSlotView } from './HomeSlots';
@@ -341,19 +341,24 @@ function Hero({ cms }: { cms: Cms }) {
         </div>
         <div className="hero-vis">{variant === 'split-dashboard' ? <HeroDashboardCard /> : <HeroMockup />}</div>
       </div>
+      <div className="hero-avail">
+        <AvailableFor />
+      </div>
     </div>
   );
 }
 
 /* ───────────────────────── Sections ───────────────────────── */
 
+const HERO_WITH_OWN_ROW = (cms: Cms) => {
+  const v = cms?.heroVariant.trim() || 'split-product';
+  return !['center-icons', 'split-map', 'ops-dashboard'].includes(v);
+};
+
 function Platforms() {
   return (
     <div className="plat">
-      <div className="plat-in">
-        <div className="plat-t">Get the app — Windows, Android, iOS &amp; Web</div>
-        <StoreBadgeRow center />
-      </div>
+      <AvailableFor />
     </div>
   );
 }
@@ -832,9 +837,11 @@ export function HomePage({ cms }: { cms: Cms }) {
       <Aos>
         <Hero cms={cms} />
       </Aos>
-      <Aos delay={80}>
-        <Platforms />
-      </Aos>
+      {!HERO_WITH_OWN_ROW(cms) && (
+        <Aos delay={80}>
+          <Platforms />
+        </Aos>
+      )}
       <Aos>{isCustom(cms?.h2Variant.trim() ?? '') ? <H2Section cms={cms} /> : <Features />}</Aos>
       <Aos>{isCustom(cms?.h3Variant.trim() ?? '') ? <H3Section cms={cms} /> : <HowItWorksSection />}</Aos>
       <Aos>{slotOr(4, <Roles />)}</Aos>

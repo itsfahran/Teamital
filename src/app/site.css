@@ -200,6 +200,9 @@
 .ob-c3-col { flex: 1; padding: 0 3px; }
 .ob-c3-col div { border-radius: 4px; }
 
+/* Row inside the default hero */
+.hero-avail { max-width: 1140px; margin: 40px auto 0; }
+
 /* Platforms strip */
 .plat { padding: 8px 20px 40px; }
 .plat-in { max-width: 980px; margin: 0 auto; text-align: center; }
