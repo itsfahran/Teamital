@@ -261,7 +261,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
   };
 
   return (
-    <header ref={rootRef} className={cx('hdr', scrolled && 'hdr-scrolled', openMenu && 'hdr-open')} data-bp={compactBelow}>
+    <header ref={rootRef} className={cx('hdr', scrolled && 'hdr-scrolled', openMenu && 'hdr-open')} data-bp={compactBelow ? 'custom' : 'always'}>
       {openMenu && <div className="hdr-scrim" aria-hidden="true" onMouseEnter={scheduleClose} />}
 
       {/* Wide bar */}
