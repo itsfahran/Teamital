@@ -1,104 +1,139 @@
 import { ROUTES, SITE } from '@/lib/config';
-import { BrandLogo, Icon, SmartLink } from './ui';
+import { BRAND_ICONS, type BrandIconName } from './brand-icons';
 import { StoreBadgeRow } from './StoreBadges';
+import { BrandLogo, Icon, SmartLink } from './ui';
 
-const SOCIALS = [
-  { icon: 'business_center', tip: 'in', url: SITE.socialLinkedIn, bg: '#0A66C2' },
-  { icon: 'alternate_email', tip: 'X', url: SITE.socialX, bg: '#111827' },
-  { icon: 'play_circle_filled', tip: 'YT', url: SITE.socialYouTube, bg: '#FF0000' },
-  { icon: 'facebook', tip: 'f', url: SITE.socialFacebook, bg: '#1877F2' },
-  { icon: 'camera_alt', tip: 'IG', url: SITE.socialInstagram, bg: '#E1306C' },
-  { icon: 'push_pin', tip: 'Pin', url: SITE.socialPinterest, bg: '#E60023' },
-  { icon: 'music_note', tip: 'TT', url: SITE.socialTikTok, bg: '#010101' },
+const SOCIALS: Array<{ name: BrandIconName; label: string; url: string }> = [
+  { name: 'linkedin', label: 'LinkedIn', url: SITE.socialLinkedIn },
+  { name: 'x', label: 'X (Twitter)', url: SITE.socialX },
+  { name: 'youtube', label: 'YouTube', url: SITE.socialYouTube },
+  { name: 'facebook', label: 'Facebook', url: SITE.socialFacebook },
+  { name: 'instagram', label: 'Instagram', url: SITE.socialInstagram },
+  { name: 'pinterest', label: 'Pinterest', url: SITE.socialPinterest },
+  { name: 'tiktok', label: 'TikTok', url: SITE.socialTikTok },
 ];
 
-function Col({ title, links }: { title: string; links: Array<[string, string]> }) {
+const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
+  {
+    title: 'Product',
+    links: [
+      ['Features', ROUTES.features],
+      ['How it works', ROUTES.howItWorks],
+      ['Pricing', ROUTES.pricing],
+      ['Sign in', ROUTES.signIn],
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      ['About us', ROUTES.about],
+      ['Contact', ROUTES.contact],
+      ['Careers', ROUTES.careers],
+      ['Blog', ROUTES.blog],
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      ['Privacy Policy', ROUTES.privacyPolicy],
+      ['Terms & Conditions', ROUTES.terms],
+      ['Cookie Policy', ROUTES.cookies],
+      ['Security Policy', ROUTES.security],
+      ['Delete account', ROUTES.deleteAccount],
+    ],
+  },
+];
+
+function SocialIcon({ name }: { name: BrandIconName }) {
   return (
-    <div className="ft-col">
-      <div className="ft-col-title">{title}</div>
-      {links.map(([label, href]) => (
-        <SmartLink key={label} href={href} className="ft-link">
-          {label}
-        </SmartLink>
-      ))}
-    </div>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+      <path d={BRAND_ICONS[name]} />
+    </svg>
   );
 }
 
-/** Shared marketing footer with menus, legal pages and social icons. */
+/** Shared marketing footer: brand + contact, link columns, app badges and legal bar. */
 export function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="ft">
+      <div className="ft-accent" aria-hidden="true" />
       <div className="ft-inner">
-        <div className="ft-grid-wrap">
-          <div className="ft-grid">
-            <div className="ft-col">
-              <div className="ft-logo-box">
-                <BrandLogo height={72} />
-              </div>
-              <p className="ft-tag">Teamital - Complete Workforce Intelligence in One Place</p>
+        <div className="ft-main">
+          <div className="ft-brand">
+            <div className="ft-logo-box">
+              <BrandLogo height={72} />
             </div>
-            <Col
-              title="Product"
-              links={[
-                ['Features', ROUTES.features],
-                ['How it works', ROUTES.howItWorks],
-                ['Pricing', ROUTES.pricing],
-                ['Security', ROUTES.security],
-              ]}
-            />
-            <Col
-              title="Company"
-              links={[
-                ['About', ROUTES.about],
-                ['Contact', ROUTES.contact],
-                ['Careers', ROUTES.careers],
-                ['Blog', ROUTES.blog],
-              ]}
-            />
-            <Col
-              title="Legal"
-              links={[
-                ['Privacy', ROUTES.privacyPolicy],
-                ['Terms', ROUTES.terms],
-                ['Cookies', ROUTES.cookies],
-                ['Security', ROUTES.security],
-                ['Delete account', ROUTES.deleteAccount],
-                ['Sign in', ROUTES.signIn],
-              ]}
-            />
-            <div className="ft-col">
-              <div className="ft-col-title">Follow us</div>
-              <div className="ft-social">
-                {SOCIALS.map((s) => (
-                  <a
-                    key={s.tip}
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={s.tip}
-                    aria-label={s.tip}
-                    className="ft-social-btn"
-                    style={{ background: s.bg }}
-                  >
-                    <Icon name={s.icon} size={18} color="#fff" />
-                  </a>
-                ))}
-              </div>
-              <div className="ft-site">{SITE.publicSiteUrl.replace(/^https?:\/\//, '')}</div>
-              <SmartLink href={ROUTES.signUp} className="btn-filled ft-cta">
-                Get started
-              </SmartLink>
+            <p className="ft-tag">
+              Complete workforce intelligence in one place: attendance, GPS, leave, tasks and live insights for every
+              team.
+            </p>
+            <ul className="ft-contact">
+              <li>
+                <Icon name="mail_outline" size={18} color="#93C5FD" />
+                <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
+              </li>
+              <li>
+                <Icon name="location_on" size={18} color="#93C5FD" />
+                <span>Kandoy House, 2 Fairview Strand, Clontarf West, Dublin, D03 R8P3, Ireland</span>
+              </li>
+            </ul>
+            <div className="ft-social" role="list">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Teamital on ${s.label}`}
+                  title={s.label}
+                  role="listitem"
+                  className={`ft-social-btn ft-social-${s.name}`}
+                >
+                  <SocialIcon name={s.name} />
+                </a>
+              ))}
             </div>
           </div>
+
+          <nav className="ft-cols" aria-label="Footer">
+            {COLUMNS.map((c) => (
+              <div className="ft-col" key={c.title}>
+                <div className="ft-col-title">{c.title}</div>
+                <ul className="ft-links">
+                  {c.links.map(([label, href]) => (
+                    <li key={label}>
+                      <SmartLink href={href} className="ft-link">
+                        {label}
+                      </SmartLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
         </div>
-        <div className="ft-badges">
-          <StoreBadgeRow compact />
+
+        <div className="ft-app">
+          <div className="ft-app-copy">
+            <div className="ft-app-title">Get the Teamital app</div>
+            <div className="ft-app-sub">Clock in on Android, iOS, Windows or the web.</div>
+          </div>
+          <div className="ft-badges">
+            <StoreBadgeRow compact />
+          </div>
         </div>
-        <hr className="ft-hr" />
-        <div className="ft-copy">
-          © {year} {SITE.displayName}. All rights reserved.
+
+        <div className="ft-bottom">
+          <div className="ft-copy">
+            © {year} {SITE.displayName}. All rights reserved.
+          </div>
+          <div className="ft-bottom-links">
+            <SmartLink href={ROUTES.privacyPolicy}>Privacy</SmartLink>
+            <SmartLink href={ROUTES.terms}>Terms</SmartLink>
+            <SmartLink href={ROUTES.cookies}>Cookies</SmartLink>
+            <SmartLink href={ROUTES.security}>Security</SmartLink>
+          </div>
         </div>
       </div>
     </footer>
