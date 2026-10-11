@@ -1,0 +1,267 @@
+import { WL, type Tone } from '@/content/white-label';
+import { ROUTES } from '@/lib/config';
+import { Aos } from '../Aos';
+import { SitePage } from '../SitePage';
+import { Icon, SmartLink, cx } from '../ui';
+import { PartnerVisual } from './PartnerVisual';
+
+const CONTACT = ROUTES.contact;
+
+function SectionHead({ title, intro, center = true }: { title: string; intro?: string; center?: boolean }) {
+  return (
+    <div className={cx('wl-head', center && 'wl-head-center')}>
+      <h2>{title}</h2>
+      {intro && <p>{intro}</p>}
+    </div>
+  );
+}
+
+function Tile({ icon, tone }: { icon: string; tone: Tone }) {
+  return (
+    <span className={cx('tile', `tone-${tone}`)}>
+      <Icon name={icon} size={24} />
+    </span>
+  );
+}
+
+export function WhiteLabelPage() {
+  const tones: Tone[] = ['blue', 'violet', 'green', 'amber', 'rose', 'sky'];
+  return (
+    <SitePage compactBelow={980} overlayHeader background="#fff">
+      {/* Hero */}
+      <section className="wl-hero">
+        <div className="wl-hero-in">
+          <div className="wl-hero-copy">
+            <span className="bhero-pill">
+              <span className="bhero-dot" />
+              White Label Program
+            </span>
+            <h1>{WL.hero.title}</h1>
+            <p className="wl-tagline">{WL.hero.tagline}</p>
+            <p className="wl-hero-text">{WL.hero.text}</p>
+            <div className="wl-btns">
+              <SmartLink href={CONTACT} className="hero-btn hero-btn-primary">
+                <span>{WL.hero.primary}</span>
+                <Icon name="arrow_forward" size={20} color="#fff" className="hero-btn-arrow" />
+              </SmartLink>
+              <SmartLink href={CONTACT} className="hero-btn hero-btn-ghost">
+                <Icon name="event" size={20} color="#1A56DB" />
+                <span>{WL.hero.secondary}</span>
+              </SmartLink>
+            </div>
+            <ul className="hc-trust">
+              <li><Icon name="check_circle" size={18} color="#10B981" />Your name, logo and domain</li>
+              <li><Icon name="check_circle" size={18} color="#10B981" />Your own pricing</li>
+              <li><Icon name="check_circle" size={18} color="#10B981" />24/7 technical support</li>
+            </ul>
+          </div>
+          <Aos fromRight>
+            <PartnerVisual />
+          </Aos>
+        </div>
+      </section>
+
+      {/* Build your own software brand */}
+      <section className="wl-sec">
+        <div className="wl-in">
+          <div className="wl-build">
+            <div className="wl-build-copy">
+              <h2>{WL.build.title}</h2>
+              {WL.build.paragraphs.map((p) => (
+                <p key={p.slice(0, 24)}>{p}</p>
+              ))}
+            </div>
+            <div className="wl-pillars">
+              {WL.build.pillars.map((p) => (
+                <Aos key={p.title}>
+                  <div className="wl-pillar">
+                    <Tile icon={p.icon} tone={p.tone ?? 'blue'} />
+                    <div>
+                      <h3>{p.title}</h3>
+                      <p>{p.text}</p>
+                    </div>
+                  </div>
+                </Aos>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why choose */}
+      <section className="wl-sec wl-sec-tint">
+        <div className="wl-in">
+          <SectionHead title={WL.why.title} intro={WL.why.intro} />
+          <div className="wl-grid wl-grid-4">
+            {WL.why.cards.map((c, i) => (
+              <Aos key={c.title} delay={(i % 4) * 60}>
+                <div className="wl-card">
+                  <Tile icon={c.icon} tone={c.tone ?? 'blue'} />
+                  <h3>{c.title}</h3>
+                  <p>{c.text}</p>
+                </div>
+              </Aos>
+            ))}
+          </div>
+          <div className="wl-center">
+            <SmartLink href={CONTACT} className="hero-btn hero-btn-primary">
+              <span>{WL.why.cta}</span>
+              <Icon name="arrow_forward" size={20} color="#fff" className="hero-btn-arrow" />
+            </SmartLink>
+          </div>
+        </div>
+      </section>
+
+      {/* Partner portal */}
+      <section className="wl-sec">
+        <div className="wl-in">
+          <SectionHead title={WL.portal.title} intro={WL.portal.intro} />
+          <div className="wl-grid wl-grid-3">
+            {WL.portal.items.map((c, i) => (
+              <Aos key={c.title} delay={(i % 3) * 60}>
+                <div className="wl-feature">
+                  <span className={cx('tile', `tone-${tones[i % tones.length]}`)}>
+                    <Icon name={c.icon} size={22} />
+                  </span>
+                  <div>
+                    <h3>{c.title}</h3>
+                    <p>{c.text}</p>
+                  </div>
+                </div>
+              </Aos>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Solutions under your brand */}
+      <section className="wl-sec wl-sec-tint">
+        <div className="wl-in">
+          <SectionHead title={WL.solutions.title} intro={WL.solutions.intro} />
+          <div className="wl-profiles">
+            {[
+              { data: WL.solutions.admin, icon: 'admin_panel_settings', tone: 'blue' as Tone },
+              { data: WL.solutions.employee, icon: 'badge', tone: 'green' as Tone },
+            ].map(({ data, icon, tone }) => (
+              <Aos key={data.title}>
+                <div className="wl-profile">
+                  <div className="wl-profile-head">
+                    <Tile icon={icon} tone={tone} />
+                    <h3>{data.title}</h3>
+                  </div>
+                  <p className="wl-profile-text">{data.text}</p>
+                  <div className="wl-profile-label">{data.label}</div>
+                  <ul>
+                    {data.features.map(([name, text]) => (
+                      <li key={name}>
+                        <Icon name="check_circle" size={18} color="#10B981" />
+                        <span>
+                          <b>{name}:</b> {text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Aos>
+            ))}
+          </div>
+
+          <Aos>
+            <div className="wl-one">
+              <div>
+                <h3>{WL.solutions.oneTitle}</h3>
+                {WL.solutions.onePara.map((p) => (
+                  <p key={p.slice(0, 24)}>{p}</p>
+                ))}
+              </div>
+              <div className="wl-btns wl-btns-col">
+                <SmartLink href={CONTACT} className="hero-btn hero-btn-light">
+                  {WL.hero.primary}
+                </SmartLink>
+                <SmartLink href={CONTACT} className="hero-btn hero-btn-glass">
+                  {WL.hero.secondary}
+                </SmartLink>
+              </div>
+            </div>
+          </Aos>
+        </div>
+      </section>
+
+      {/* Who can start */}
+      <section className="wl-sec">
+        <div className="wl-in">
+          <SectionHead title={WL.who.title} intro={WL.who.intro} />
+          <div className="wl-grid wl-grid-3">
+            {WL.who.cards.map((c, i) => (
+              <Aos key={c.title} delay={(i % 3) * 60}>
+                <div className="wl-card wl-card-who">
+                  <Tile icon={c.icon} tone={c.tone ?? 'blue'} />
+                  <h3>{c.title}</h3>
+                  <p>{c.text}</p>
+                </div>
+              </Aos>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How to launch */}
+      <section className="wl-sec wl-sec-tint">
+        <div className="wl-in">
+          <SectionHead title={WL.launch.title} intro={WL.launch.intro} />
+          <ol className="wl-steps">
+            {WL.launch.steps.map(([title, text], i) => (
+              <Aos key={title} delay={(i % 3) * 60}>
+                <li className="wl-step">
+                  <span className="wl-step-n">{i + 1}</span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </li>
+              </Aos>
+            ))}
+          </ol>
+          <div className="wl-center">
+            <SmartLink href={CONTACT} className="hero-btn hero-btn-primary">
+              <span>{WL.launch.cta}</span>
+              <Icon name="arrow_forward" size={20} color="#fff" className="hero-btn-arrow" />
+            </SmartLink>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="wl-sec">
+        <div className="wl-in wl-in-narrow">
+          <SectionHead title={WL.faq.title} />
+          <div className="gfaq">
+            {WL.faq.items.map(([q, a]) => (
+              <details className="faq-item" key={q}>
+                <summary>
+                  <span>{q}</span>
+                  <Icon name="expand_more" size={24} color="#45464F" className="faq-chev" />
+                </summary>
+                <div className="faq-a">{a}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="wl-final">
+        <div className="wl-final-in">
+          <h2>Our Platform. Your Brand. Your Business.</h2>
+          <p>Talk to our team and see the White Label Partner Portal in action.</p>
+          <div className="wl-btns wl-btns-center">
+            <SmartLink href={CONTACT} className="hero-btn hero-btn-light">
+              {WL.hero.primary}
+            </SmartLink>
+            <SmartLink href={CONTACT} className="hero-btn hero-btn-glass">
+              {WL.hero.secondary}
+            </SmartLink>
+          </div>
+        </div>
+      </section>
+    </SitePage>
+  );
+}

@@ -54,6 +54,7 @@ const MENUS: MegaMenu[] = [
           { icon: 'apartment', title: 'For Enterprises', subtitle: 'Multi-site workforce with role-based access' },
           { icon: 'wifi', title: 'For Remote Teams', subtitle: 'See who is working, from any location' },
           { icon: 'location_on', title: 'For Field Employees', subtitle: 'GPS-verified presence on site' },
+          { icon: 'verified', title: 'White Label Program', subtitle: 'Launch your own branded SaaS', href: ROUTES.whiteLabel },
         ],
       },
       {
@@ -117,8 +118,9 @@ function currentFor(path: string): string {
   if (path === ROUTES.howItWorks) return 'howItWorks';
   if (path === ROUTES.contact) return 'contact';
   if (path === ROUTES.features) return 'Features';
-  if (path === ROUTES.blog || path.startsWith(`${ROUTES.blog}/`) || path.startsWith(`${ROUTES.guides}`)) return 'Resources';
-  return 'home';
+  if (path === ROUTES.whiteLabel) return 'Solutions';
+  if (path === ROUTES.blog || path.startsWith(`${ROUTES.blog}/`) || path.startsWith(ROUTES.guides)) return 'Resources';
+  return '';
 }
 
 /** Width below which the compact (hamburger) header shows. */

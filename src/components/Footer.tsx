@@ -29,6 +29,7 @@ const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
       ['About us', ROUTES.about],
       ['Contact', ROUTES.contact],
       ['Careers', ROUTES.careers],
+      ['White Label Program', ROUTES.whiteLabel],
     ],
   },
   {
