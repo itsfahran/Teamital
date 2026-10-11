@@ -5,6 +5,7 @@ import { SitePage } from '../SitePage';
 import { Icon, SmartLink, cx } from '../ui';
 import { BuildShowcase } from './BuildShowcase';
 import { PartnerVisual } from './PartnerVisual';
+import { ProfilesShowcase } from './ProfilesShowcase';
 
 const CONTACT = ROUTES.contact;
 
@@ -135,33 +136,12 @@ export function WhiteLabelPage() {
       <section className="wl-sec wl-sec-tint">
         <div className="wl-in">
           <SectionHead title={WL.solutions.title} intro={WL.solutions.intro} />
-          <div className="wl-profiles">
-            {[
-              { data: WL.solutions.admin, icon: 'admin_panel_settings', tone: 'blue' as Tone },
-              { data: WL.solutions.employee, icon: 'badge', tone: 'green' as Tone },
-            ].map(({ data, icon, tone }) => (
-              <Aos key={data.title}>
-                <div className="wl-profile">
-                  <div className="wl-profile-head">
-                    <Tile icon={icon} tone={tone} />
-                    <h3>{data.title}</h3>
-                  </div>
-                  <p className="wl-profile-text">{data.text}</p>
-                  <div className="wl-profile-label">{data.label}</div>
-                  <ul>
-                    {data.features.map(([name, text]) => (
-                      <li key={name}>
-                        <Icon name="check_circle" size={18} color="#10B981" />
-                        <span>
-                          <b>{name}:</b> {text}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Aos>
-            ))}
-          </div>
+          <ProfilesShowcase
+            profiles={[
+              { ...WL.solutions.admin, icon: 'admin_panel_settings', tone: 'blue' },
+              { ...WL.solutions.employee, icon: 'badge', tone: 'green' },
+            ]}
+          />
 
           <Aos>
             <div className="wl-one">
