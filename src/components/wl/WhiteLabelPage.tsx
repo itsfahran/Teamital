@@ -8,6 +8,7 @@ import { PartnerVisual } from './PartnerVisual';
 import { ProfilesShowcase } from './ProfilesShowcase';
 
 const CONTACT = ROUTES.contact;
+const LAUNCH_ICONS = ['event', 'handshake', 'palette', 'sell', 'group_add', 'rocket_launch'];
 
 function SectionHead({ title, intro, center = true }: { title: string; intro?: string; center?: boolean }) {
   return (
@@ -186,16 +187,31 @@ export function WhiteLabelPage() {
       <section className="wl-sec wl-sec-tint">
         <div className="wl-in">
           <SectionHead title={WL.launch.title} intro={WL.launch.intro} />
-          <ol className="wl-steps">
-            {WL.launch.steps.map(([title, text], i) => (
-              <Aos key={title} delay={(i % 3) * 60}>
-                <li className="wl-step">
-                  <span className="wl-step-n">{i + 1}</span>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
+          <ol className="lt">
+            {WL.launch.steps.map(([title, text], i) => {
+              const [, name] = title.split(/:\s*/);
+              const side = i % 2 === 0 ? 'lt-left' : 'lt-right';
+              const icon = LAUNCH_ICONS[i] ?? 'flag';
+              return (
+                <li className={cx('lt-item', side)} key={title}>
+                  <Aos fromLeft={i % 2 === 0} fromRight={i % 2 === 1} delay={40}>
+                    <div className={cx('lt-card', `tone-${tones[i % tones.length]}`)}>
+                      <div className="lt-card-top">
+                        <span className="lt-ico">
+                          <Icon name={icon} size={24} />
+                        </span>
+                        <span className="lt-chip">Step {i + 1}</span>
+                      </div>
+                      <h3>{name ?? title}</h3>
+                      <p>{text}</p>
+                    </div>
+                  </Aos>
+                  <span className="lt-node" aria-hidden="true">
+                    {i + 1}
+                  </span>
                 </li>
-              </Aos>
-            ))}
+              );
+            })}
           </ol>
           <div className="wl-center">
             <SmartLink href={CONTACT} className="hero-btn hero-btn-primary">
