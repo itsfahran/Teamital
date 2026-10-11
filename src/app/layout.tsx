@@ -13,6 +13,7 @@ import './home-sections.css';
 import './admin.css';
 import { SITE } from '@/lib/config';
 import { ToastProvider } from '@/components/Toast';
+import { Intercom } from '@/components/Intercom';
 
 const poppins = localFont({
   src: [
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ToastProvider>{children}</ToastProvider>
+        <Intercom />
       </body>
     </html>
   );
