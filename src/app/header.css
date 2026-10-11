@@ -1,5 +1,5 @@
 /* ───────────── Header (modern glass bar + animated mega menu) ───────────── */
-.page-header { position: sticky; top: 0; z-index: 50; padding: 12px 28px 0; background: transparent; }
+.page-header { position: relative; z-index: 50; padding: 12px 28px 0; background: transparent; }
 .page { --hdr-h: 100px; }
 .page-header-overlay { margin-bottom: calc(-1 * var(--hdr-h)); }
 .hdr { position: relative; max-width: 1360px; margin: 0 auto; font-family: var(--font-ui); }
