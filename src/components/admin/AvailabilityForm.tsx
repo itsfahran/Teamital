@@ -40,6 +40,8 @@ export function AvailabilityForm({ initial }: { initial: BookingSettings }) {
     setMsg(null);
     if (s.weekdays.length === 0) return setMsg({ kind: 'err', text: 'Select at least one working day.' });
     if (s.end_time <= s.start_time) return setMsg({ kind: 'err', text: 'End time must be after start time.' });
+    if (s.meeting_link.trim() && !/^https?:\/\/\S+$/i.test(s.meeting_link.trim()))
+      return setMsg({ kind: 'err', text: 'The meeting link must start with https:// (for example a Google Meet or Zoom link).' });
     setBusy(true);
     const { error } = await createClient()
       .from('booking_settings')
@@ -128,7 +130,7 @@ export function AvailabilityForm({ initial }: { initial: BookingSettings }) {
       </div>
 
       <label className="adm-label">
-        Meeting link <span className="adm-muted">(Google Meet / Zoom / Teams; shown after booking and in the email)</span>
+        Fallback meeting link <span className="adm-muted">(optional: only used if Google is not connected; must start with https://)</span>
         <input className="adm-input" placeholder="https://meet.google.com/…" value={s.meeting_link} onChange={(e) => setS({ ...s, meeting_link: e.target.value })} />
       </label>
 

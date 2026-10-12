@@ -130,6 +130,14 @@ export function BookingsManager({ bookings }: { bookings: Booking[] }) {
                       {fmt(b.created_at)}
                     </div>
                   </div>
+                  {b.meet_link && (
+                    <p style={{ marginTop: 12 }}>
+                      <span className="adm-muted">Meet link: </span>
+                      <a className="adm-link" href={b.meet_link} target="_blank" rel="noopener noreferrer">
+                        {b.meet_link}
+                      </a>
+                    </p>
+                  )}
                   {b.message && <p style={{ marginTop: 12 }}>{b.message}</p>}
                   <label className="adm-label" style={{ marginTop: 12 }}>
                     Internal notes

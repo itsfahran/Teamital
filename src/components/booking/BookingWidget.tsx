@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { TEAM_SIZES, TOPICS } from '@/lib/booking-constants';
 import { Icon, cx } from '../ui';
+import { CopyLink } from './CopyLink';
 
 type Availability = {
   enabled: boolean;
@@ -169,6 +170,13 @@ export function BookingWidget() {
             <span>{done.meetingLink ? 'Google Meet link included' : 'Meeting details will be emailed to you'}</span>
           </div>
         </div>
+        {done.meetingLink && <CopyLink link={done.meetingLink} />}
+        {done.meetingLink && (
+          <p className="bk-sent">
+            <Icon name="mark_email_read" size={18} color="#047857" />
+            We have also emailed this link to <b>{form.email}</b>.
+          </p>
+        )}
         <div className="bk-done-btns">
           {done.meetingLink && (
             <a className="hero-btn hero-btn-primary" href={done.meetingLink} target="_blank" rel="noopener noreferrer">

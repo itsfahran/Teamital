@@ -7,8 +7,14 @@ const OAUTH_AUTH = process.env.GOOGLE_AUTH_URL || 'https://accounts.google.com/o
 const OAUTH_TOKEN = process.env.GOOGLE_TOKEN_URL || 'https://oauth2.googleapis.com/token';
 const CAL_BASE = process.env.GOOGLE_CALENDAR_BASE || 'https://www.googleapis.com/calendar/v3';
 const USERINFO = process.env.GOOGLE_USERINFO_URL || 'https://openidconnect.googleapis.com/v1/userinfo';
+const GMAIL_BASE = process.env.GOOGLE_GMAIL_BASE || 'https://gmail.googleapis.com/gmail/v1';
 
-export const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/calendar.events', 'openid', 'email'];
+export const GOOGLE_SCOPES = [
+  'https://www.googleapis.com/auth/calendar.events',
+  'https://www.googleapis.com/auth/gmail.send', // lets confirmation emails go out from the connected Gmail account
+  'openid',
+  'email',
+];
 export const STATE_COOKIE = 'g_oauth_state';
 
 /** OAuth client present, plus a way to keep the token (service key) or a token supplied via env. */
@@ -202,6 +208,37 @@ export async function deleteEvent(eventId: string): Promise<boolean> {
     });
     return res.ok || res.status === 404 || res.status === 410;
   } catch {
+    return false;
+  }
+}
+
+const b64url = (s: string | Buffer) => Buffer.from(s).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const mimeWord = (s: string) => `=?UTF-8?B?${Buffer.from(s, 'utf8').toString('base64')}?=`;
+
+/** Sends an HTML email from the connected Google account (Gmail API). Returns false when unavailable. */
+export async function sendGmail(to: string[], subject: string, html: string, replyTo?: string): Promise<boolean> {
+  const token = await accessToken();
+  if (!token) return false;
+  const raw = [
+    `To: ${to.join(', ')}`,
+    ...(replyTo ? [`Reply-To: ${replyTo}`] : []),
+    `Subject: ${mimeWord(subject)}`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/html; charset="UTF-8"',
+    'Content-Transfer-Encoding: base64',
+    '',
+    Buffer.from(html, 'utf8').toString('base64').replace(/(.{76})/g, '$1\r\n'),
+  ].join('\r\n');
+  try {
+    const res = await fetch(`${GMAIL_BASE}/users/me/messages/send`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw: b64url(raw) }),
+    });
+    if (!res.ok) console.error('[google] gmail send failed:', res.status, (await res.text()).slice(0, 300));
+    return res.ok;
+  } catch (e) {
+    console.error('[google] gmail send error:', e);
     return false;
   }
 }

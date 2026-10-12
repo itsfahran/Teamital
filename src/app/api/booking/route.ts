@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { SITE } from '@/lib/config';
 import {
   TEAM_SIZES,
@@ -108,18 +108,23 @@ export async function POST(req: Request) {
   const icsUrl = `${origin}/api/booking/ics?token=${token}`;
   const visitorWhen = fmtWhen(startKey, visitorTz || settings.timezone);
   const teamWhen = fmtWhen(startKey, settings.timezone);
-  void sendEmail(
-    [email],
-    `Your Teamital call is booked: ${visitorWhen}`,
-    confirmationEmail({ name, when: visitorWhen, link: meetLink, manageUrl, icsUrl, host: settings.host_name }),
-    settings.host_email || SITE.contactEmail,
-  );
-  void sendEmail(
-    [settings.host_email || SITE.contactEmail],
-    `New call booked: ${name} (${teamWhen})`,
-    notifyEmail({ name, email, phone, company, teamSize, topic, message, when: teamWhen }),
-    email,
-  );
+  // `after` keeps the function alive until the emails are sent (important on serverless hosts).
+  after(async () => {
+    await Promise.allSettled([
+      sendEmail(
+        [email],
+        `Your Teamital call is booked: ${visitorWhen}`,
+        confirmationEmail({ name, when: visitorWhen, link: meetLink, manageUrl, icsUrl, host: settings.host_name }),
+        settings.host_email || SITE.contactEmail,
+      ),
+      sendEmail(
+        [settings.host_email || SITE.contactEmail],
+        `New call booked: ${name} (${teamWhen})`,
+        notifyEmail({ name, email, phone, company, teamSize, topic, message, when: teamWhen, link: meetLink }),
+        email,
+      ),
+    ]);
+  });
 
   return NextResponse.json({
     ok: true,

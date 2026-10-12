@@ -1,3 +1,4 @@
+import { sendGmail } from './google';
 import { createPublicSupabase } from './supabase/server';
 
 export type BookingSettings = {
@@ -79,7 +80,10 @@ export async function getSettings(): Promise<BookingSettings> {
   try {
     const { data } = await createPublicSupabase().from('booking_settings').select('*').eq('id', 1).maybeSingle();
     if (!data) return DEFAULT_SETTINGS;
-    return { ...DEFAULT_SETTINGS, ...(data as Partial<BookingSettings>) };
+    const merged = { ...DEFAULT_SETTINGS, ...(data as Partial<BookingSettings>) };
+    // Only a real http(s) URL is a usable meeting link (ignore anything else, e.g. a pasted email).
+    if (merged.meeting_link && !/^https?:\/\/\S+$/i.test(merged.meeting_link.trim())) merged.meeting_link = null;
+    return merged;
   } catch {
     return DEFAULT_SETTINGS;
   }
@@ -177,7 +181,7 @@ export function fmtWhen(iso: string, tz: string): string {
 
 export async function sendEmail(to: string[], subject: string, html: string, replyTo?: string): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
-  if (!key) return false;
+  if (!key) return sendGmail(to, subject, html, replyTo);
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -190,12 +194,12 @@ export async function sendEmail(to: string[], subject: string, html: string, rep
         ...(replyTo ? { reply_to: replyTo } : {}),
       }),
     });
-    if (!res.ok) console.error('[booking] resend failed', res.status, await res.text());
-    return res.ok;
+    if (res.ok) return true;
+    console.error('[booking] resend failed', res.status, await res.text());
   } catch (e) {
     console.error('[booking] resend error', e);
-    return false;
   }
+  return sendGmail(to, subject, html, replyTo);
 }
 
 const shell = (body: string) => `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111827">
@@ -206,13 +210,15 @@ export function confirmationEmail(opts: { name: string; when: string; link: stri
   return shell(`<h2 style="margin:0 0 8px;font-size:22px">Your call is booked</h2>
 <p style="color:#4b5563;line-height:1.6">Hi ${esc(opts.name)}, thanks for booking a free 1:1 call with ${esc(opts.host)}.</p>
 <div style="background:#eff6ff;border-radius:12px;padding:16px;margin:18px 0"><b style="color:#1a56db">${esc(opts.when)}</b></div>
-${opts.link ? `<p><a href="${esc(opts.link)}" style="display:inline-block;background:#1a56db;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:700">Join the meeting</a></p>` : '<p style="color:#4b5563">We will send the meeting details before the call.</p>'}
+${opts.link ? `<p style="margin:0 0 6px"><a href="${esc(opts.link)}" style="display:inline-block;background:#1a56db;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:700">Join Google Meet</a></p>
+<p style="margin:14px 0 4px;font-size:13px;color:#6b7280">Meeting link (copy &amp; paste):</p>
+<p style="margin:0;background:#f3f6fb;border:1px dashed #bfd2fb;border-radius:10px;padding:10px 12px;font-size:14px;word-break:break-all"><a href="${esc(opts.link)}" style="color:#1a56db;text-decoration:none">${esc(opts.link)}</a></p>` : '<p style="color:#4b5563">We will send the meeting details before the call.</p>'}
 <p style="margin-top:18px;font-size:14px"><a href="${esc(opts.icsUrl)}" style="color:#1a56db">Add to calendar</a> · <a href="${esc(opts.manageUrl)}" style="color:#1a56db">Cancel this booking</a></p>`);
 }
 
-export function notifyEmail(opts: { name: string; email: string; phone?: string; company?: string; teamSize?: string; topic?: string; message?: string; when: string }) {
+export function notifyEmail(opts: { name: string; email: string; phone?: string; company?: string; teamSize?: string; topic?: string; message?: string; when: string; link?: string | null }) {
   const row = (k: string, v?: string) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#6b7280">${k}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>` : '');
   return shell(`<h2 style="margin:0 0 8px;font-size:20px">New call booked</h2>
-<table style="font-size:14px;border-collapse:collapse">${row('When', opts.when)}${row('Name', opts.name)}${row('Email', opts.email)}${row('Phone', opts.phone)}${row('Company', opts.company)}${row('Team size', opts.teamSize)}${row('Topic', opts.topic)}</table>
+<table style="font-size:14px;border-collapse:collapse">${row('When', opts.when)}${row('Name', opts.name)}${row('Email', opts.email)}${row('Phone', opts.phone)}${row('Company', opts.company)}${row('Team size', opts.teamSize)}${row('Topic', opts.topic)}${row('Meet link', opts.link ?? undefined)}</table>
 ${opts.message ? `<p style="margin-top:14px;white-space:pre-wrap;background:#f9fafb;padding:12px;border-radius:10px">${esc(opts.message)}</p>` : ''}`);
 }

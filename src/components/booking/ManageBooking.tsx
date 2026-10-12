@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Icon, SmartLink } from '../ui';
+import { CopyLink } from './CopyLink';
 
 type B = { name: string; topic: string | null; start: string; end: string; status: string; meetLink: string | null };
 
@@ -85,6 +86,7 @@ export function ManageBooking() {
               </div>
             )}
           </div>
+          {b.meetLink && !past && <CopyLink link={b.meetLink} />}
           {b.meetLink && !past && (
             <a className="hero-btn hero-btn-primary" href={b.meetLink} target="_blank" rel="noopener noreferrer">
               <Icon name="videocam" size={20} color="#fff" />
