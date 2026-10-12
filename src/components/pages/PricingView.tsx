@@ -60,8 +60,8 @@ export function PricingView({ plans }: { plans: SubscriptionPlan[] }) {
     () => publicPlans.filter((p) => matchesBilling(p.billing as string, tab)),
     [publicPlans, tab],
   );
-  const rank = (pl: SubscriptionPlan) => (isCustomPlan(pl) ? -1 : amountForPlan(pl));
-  const shown = [...(filtered.length > 0 ? filtered : publicPlans)].sort((a, b) => rank(b) - rank(a));
+  const rank = (pl: SubscriptionPlan) => (isCustomPlan(pl) ? Number.MAX_SAFE_INTEGER : amountForPlan(pl));
+  const shown = [...(filtered.length > 0 ? filtered : publicPlans)].sort((a, b) => rank(a) - rank(b));
   const selected = normalizeBillingTab(tab);
 
   return (

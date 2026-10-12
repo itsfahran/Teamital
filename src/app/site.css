@@ -561,7 +561,7 @@
 .pr-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .pr-title { font-size: 36px; font-weight: 800; color: #111827; }
 .pr-sub { margin-top: 10px; font-size: 15px; color: #6b7280; }
-.pr-toggle { margin-top: 24px; width: 100%; max-width: 360px; display: flex; gap: 8px; overflow-x: auto; }
+.pr-toggle { margin: 24px auto 0; width: 100%; max-width: 360px; display: flex; justify-content: center; gap: 8px; overflow-x: auto; }
 .pr-empty { text-align: center; color: #6b7280; }
 .seg {
   padding: 9px 16px; border-radius: 20px; background: #fff; border: 1px solid var(--line);
