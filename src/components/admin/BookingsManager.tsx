@@ -19,6 +19,7 @@ export type Booking = {
   status: 'confirmed' | 'completed' | 'cancelled' | 'no_show';
   admin_notes: string | null;
   created_at: string;
+  meet_link?: string | null;
 };
 
 const STATUS_LABEL: Record<Booking['status'], string> = {
@@ -55,7 +56,11 @@ export function BookingsManager({ bookings }: { bookings: Booking[] }) {
   };
 
   const setStatus = async (b: Booking, status: Booking['status']) => {
-    await createClient().from('meeting_bookings').update({ status }).eq('id', b.id);
+    if (status === 'cancelled') {
+      await fetch('/api/admin/bookings/cancel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: b.id }) });
+    } else {
+      await createClient().from('meeting_bookings').update({ status }).eq('id', b.id);
+    }
     router.refresh();
   };
   const saveNotes = async (b: Booking) => {
@@ -131,7 +136,12 @@ export function BookingsManager({ bookings }: { bookings: Booking[] }) {
                     <textarea className="adm-input" rows={2} defaultValue={b.admin_notes ?? ''} onChange={(e) => setNotes({ ...notes, [b.id]: e.target.value })} />
                   </label>
                   <div className="adm-actions" style={{ justifyContent: 'flex-start' }}>
-                    <a className="adm-btn adm-btn-sm adm-btn-primary" href={`mailto:${b.email}?subject=${encodeURIComponent('Your Teamital call')}`}>
+                    {b.meet_link && (
+                      <a className="adm-btn adm-btn-sm adm-btn-primary" href={b.meet_link} target="_blank" rel="noopener noreferrer">
+                        Join Meet
+                      </a>
+                    )}
+                    <a className="adm-btn adm-btn-sm" href={`mailto:${b.email}?subject=${encodeURIComponent('Your Teamital call')}`}>
                       Email
                     </a>
                     <button className="adm-btn adm-btn-sm" onClick={() => saveNotes(b)}>

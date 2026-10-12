@@ -12,7 +12,7 @@ type Availability = {
   slots: string[];
 };
 
-type Done = { token: string; start: string; end: string; meetingLink: string | null };
+type Done = { token: string; start: string; end: string; meetingLink: string | null; googleInvite?: boolean };
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const dayKey = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -151,7 +151,7 @@ export function BookingWidget() {
         </div>
         <h3>You are booked in!</h3>
         <p>
-          We sent a confirmation to <b>{form.email}</b>.
+          We sent a confirmation to <b>{form.email}</b>.{done.googleInvite ? ' A Google Calendar invitation is on its way too.' : ''}
         </p>
         <div className="bk-summary">
           <div>
@@ -166,13 +166,13 @@ export function BookingWidget() {
           </div>
           <div>
             <Icon name="videocam" size={20} color="#1A56DB" />
-            <span>{done.meetingLink ? 'Online meeting' : 'Meeting details will be emailed to you'}</span>
+            <span>{done.meetingLink ? 'Google Meet link included' : 'Meeting details will be emailed to you'}</span>
           </div>
         </div>
         <div className="bk-done-btns">
           {done.meetingLink && (
             <a className="hero-btn hero-btn-primary" href={done.meetingLink} target="_blank" rel="noopener noreferrer">
-              <span>Join meeting</span>
+              <span>Join Google Meet</span>
               <Icon name="arrow_forward" size={20} color="#fff" />
             </a>
           )}

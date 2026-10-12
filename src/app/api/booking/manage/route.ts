@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { deleteEvent, serviceClient } from '@/lib/google';
 import { createPublicSupabase, isSupabaseConfigured } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
@@ -13,7 +14,7 @@ export async function GET(req: Request) {
   const { data } = await createPublicSupabase().rpc('booking_by_token', { p_token: token });
   const b = (data as Array<Record<string, unknown>> | null)?.[0];
   if (!b) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  return NextResponse.json({ name: b.name, topic: b.topic, start: b.start_at, end: b.end_at, status: b.status, tz: b.visitor_tz });
+  return NextResponse.json({ name: b.name, topic: b.topic, start: b.start_at, end: b.end_at, status: b.status, tz: b.visitor_tz, meetLink: b.meet_link ?? null });
 }
 
 /** POST { token } -> cancel the booking. */
@@ -25,8 +26,11 @@ export async function POST(req: Request) {
     /* ignore */
   }
   if (!UUID.test(token) || !isSupabaseConfigured()) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  const svc = serviceClient();
+  const eventId = svc ? (await svc.from('meeting_bookings').select('google_event_id').eq('cancel_token', token).maybeSingle()).data?.google_event_id : null;
   const { data, error } = await createPublicSupabase().rpc('cancel_booking', { p_token: token });
   if (error) return NextResponse.json({ error: 'Could not cancel.' }, { status: 500 });
   if (!data) return NextResponse.json({ error: 'This booking can no longer be cancelled.' }, { status: 409 });
+  if (eventId) await deleteEvent(eventId);
   return NextResponse.json({ ok: true });
 }

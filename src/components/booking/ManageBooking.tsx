@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Icon, SmartLink } from '../ui';
 
-type B = { name: string; topic: string | null; start: string; end: string; status: string };
+type B = { name: string; topic: string | null; start: string; end: string; status: string; meetLink: string | null };
 
 export function ManageBooking() {
   const token = useSearchParams().get('token') ?? '';
@@ -85,6 +85,12 @@ export function ManageBooking() {
               </div>
             )}
           </div>
+          {b.meetLink && !past && (
+            <a className="hero-btn hero-btn-primary" href={b.meetLink} target="_blank" rel="noopener noreferrer">
+              <Icon name="videocam" size={20} color="#fff" />
+              <span>Join Google Meet</span>
+            </a>
+          )}
           {err && <div className="bk-err">{err}</div>}
           {!past ? (
             <div className="bk-done-btns">

@@ -14,17 +14,18 @@ export async function GET(req: Request) {
   if (!UUID.test(token) || !isSupabaseConfigured()) return new NextResponse('Not found', { status: 404 });
 
   const { data } = await createPublicSupabase().rpc('booking_by_token', { p_token: token });
-  const b = (data as Array<{ id: string; start_at: string; end_at: string; status: string }> | null)?.[0];
+  const b = (data as Array<{ id: string; start_at: string; end_at: string; status: string; meet_link: string | null }> | null)?.[0];
   if (!b || b.status === 'cancelled') return new NextResponse('Not found', { status: 404 });
 
   const s = await getSettings();
+  const link = b.meet_link || s.meeting_link;
   const ics = buildIcs({
     uid: b.id,
     start: new Date(b.start_at),
     end: new Date(b.end_at),
     title: 'Teamital: free 1:1 call',
-    description: `Call with ${s.host_name}.${s.meeting_link ? `\nJoin: ${s.meeting_link}` : ''}\nQuestions? ${SITE.contactEmail}`,
-    location: s.meeting_link,
+    description: `Call with ${s.host_name}.${link ? `\nJoin: ${link}` : ''}\nQuestions? ${SITE.contactEmail}`,
+    location: link,
     organizer: s.host_email || SITE.contactEmail,
   });
   return new NextResponse(ics, {

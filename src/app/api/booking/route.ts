@@ -9,6 +9,7 @@ import {
   notifyEmail,
   sendEmail,
 } from '@/lib/booking';
+import { createMeetEvent, serviceClient } from '@/lib/google';
 import { createPublicSupabase, isSupabaseConfigured } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
@@ -76,6 +77,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'We could not save your booking. Please try again.' }, { status: 500 });
   }
 
+  // Google Calendar + Meet (when connected). Google emails the invitation to the visitor and the host.
+  let meetLink = settings.meeting_link;
+  const ev = await createMeetEvent({
+    start: new Date(startMs),
+    end: new Date(endMs),
+    summary: `Teamital call: ${name}${company ? ` (${company})` : ''}`,
+    description: [
+      `Free 1:1 call booked on teamital.com`,
+      topic && `Topic: ${topic}`,
+      company && `Company: ${company}`,
+      teamSize && `Team size: ${teamSize}`,
+      phone && `Phone: ${phone}`,
+      message && `\nMessage:\n${message}`,
+    ]
+      .filter(Boolean)
+      .join('\n'),
+    attendees: [email],
+    requestId: token,
+  });
+  if (ev) {
+    if (ev.meetLink) meetLink = ev.meetLink;
+    const svc = serviceClient();
+    if (svc) await svc.from('meeting_bookings').update({ meet_link: ev.meetLink || null, google_event_id: ev.eventId }).eq('cancel_token', token);
+  }
+
   // Emails (best effort: never fail the booking because of email).
   const origin = SITE.publicSiteUrl;
   const manageUrl = `${origin}/book-a-call/manage?token=${token}`;
@@ -85,7 +111,7 @@ export async function POST(req: Request) {
   void sendEmail(
     [email],
     `Your Teamital call is booked: ${visitorWhen}`,
-    confirmationEmail({ name, when: visitorWhen, link: settings.meeting_link, manageUrl, icsUrl, host: settings.host_name }),
+    confirmationEmail({ name, when: visitorWhen, link: meetLink, manageUrl, icsUrl, host: settings.host_name }),
     settings.host_email || SITE.contactEmail,
   );
   void sendEmail(
@@ -100,6 +126,7 @@ export async function POST(req: Request) {
     token,
     start: startKey,
     end: new Date(endMs).toISOString(),
-    meetingLink: settings.meeting_link,
+    meetingLink: meetLink,
+    googleInvite: Boolean(ev),
   });
 }
