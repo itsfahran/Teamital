@@ -10,12 +10,13 @@ export default async function AdminDashboard() {
     return c ?? 0;
   };
 
-  const [pages, published, unread, messages, plans] = await Promise.all([
+  const [pages, published, unread, messages, plans, upcoming] = await Promise.all([
     count('cms_pages'),
     count('cms_pages', (q) => q.eq('status', 'published')),
     count('contact_messages', (q) => q.eq('is_read', false)),
     count('contact_messages'),
     count('subscription_plans'),
+    count('meeting_bookings', (q) => q.eq('status', 'confirmed').gte('start_at', new Date().toISOString())),
   ]);
 
   const { data: recent } = await db
@@ -27,6 +28,7 @@ export default async function AdminDashboard() {
   const cards = [
     { label: 'Pages', value: pages, sub: `${published} published`, href: '/admin/pages', icon: 'article' },
     { label: 'Unread messages', value: unread, sub: `${messages} total`, href: '/admin/messages', icon: 'mail' },
+    { label: 'Upcoming calls', value: upcoming, sub: 'booked from /book-a-call', href: '/admin/bookings', icon: 'event' },
     { label: 'Pricing plans', value: plans, sub: 'shown on /pricing', href: '/admin/plans', icon: 'sell' },
   ];
 

@@ -28,6 +28,7 @@ const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
     links: [
       ['About us', ROUTES.about],
       ['Contact', ROUTES.contact],
+      ['Book a call', ROUTES.bookCall],
       ['Careers', ROUTES.careers],
       ['White Label Program', ROUTES.whiteLabel],
     ],

@@ -120,14 +120,14 @@
 .hdr-burger:active { transform: scale(0.95); }
 
 /* Responsive: full bar >= 1240px, hamburger below. Tighten + hide "Sign in" on the way down. */
-@media (max-width: 1439.98px) {
+@media (max-width: 1599.98px) {
   .hdr-signin { display: none; }
   .hdr-bar { gap: 16px; }
   .hdr-logo .brand-logo { width: 210px !important; }
   .hdr-tab { padding: 0 11px; font-size: 13.5px; }
   .hdr-tab::after { left: 11px; right: 11px; }
 }
-@media (max-width: 1239.98px) {
+@media (max-width: 1339.98px) {
   .page { --hdr-h: 72px; }
   .hdr-wide { display: none !important; }
   .hdr-compact { display: flex; }
@@ -273,4 +273,14 @@
 @media (prefers-reduced-motion: reduce) {
   .mega-inner, .mega-item, .sheet, .sheet-scrim, .hdr-scrim { animation: none; }
   .hdr-bar, .tile, .hdr-chev { transition: none; }
+}
+
+@media (max-width: 520px) {
+  .hdr-logo-compact .brand-logo { width: 150px !important; max-width: calc(100vw - 200px); }
+  .hdr-compact { padding: 0 10px 0 12px; }
+}
+@media (max-width: 360px) {
+  .hdr-logo-compact .brand-logo { width: 120px !important; }
+  .book-pill-sm span { display: none; }
+  .book-pill-sm::after { content: 'Book'; position: relative; }
 }

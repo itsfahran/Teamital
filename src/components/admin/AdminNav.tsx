@@ -9,6 +9,8 @@ const ITEMS = [
   { href: '/admin/pages', label: 'Pages', icon: 'article' },
   { href: '/admin/navigation', label: 'Navigation', icon: 'menu' },
   { href: '/admin/plans', label: 'Pricing plans', icon: 'sell' },
+  { href: '/admin/bookings', label: 'Call bookings', icon: 'event' },
+  { href: '/admin/availability', label: 'Availability', icon: 'edit_calendar' },
   { href: '/admin/messages', label: 'Messages', icon: 'mail' },
 ];
 

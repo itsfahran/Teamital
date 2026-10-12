@@ -119,6 +119,7 @@ function currentFor(path: string): string {
   if (path === ROUTES.contact) return 'contact';
   if (path === ROUTES.features) return 'Features';
   if (path === ROUTES.whiteLabel) return 'Solutions';
+  if (path.startsWith(ROUTES.bookCall)) return '';
   if (path === ROUTES.blog || path.startsWith(`${ROUTES.blog}/`) || path.startsWith(ROUTES.guides)) return 'Resources';
   return '';
 }
@@ -301,10 +302,12 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
             <Icon name="login" size={18} />
             Sign in
           </a>
-          <a href={appAbsolute(ROUTES.signUp)} className="hdr-cta">
-            <span>Start free trial</span>
-            <Icon name="arrow_forward" size={18} className="hdr-cta-arrow" />
-          </a>
+          <div className="book-capsule">
+            <Link href={ROUTES.bookCall} className="book-pill" onClick={closeAll}>
+              <span>Book a free 1:1 call</span>
+              <Icon name="north_east" size={18} className="book-pill-arrow" />
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -314,6 +317,10 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
           <BrandLogo height={60} />
         </Link>
         <span style={{ flex: 1 }} />
+        <Link href={ROUTES.bookCall} className="book-pill book-pill-sm">
+          <span>Book a call</span>
+          <Icon name="north_east" size={16} className="book-pill-arrow" />
+        </Link>
         <button type="button" className="hdr-burger" aria-label="Open menu" onClick={() => setSheet(true)}>
           <Icon name="menu" size={24} />
         </button>
@@ -385,6 +392,10 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
               ))}
             </div>
             <div className="sheet-cta">
+              <Link href={ROUTES.bookCall} className="sheet-btn sheet-btn-book" onClick={() => setSheet(false)}>
+                Book a free 1:1 call
+                <Icon name="north_east" size={18} color="#fff" />
+              </Link>
               <a href={appAbsolute(ROUTES.signIn)} className="sheet-btn sheet-btn-ghost">
                 Sign in
               </a>

@@ -22,6 +22,7 @@ const DEFAULTS: Record<string, [string, string]> = {
   '/blog': [`Blog | ${BRAND}`, 'Guides on attendance, GPS and HR ops.'],
   '/how-it-works': [`How it works | ${BRAND}`, 'How Teamital workforce tracking works.'],
   '/white-label-program': [`White Label Workforce Management Software | ${BRAND}`, 'Launch your own SaaS business with Teamital white label workforce management software: your brand, your pricing, your customers.'],
+  '/book-a-call': [`Book a free 1:1 call | ${BRAND}`, 'Book a free 30-minute call with the Teamital team: product walkthrough, pricing and onboarding questions.'],
   '/guide': [`Guides | ${BRAND}`, 'Step-by-step guides for companies and employees using Teamital.'],
   '/guide/companies': [`Guide for Companies | ${BRAND}`, 'How to set up Teamital for your company: employees, attendance rules, shifts, leave and reports.'],
   '/guide/employees': [`Guide for Employees | ${BRAND}`, 'How employees use Teamital: clock in and out, hours, leave, tasks and chat.'],
