@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import type { SubscriptionPlan } from '@/lib/cms';
 import { ROUTES } from '@/lib/config';
 import {
+  amountForPlan,
   WEB_BILLING_TABS,
   billingTabFor,
   featureLines,
@@ -59,7 +60,8 @@ export function PricingView({ plans }: { plans: SubscriptionPlan[] }) {
     () => publicPlans.filter((p) => matchesBilling(p.billing as string, tab)),
     [publicPlans, tab],
   );
-  const shown = filtered.length > 0 ? filtered : publicPlans;
+  const rank = (pl: SubscriptionPlan) => (isCustomPlan(pl) ? -1 : amountForPlan(pl));
+  const shown = [...(filtered.length > 0 ? filtered : publicPlans)].sort((a, b) => rank(b) - rank(a));
   const selected = normalizeBillingTab(tab);
 
   return (
