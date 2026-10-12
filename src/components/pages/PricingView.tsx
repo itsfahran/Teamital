@@ -24,7 +24,23 @@ function BillingChip({ billing }: { billing?: string }) {
   return <span className={cx('bill-chip', cls)}>{tab}</span>;
 }
 
-function PlanCard({ plan }: { plan: SubscriptionPlan }) {
+/** Yearly saving versus paying monthly for 12 months (matched by plan name). */
+function yearlySaving(plan: SubscriptionPlan, all: SubscriptionPlan[]) {
+  if (billingTabFor(plan.billing as string) !== '1 Year') return null;
+  const name = String(plan.name ?? '').trim().toLowerCase();
+  const monthly = all.find(
+    (p) => String(p.name ?? '').trim().toLowerCase() === name && billingTabFor(p.billing as string) === 'Monthly',
+  );
+  if (!monthly) return null;
+  const full = amountForPlan(monthly) * 12;
+  const paid = amountForPlan(plan);
+  if (!(full > 0) || !(paid > 0) || paid >= full) return null;
+  const save = full - paid;
+  return { save: save.toFixed(2), percent: ((save / full) * 100).toFixed(2), full: full.toFixed(2) };
+}
+
+function PlanCard({ plan, all }: { plan: SubscriptionPlan; all: SubscriptionPlan[] }) {
+  const saving = yearlySaving(plan, all);
   const features = featureLines(plan);
   const name = String(plan.name ?? 'Plan');
   const lower = name.toLowerCase();
@@ -38,6 +54,12 @@ function PlanCard({ plan }: { plan: SubscriptionPlan }) {
       </div>
       {popular && <div className="plan-pop">Popular</div>}
       <div className="plan-price">{priceLabel(plan)}</div>
+      {saving && (
+        <div className="plan-save">
+          <span className="plan-off">{saving.percent}% OFF</span>
+          <span className="plan-save-t">Save €{saving.save} per year</span>
+        </div>
+      )}
       <div className="plan-feats">
         {features.map((f, i) => (
           <div className="plan-feat" key={i}>
@@ -96,7 +118,7 @@ export function PricingView({ plans }: { plans: SubscriptionPlan[] }) {
               <div className="plans">
                 {shown.map((p, i) => (
                   <Aos key={String(p.id ?? i)} delay={80 * i}>
-                    <PlanCard plan={p} />
+                    <PlanCard plan={p} all={plans} />
                   </Aos>
                 ))}
               </div>

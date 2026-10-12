@@ -696,3 +696,8 @@
 .missing-t { font-size: 28px; font-weight: 800; }
 .missing-s { margin-top: 8px; color: #6b7280; }
 .missing-btn { margin-top: 20px; }
+
+/* Yearly saving */
+.plan-save { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.plan-off { padding: 4px 10px; border-radius: 999px; background: #dcfce7; color: #047857; font-size: 12px; font-weight: 800; letter-spacing: 0.02em; }
+.plan-save-t { font-size: 13px; font-weight: 600; color: #047857; }
