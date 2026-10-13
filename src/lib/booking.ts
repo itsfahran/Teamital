@@ -1,3 +1,4 @@
+import { SITE } from './config';
 import { sendGmail } from './google';
 import { createPublicSupabase } from './supabase/server';
 
@@ -202,23 +203,80 @@ export async function sendEmail(to: string[], subject: string, html: string, rep
   return sendGmail(to, subject, html, replyTo);
 }
 
-const shell = (body: string) => `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111827">
-<div style="border:1px solid #e5e7eb;border-radius:16px;padding:28px">${body}</div>
-<p style="font-size:12px;color:#6b7280;text-align:center;margin-top:16px">Teamital · Kandoy House, 2 Fairview Strand, Dublin D03 R8P3, Ireland</p></div>`;
+/* ───────────── email templates (table layout + inline styles for Gmail/Outlook) ───────────── */
 
-export function confirmationEmail(opts: { name: string; when: string; link: string | null; manageUrl: string; icsUrl: string; host: string }) {
-  return shell(`<h2 style="margin:0 0 8px;font-size:22px">Your call is booked</h2>
-<p style="color:#4b5563;line-height:1.6">Hi ${esc(opts.name)}, thanks for booking a free 1:1 call with ${esc(opts.host)}.</p>
-<div style="background:#eff6ff;border-radius:12px;padding:16px;margin:18px 0"><b style="color:#1a56db">${esc(opts.when)}</b></div>
-${opts.link ? `<p style="margin:0 0 6px"><a href="${esc(opts.link)}" style="display:inline-block;background:#1a56db;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:700">Join Google Meet</a></p>
-<p style="margin:14px 0 4px;font-size:13px;color:#6b7280">Meeting link (copy &amp; paste):</p>
-<p style="margin:0;background:#f3f6fb;border:1px dashed #bfd2fb;border-radius:10px;padding:10px 12px;font-size:14px;word-break:break-all"><a href="${esc(opts.link)}" style="color:#1a56db;text-decoration:none">${esc(opts.link)}</a></p>` : '<p style="color:#4b5563">We will send the meeting details before the call.</p>'}
-<p style="margin-top:18px;font-size:14px"><a href="${esc(opts.icsUrl)}" style="color:#1a56db">Add to calendar</a> · <a href="${esc(opts.manageUrl)}" style="color:#1a56db">Cancel this booking</a></p>`);
+const BLUE = '#1a56db';
+const FONT = "'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+
+function shell(opts: { preheader: string; title: string; intro: string; body: string }) {
+  const logo = `${SITE.publicSiteUrl}/brand-logo.png`;
+  return `<!doctype html><html><body style="margin:0;padding:0;background:#f1f5fb">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${esc(opts.preheader)}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5fb;padding:28px 12px"><tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;font-family:${FONT}">
+  <tr><td align="center" style="padding:0 0 18px"><a href="${SITE.publicSiteUrl}" style="text-decoration:none"><img src="${logo}" width="240" alt="Teamital" style="display:block;border:0;height:auto;width:240px;max-width:100%"></a></td></tr>
+  <tr><td style="background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(26,86,219,.12)">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="background:${BLUE};background-image:linear-gradient(135deg,#1a56db 0%,#2563eb 55%,#0ea5e9 100%);padding:34px 36px 30px">
+        <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#bfdbfe;font-weight:700">Teamital</div>
+        <div style="font-size:26px;line-height:1.25;color:#ffffff;font-weight:800;margin-top:8px">${opts.title}</div>
+        <div style="font-size:15px;line-height:1.6;color:#dbeafe;margin-top:10px">${opts.intro}</div>
+      </td></tr>
+      <tr><td style="padding:30px 36px 34px;color:#111827;font-size:15px;line-height:1.65">${opts.body}</td></tr>
+    </table>
+  </td></tr>
+  <tr><td align="center" style="padding:22px 12px 0;font-size:12px;line-height:1.7;color:#6b7280">
+    <b style="color:#374151">Teamital</b> · Complete workforce intelligence in one place<br>
+    Kandoy House, 2 Fairview Strand, Dublin D03 R8P3, Ireland<br>
+    <a href="mailto:${SITE.contactEmail}" style="color:${BLUE};text-decoration:none">${SITE.contactEmail}</a> · <a href="${SITE.publicSiteUrl}" style="color:${BLUE};text-decoration:none">teamital.com</a>
+  </td></tr>
+</table></td></tr></table></body></html>`;
 }
 
-export function notifyEmail(opts: { name: string; email: string; phone?: string; company?: string; teamSize?: string; topic?: string; message?: string; when: string; link?: string | null }) {
-  const row = (k: string, v?: string) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#6b7280">${k}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>` : '');
-  return shell(`<h2 style="margin:0 0 8px;font-size:20px">New call booked</h2>
-<table style="font-size:14px;border-collapse:collapse">${row('When', opts.when)}${row('Name', opts.name)}${row('Email', opts.email)}${row('Phone', opts.phone)}${row('Company', opts.company)}${row('Team size', opts.teamSize)}${row('Topic', opts.topic)}${row('Meet link', opts.link ?? undefined)}</table>
-${opts.message ? `<p style="margin-top:14px;white-space:pre-wrap;background:#f9fafb;padding:12px;border-radius:10px">${esc(opts.message)}</p>` : ''}`);
+const button = (href: string, label: string, primary = true) =>
+  `<a href="${esc(href)}" style="display:inline-block;font-weight:700;font-size:15px;text-decoration:none;border-radius:12px;padding:14px 26px;${
+    primary ? `background:${BLUE};color:#ffffff;` : `background:#eff6ff;color:${BLUE};border:1px solid #bfdbfe;`
+  }">${label}</a>`;
+
+const detailRow = (label: string, value: string) =>
+  `<tr><td style="padding:9px 0;width:120px;color:#6b7280;font-size:13px;vertical-align:top;border-bottom:1px solid #eef2f7">${label}</td><td style="padding:9px 0;font-size:14px;font-weight:600;color:#111827;border-bottom:1px solid #eef2f7">${value}</td></tr>`;
+
+const card = (inner: string) =>
+  `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e5eaf3;border-radius:14px;margin:0 0 22px"><tr><td style="padding:8px 20px">${inner}</td></tr></table>`;
+
+const linkBox = (link: string) =>
+  `<div style="margin:16px 0 0;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;font-weight:700">Meeting link (copy &amp; paste)</div>
+<div style="margin-top:6px;background:#f3f6fb;border:1px dashed #93b4f3;border-radius:10px;padding:12px 14px;font-size:14px;word-break:break-all"><a href="${esc(link)}" style="color:${BLUE};text-decoration:none;font-weight:600">${esc(link)}</a></div>`;
+
+export function confirmationEmail(opts: { name: string; when: string; link: string | null; manageUrl: string; icsUrl: string; host: string; duration?: number }) {
+  return shell({
+    preheader: `Your call is booked for ${opts.when}`,
+    title: 'Your call is booked ✓',
+    intro: `Hi ${esc(opts.name)}, thanks for booking a free 1:1 call with ${esc(opts.host)}. Here is everything you need.`,
+    body: `${card(
+      `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${detailRow('When', esc(opts.when))}${opts.duration ? detailRow('Length', `${opts.duration} minutes`) : ''}${detailRow('With', esc(opts.host))}<tr><td style="padding:9px 0;color:#6b7280;font-size:13px">Where</td><td style="padding:9px 0;font-size:14px;font-weight:600;color:#111827">${opts.link ? 'Google Meet (online)' : 'Online · details to follow'}</td></tr></table>`,
+    )}
+${
+  opts.link
+    ? `<div style="text-align:center;margin:6px 0 4px">${button(opts.link, 'Join Google Meet')}</div>${linkBox(opts.link)}`
+    : '<p style="margin:0;color:#4b5563">We will send the meeting details before the call.</p>'
+}
+<div style="text-align:center;margin:26px 0 0">${button(opts.icsUrl, 'Add to calendar', false)}</div>
+<p style="margin:26px 0 0;padding-top:18px;border-top:1px solid #eef2f7;font-size:13px;color:#6b7280;text-align:center">Plans changed? <a href="${esc(opts.manageUrl)}" style="color:${BLUE};text-decoration:none;font-weight:600">Cancel this booking</a>. Questions? Just reply to this email.</p>`,
+  });
+}
+
+export function notifyEmail(opts: { name: string; email: string; phone?: string; company?: string; teamSize?: string; topic?: string; message?: string; when: string; link?: string | null; duration?: number }) {
+  const row = (k: string, v?: string) => (v ? detailRow(k, esc(v)) : '');
+  return shell({
+    preheader: `${opts.name} booked a call: ${opts.when}`,
+    title: 'New call booked',
+    intro: `<b style="color:#fff">${esc(opts.name)}</b> just booked a free 1:1 call.`,
+    body: `${card(
+      `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${row('When', opts.when)}${opts.duration ? row('Length', `${opts.duration} minutes`) : ''}${row('Name', opts.name)}${detailRow('Email', `<a href="mailto:${esc(opts.email)}" style="color:${BLUE};text-decoration:none">${esc(opts.email)}</a>`)}${row('Phone', opts.phone)}${row('Company', opts.company)}${row('Team size', opts.teamSize)}${row('Topic', opts.topic)}</table>`,
+    )}
+${opts.message ? `<div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;font-weight:700">Message</div><div style="margin:6px 0 22px;white-space:pre-wrap;background:#f8fafc;border:1px solid #e5eaf3;border-radius:12px;padding:14px 16px;font-size:14px">${esc(opts.message)}</div>` : ''}
+${opts.link ? `<div style="text-align:center">${button(opts.link, 'Open Google Meet')}</div>${linkBox(opts.link)}` : ''}
+<p style="margin:24px 0 0;font-size:13px;color:#6b7280;text-align:center">Reply to this email to reach ${esc(opts.name)} directly.</p>`,
+  });
 }

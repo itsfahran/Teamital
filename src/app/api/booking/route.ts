@@ -116,13 +116,13 @@ export async function POST(req: Request) {
       sendEmail(
         [email],
         `Your Teamital call is booked: ${visitorWhen}`,
-        confirmationEmail({ name, when: visitorWhen, link: meetLink, manageUrl, icsUrl, host: settings.host_name }),
+        confirmationEmail({ name, when: visitorWhen, link: meetLink, manageUrl, icsUrl, host: settings.host_name, duration: Math.round((endMs - startMs) / 60000) }),
         settings.host_email || SITE.contactEmail,
       ),
       sendEmail(
         [settings.host_email || SITE.contactEmail],
         `New call booked: ${name} (${teamWhen})`,
-        notifyEmail({ name, email, phone, company, teamSize, topic, message, when: teamWhen, link: meetLink }),
+        notifyEmail({ name, email, phone, company, teamSize, topic, message, when: teamWhen, link: meetLink, duration: Math.round((endMs - startMs) / 60000) }),
         email,
       ),
     ]);
