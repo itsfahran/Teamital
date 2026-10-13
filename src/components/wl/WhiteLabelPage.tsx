@@ -187,7 +187,7 @@ export function WhiteLabelPage() {
       {/* Packages */}
       <section className="wl-sec wl-sec-flush" id="packages">
         <div className="wl-in">
-          <SectionHead title="White Label Packages" intro="Pick monthly or yearly. One simple setup fee, then everything you need to run Teamital under your own brand." />
+          <SectionHead title="White Label Packages" intro="Pick Monthly or Yearly: a one-time setup fee plus a simple recurring cost to run Teamital under your own brand." />
           <WlPackages />
         </div>
       </section>
