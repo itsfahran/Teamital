@@ -294,6 +294,14 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
             })}
             {tab('howItWorks', 'How It Works', ROUTES.howItWorks)}
             {tab('pricing', 'Pricing', ROUTES.pricing)}
+            <li className="hdr-li hdr-li-book">
+              <div className="book-capsule">
+                <Link href={ROUTES.bookCall} className="book-pill" onClick={closeAll}>
+                  <span>Schedule 1:1 Demo</span>
+                  <Icon name="north_east" size={18} className="book-pill-arrow" />
+                </Link>
+              </div>
+            </li>
           </ul>
         </nav>
 
@@ -303,15 +311,9 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
             Sign in
           </a>
           <a href={appAbsolute(ROUTES.signUp)} className="hdr-cta">
-            Start free trial
+            Start 14-days trial
             <Icon name="arrow_forward" size={18} color="#fff" className="hdr-cta-arrow" />
           </a>
-          <div className="book-capsule">
-            <Link href={ROUTES.bookCall} className="book-pill" onClick={closeAll}>
-              <span>Book a free 1:1 call</span>
-              <Icon name="north_east" size={18} className="book-pill-arrow" />
-            </Link>
-          </div>
         </div>
       </div>
 
@@ -322,7 +324,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
         </Link>
         <span style={{ flex: 1 }} />
         <Link href={ROUTES.bookCall} className="book-pill book-pill-sm">
-          <span>Book a call</span>
+          <span>Schedule demo</span>
           <Icon name="north_east" size={16} className="book-pill-arrow" />
         </Link>
         <button type="button" className="hdr-burger" aria-label="Open menu" onClick={() => setSheet(true)}>
@@ -397,14 +399,14 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
             </div>
             <div className="sheet-cta">
               <Link href={ROUTES.bookCall} className="sheet-btn sheet-btn-book" onClick={() => setSheet(false)}>
-                Book a free 1:1 call
+                Schedule 1:1 Demo
                 <Icon name="north_east" size={18} color="#fff" />
               </Link>
               <a href={appAbsolute(ROUTES.signIn)} className="sheet-btn sheet-btn-ghost">
                 Sign in
               </a>
               <a href={appAbsolute(ROUTES.signUp)} className="sheet-btn sheet-btn-primary">
-                Start free trial
+                Start 14-days trial
               </a>
             </div>
           </div>
