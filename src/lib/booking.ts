@@ -31,7 +31,7 @@ export const DEFAULT_SETTINGS: BookingSettings = {
   host_email: null,
 };
 
-export { TOPICS, TEAM_SIZES } from './booking-constants';
+export { TOPICS, TEAM_SIZES, DURATIONS } from './booking-constants';
 
 /* ───────────── time-zone maths (no external library) ───────────── */
 

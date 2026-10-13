@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { DURATIONS } from '@/lib/booking-constants';
 import { getAvailableSlots } from '@/lib/booking';
 import { isSupabaseConfigured } from '@/lib/supabase/server';
 
@@ -13,6 +14,7 @@ export async function GET() {
     {
       enabled: settings.is_enabled,
       slotMinutes: settings.slot_minutes,
+      durations: DURATIONS.filter((d) => d <= settings.slot_minutes),
       businessTimezone: settings.timezone,
       hostName: settings.host_name,
       slots,

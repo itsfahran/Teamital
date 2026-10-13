@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { TEAM_SIZES, TOPICS } from '@/lib/booking-constants';
+import { DURATIONS, TEAM_SIZES, TOPICS } from '@/lib/booking-constants';
 import { Icon, cx } from '../ui';
 import { CopyLink } from './CopyLink';
 
 type Availability = {
   enabled: boolean;
   slotMinutes: number;
+  durations?: number[];
   businessTimezone: string;
   hostName: string;
   slots: string[];
@@ -16,7 +17,20 @@ type Availability = {
 type Done = { token: string; start: string; end: string; meetingLink: string | null; googleInvite?: boolean };
 
 const pad = (n: number) => String(n).padStart(2, '0');
-const dayKey = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+/** Calendar day (YYYY-MM-DD) of an instant in the given time zone. */
+const dayKeyIn = (d: Date, tz: string) => {
+  const p: Record<string, string> = {};
+  for (const x of new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d)) p[x.type] = x.value;
+  return `${p.year}-${p.month}-${p.day}`;
+};
+const FALLBACK_ZONES = ['UTC', 'Europe/Dublin', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Asia/Dubai', 'Asia/Karachi', 'Asia/Kolkata', 'Asia/Singapore', 'Asia/Tokyo', 'Australia/Sydney', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles'];
+const offsetLabel = (tz: string) => {
+  try {
+    return new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' }).formatToParts(new Date()).find((x) => x.type === 'timeZoneName')?.value ?? '';
+  } catch {
+    return '';
+  }
+};
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -24,6 +38,7 @@ export function BookingWidget() {
   const [av, setAv] = useState<Availability | null>(null);
   const [error, setError] = useState('');
   const [tz, setTz] = useState('');
+  const [duration, setDuration] = useState<number>(30);
   const [month, setMonth] = useState<{ y: number; m: number } | null>(null);
   const [day, setDay] = useState<string | null>(null);
   const [slot, setSlot] = useState<string | null>(null);
@@ -48,24 +63,40 @@ export function BookingWidget() {
   const byDay = useMemo(() => {
     const map = new Map<string, string[]>();
     for (const iso of av?.slots ?? []) {
-      const k = dayKey(new Date(iso));
+      const k = dayKeyIn(new Date(iso), tz || 'UTC');
       map.set(k, [...(map.get(k) ?? []), iso]);
     }
     return map;
-  }, [av]);
+  }, [av, tz]);
+
+  const zones = useMemo(() => {
+    let list: string[] = [];
+    try {
+      list = (Intl as unknown as { supportedValuesOf?: (k: string) => string[] }).supportedValuesOf?.('timeZone') ?? [];
+    } catch {
+      /* older browsers */
+    }
+    if (list.length === 0) list = FALLBACK_ZONES;
+    if (tz && !list.includes(tz)) list = [tz, ...list];
+    if (!list.includes('UTC')) list = [...list, 'UTC'];
+    return list.map((z) => ({ id: z, label: `${z.replace(/_/g, ' ')} (${offsetLabel(z).replace('GMT', 'GMT ') || 'GMT'})` }));
+  }, [tz]);
 
   // Start on the first month that has availability.
   useEffect(() => {
     if (!av || month) return;
-    const first = av.slots[0] ? new Date(av.slots[0]) : new Date();
-    setMonth({ y: first.getFullYear(), m: first.getMonth() });
-  }, [av, month]);
+    if (!tz) return;
+    const k = (av.slots[0] ? dayKeyIn(new Date(av.slots[0]), tz) : dayKeyIn(new Date(), tz)).split('-');
+    setMonth({ y: +k[0], m: +k[1] - 1 });
+  }, [av, month, tz]);
 
-  const firstDay = av?.slots[0] ? new Date(av.slots[0]) : null;
-  const lastDay = av?.slots.length ? new Date(av.slots[av.slots.length - 1]) : null;
+  const keys = [...byDay.keys()].sort();
+  const firstDay = keys[0] ? { y: +keys[0].slice(0, 4), m: +keys[0].slice(5, 7) - 1 } : null;
+  const lastDay = keys.length ? { y: +keys[keys.length - 1].slice(0, 4), m: +keys[keys.length - 1].slice(5, 7) - 1 } : null;
 
-  const timeFmt = useMemo(() => new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit' }), []);
-  const longFmt = useMemo(() => new Intl.DateTimeFormat([], { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), []);
+  const timeFmt = useMemo(() => new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit', timeZone: tz || undefined }), [tz]);
+  const longFmt = useMemo(() => new Intl.DateTimeFormat([], { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: tz || undefined }), [tz]);
+  const dayFmt = useMemo(() => new Intl.DateTimeFormat([], { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }), []);
 
   const cells = useMemo(() => {
     if (!month) return [];
@@ -77,8 +108,8 @@ export function BookingWidget() {
     return out;
   }, [month]);
 
-  const canPrev = !!(month && firstDay && (month.y > firstDay.getFullYear() || month.m > firstDay.getMonth()));
-  const canNext = !!(month && lastDay && (month.y < lastDay.getFullYear() || month.m < lastDay.getMonth()));
+  const canPrev = !!(month && firstDay && (month.y > firstDay.y || (month.y === firstDay.y && month.m > firstDay.m)));
+  const canNext = !!(month && lastDay && (month.y < lastDay.y || (month.y === lastDay.y && month.m < lastDay.m)));
   const shiftMonth = (delta: number) =>
     setMonth((cur) => {
       if (!cur) return cur;
@@ -97,7 +128,7 @@ export function BookingWidget() {
       const res = await fetch('/api/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, start: slot, timezone: tz }),
+        body: JSON.stringify({ ...form, start: slot, timezone: tz, duration }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -251,13 +282,35 @@ export function BookingWidget() {
                 ),
               )}
             </div>
-            <div className="bk-tz">
-              <Icon name="public" size={16} />
-              Times shown in {tz.replace(/_/g, ' ')}
-            </div>
+            <label className="bk-tzsel">
+              <Icon name="public" size={18} />
+              <select
+                value={tz}
+                aria-label="Time zone"
+                onChange={(e) => {
+                  setTz(e.target.value);
+                  setDay(null);
+                  setSlot(null);
+                  setMonth(null);
+                }}
+              >
+                {zones.map((z) => (
+                  <option key={z.id} value={z.id}>
+                    {z.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
 
           <div className="bk-slots">
+            <div className="bk-dur" role="radiogroup" aria-label="Call length">
+              {(av.durations?.length ? av.durations : [...DURATIONS]).map((m) => (
+                <button type="button" key={m} role="radio" aria-checked={duration === m} className={cx('bk-dur-b', duration === m && 'bk-dur-on')} onClick={() => setDuration(m)}>
+                  {m} min
+                </button>
+              ))}
+            </div>
             {!day ? (
               <div className="bk-slots-empty">
                 <Icon name="touch_app" size={34} color="#93C5FD" />
@@ -265,7 +318,7 @@ export function BookingWidget() {
               </div>
             ) : (
               <>
-                <div className="bk-slots-t">{longFmt.format(new Date(`${day}T12:00:00`))}</div>
+                <div className="bk-slots-t">{dayFmt.format(new Date(`${day}T12:00:00Z`))}</div>
                 <div className="bk-slot-list">
                   {daySlots.map((iso) => (
                     <button
@@ -295,7 +348,7 @@ export function BookingWidget() {
             <span>
               <b>{longFmt.format(new Date(slot))}</b>
               <i>
-                {timeFmt.format(new Date(slot))} · {av.slotMinutes} min · {tz.replace(/_/g, ' ')}
+                {timeFmt.format(new Date(slot))} · {duration} min ·{tz.replace(/_/g, ' ')}
               </i>
             </span>
             <button type="button" onClick={() => setStep(1)}>

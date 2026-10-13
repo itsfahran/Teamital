@@ -239,3 +239,11 @@
 @keyframes bkm-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes bkm-pop { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .bkm, .bkm-panel { animation: none; } }
+
+/* Time zone + call length pickers */
+.bk-tzsel { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding: 8px 12px; border: 1px solid #dbe3ef; border-radius: 12px; background: #f8fafc; color: #1a56db; }
+.bk-tzsel select { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 500; color: #334155; cursor: pointer; outline: none; text-overflow: ellipsis; }
+.bk-dur { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; margin-bottom: 14px; border-radius: 14px; background: #eef2f9; }
+.bk-dur-b { border: 0; border-radius: 10px; padding: 9px 0; font: inherit; font-size: 14px; font-weight: 600; color: #475569; background: transparent; cursor: pointer; transition: background 160ms, color 160ms, box-shadow 160ms; }
+.bk-dur-b:hover { color: #1a56db; }
+.bk-dur-on { background: #fff; color: #1a56db; box-shadow: 0 4px 12px -4px rgba(26, 86, 219, 0.35); }

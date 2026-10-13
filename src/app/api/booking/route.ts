@@ -1,6 +1,7 @@
 import { NextResponse, after } from 'next/server';
 import { SITE } from '@/lib/config';
 import {
+  DURATIONS,
   TEAM_SIZES,
   TOPICS,
   confirmationEmail,
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
 
   if (!name) return NextResponse.json({ error: 'Please enter your name.' }, { status: 400 });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: 'Please enter a valid email.' }, { status: 400 });
+  const duration = DURATIONS.find((d) => d === Number(body.duration)) ?? 30;
   const startMs = Date.parse(startIso);
   if (!Number.isFinite(startMs)) return NextResponse.json({ error: 'Please choose a time.' }, { status: 400 });
 
@@ -50,7 +52,7 @@ export async function POST(req: Request) {
   if (!slots.includes(startKey)) {
     return NextResponse.json({ error: 'That time is no longer available. Please pick another.', code: 'slot_taken' }, { status: 409 });
   }
-  const endMs = startMs + settings.slot_minutes * 60_000;
+  const endMs = startMs + Math.min(duration, settings.slot_minutes) * 60_000;
 
   const db = createPublicSupabase();
   const token = crypto.randomUUID();
@@ -82,7 +84,7 @@ export async function POST(req: Request) {
   const ev = await createMeetEvent({
     start: new Date(startMs),
     end: new Date(endMs),
-    summary: `Teamital call: ${name}${company ? ` (${company})` : ''}`,
+    summary: `Teamital call (${duration} min): ${name}${company ? ` (${company})` : ''}`,
     description: [
       `Free 1:1 call booked on teamital.com`,
       topic && `Topic: ${topic}`,
