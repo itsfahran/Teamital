@@ -303,7 +303,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
             Sign in
           </a>
           <a href={appAbsolute(ROUTES.signUp)} className="hdr-cta">
-            Free trial
+            Start free trial
             <Icon name="arrow_forward" size={18} color="#fff" className="hdr-cta-arrow" />
           </a>
           <div className="book-capsule">

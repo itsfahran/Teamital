@@ -121,14 +121,14 @@
 
 /* Responsive: full bar >= 1240px, hamburger below. Tighten + hide "Sign in" on the way down. */
 @media (max-width: 1599.98px) {
-  .hdr-signin { display: none; }
+  .hdr-signin { padding: 0 8px; }
   .hdr-cta { height: 42px; padding: 0 14px; font-size: 13px; }
   .hdr-bar { gap: 16px; }
   .hdr-logo .brand-logo { width: 210px !important; }
   .hdr-tab { padding: 0 11px; font-size: 13.5px; }
   .hdr-tab::after { left: 11px; right: 11px; }
 }
-@media (max-width: 1339.98px) {
+@media (max-width: 1499.98px) {
   .page { --hdr-h: 72px; }
   .hdr-wide { display: none !important; }
   .hdr-compact { display: flex; }
