@@ -8,3 +8,9 @@ out
 next-env.d.ts
 .vercel
 npm-debug.log*
+
+.vercel
+
+# Local env files for importing into hosting dashboards (contain secrets)
+.env.vercel
+.env.hostinger
