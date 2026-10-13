@@ -120,13 +120,15 @@
 .hdr-burger:active { transform: scale(0.95); }
 
 /* Responsive: full bar >= 1240px, hamburger below. Tighten + hide "Sign in" on the way down. */
-@media (max-width: 1599.98px) {
-  .hdr-signin { padding: 0 8px; }
-  .hdr-cta { height: 42px; padding: 0 14px; font-size: 13px; }
-  .hdr-bar { gap: 16px; }
-  .hdr-logo .brand-logo { width: 210px !important; }
-  .hdr-tab { padding: 0 11px; font-size: 13.5px; }
-  .hdr-tab::after { left: 11px; right: 11px; }
+@media (max-width: 1799.98px) {
+  .hdr-signin { padding: 0 6px; font-size: 13.5px; gap: 4px; }
+  .hdr-cta { height: 42px; padding: 0 12px; font-size: 12.5px; gap: 6px; }
+  .hdr-bar { gap: 10px; }
+  .hdr-logo .brand-logo { width: 180px !important; }
+  .hdr-tab { padding: 0 8px; font-size: 13px; }
+  .hdr-tab::after { left: 8px; right: 8px; }
+  .hdr-list { gap: 2px; }
+  .hdr-li-book { margin-left: 4px; }
 }
 @media (max-width: 1499.98px) {
   .page { --hdr-h: 72px; }
