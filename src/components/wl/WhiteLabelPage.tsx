@@ -6,6 +6,7 @@ import { Icon, SmartLink, cx } from '../ui';
 import { BuildShowcase } from './BuildShowcase';
 import { PartnerVisual } from './PartnerVisual';
 import { ProfilesShowcase } from './ProfilesShowcase';
+import { WlPackages } from './WlPackages';
 
 const CONTACT = ROUTES.contact;
 const LAUNCH_ICONS = ['event', 'handshake', 'palette', 'sell', 'group_add', 'rocket_launch'];
@@ -162,6 +163,14 @@ export function WhiteLabelPage() {
               </div>
             </div>
           </Aos>
+        </div>
+      </section>
+
+      {/* Packages */}
+      <section className="wl-sec" id="packages">
+        <div className="wl-in">
+          <SectionHead title="White Label Packages" intro="Pick monthly or yearly. One simple setup fee, then everything you need to run Teamital under your own brand." />
+          <WlPackages />
         </div>
       </section>
 

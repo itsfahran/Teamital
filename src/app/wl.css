@@ -523,3 +523,35 @@
 @media (prefers-reduced-motion: reduce) {
   .ps-pop, .ps-pop li, .ps-glow { animation: none; }
 }
+
+/* White label packages */
+.wlp { max-width: 980px; margin: 0 auto; }
+.wlp-toggle { margin: 0 auto 32px; }
+.wlp-card { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 0; background: #fff; border: 1px solid #e5eaf3; border-radius: 28px; overflow: hidden; box-shadow: 0 40px 80px -50px rgba(26, 86, 219, 0.55); animation: pg-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.wlp-main { padding: 36px; display: flex; flex-direction: column; background: linear-gradient(160deg, #f4f8ff, #ffffff 70%); border-right: 1px solid #eef2f7; }
+.wlp-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.wlp-name { font-size: 20px; font-weight: 800; color: #0f172a; }
+.wlp-label { margin-top: 26px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7280; }
+.wlp-price { margin-top: 6px; font-size: 54px; line-height: 1.05; font-weight: 800; letter-spacing: -1.5px; color: #0f172a; }
+.wlp-price span { font-size: 18px; font-weight: 600; letter-spacing: 0; color: #6b7280; margin-left: 4px; }
+.wlp-setup { margin-top: 18px; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #eff6ff; color: #334155; font-size: 14px; }
+.wlp-setup b { color: #1a56db; }
+.wlp-cta { margin-top: auto; align-self: stretch; justify-content: center; }
+.wlp-main .wlp-setup + .wlp-cta { margin-top: 28px; }
+.wlp-feats { list-style: none; margin: 0; padding: 28px 32px; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+.wlp-feats li { display: flex; align-items: center; gap: 16px; }
+.wlp-feats b { display: block; font-size: 17px; font-weight: 700; color: #0f172a; }
+.wlp-feats i { display: block; font-style: normal; font-size: 13.5px; line-height: 1.5; color: #6b7280; margin-top: 2px; }
+.wlp-ico { flex: none; width: 54px; height: 54px; border-radius: 17px; display: inline-flex; align-items: center; justify-content: center; }
+.wlp-ico-a { background: #e8f0ff; color: #1a56db; }
+.wlp-ico-b { background: #e7f8ef; color: #059669; }
+.wlp-ico-c { background: #fff4e0; color: #d97706; }
+.wlp-ico-d { background: #f1eaff; color: #7c3aed; }
+@media (max-width: 820px) {
+  .wlp-card { grid-template-columns: 1fr; }
+  .wlp-main { border-right: 0; border-bottom: 1px solid #eef2f7; padding: 28px 22px; }
+  .wlp-feats { padding: 24px 22px; }
+  .wlp-price { font-size: 44px; }
+}
+.wlp-top .bill-chip { padding: 5px 12px; border-radius: 999px; background: #e8f0ff; color: #1a56db; font-size: 12px; font-weight: 700; }
+.wlp-cta { flex: none; min-height: 52px; }
