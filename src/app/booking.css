@@ -247,3 +247,10 @@
 .bk-dur-b { border: 0; border-radius: 10px; padding: 9px 0; font: inherit; font-size: 14px; font-weight: 600; color: #475569; background: transparent; cursor: pointer; transition: background 160ms, color 160ms, box-shadow 160ms; }
 .bk-dur-b:hover { color: #1a56db; }
 .bk-dur-on { background: #fff; color: #1a56db; box-shadow: 0 4px 12px -4px rgba(26, 86, 219, 0.35); }
+.bk-tzs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.bk-tzb { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 12px; border: 1.5px solid #dbe3ef; border-radius: 12px; background: #f8fafc; font: inherit; text-align: left; cursor: pointer; transition: border-color 160ms, background 160ms, box-shadow 160ms; }
+.bk-tzb b { font-size: 13px; font-weight: 700; color: #0f172a; }
+.bk-tzb span { font-size: 11.5px; color: #64748b; }
+.bk-tzb:hover { border-color: #93b4f3; }
+.bk-tzb-on { border-color: #1a56db; background: #eff6ff; box-shadow: 0 6px 16px -8px rgba(26, 86, 219, 0.5); }
+.bk-tzb-on b { color: #1a56db; }

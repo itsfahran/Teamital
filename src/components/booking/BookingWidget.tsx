@@ -23,13 +23,31 @@ const dayKeyIn = (d: Date, tz: string) => {
   for (const x of new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d)) p[x.type] = x.value;
   return `${p.year}-${p.month}-${p.day}`;
 };
-const FALLBACK_ZONES = ['UTC', 'Europe/Dublin', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Asia/Dubai', 'Asia/Karachi', 'Asia/Kolkata', 'Asia/Singapore', 'Asia/Tokyo', 'Australia/Sydney', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles'];
-const offsetLabel = (tz: string) => {
+/** The four time zones offered in the pop-up. */
+const MAIN_ZONES = [
+  { id: 'Europe/Dublin', name: 'Ireland / UK', city: 'Dublin' },
+  { id: 'America/New_York', name: 'US East', city: 'New York' },
+  { id: 'Asia/Dubai', name: 'Gulf', city: 'Dubai' },
+  { id: 'Asia/Karachi', name: 'Pakistan', city: 'Karachi' },
+];
+const offsetMin = (tz: string) => {
   try {
-    return new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' }).formatToParts(new Date()).find((x) => x.type === 'timeZoneName')?.value ?? '';
+    const v = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' }).formatToParts(new Date()).find((x) => x.type === 'timeZoneName')?.value ?? 'GMT';
+    const m = /GMT([+-])(\d+)(?::(\d+))?/.exec(v);
+    return m ? (m[1] === '-' ? -1 : 1) * (+m[2] * 60 + +(m[3] ?? 0)) : 0;
   } catch {
-    return '';
+    return 0;
   }
+};
+const offsetLabel = (tz: string) => {
+  const o = offsetMin(tz);
+  const a = Math.abs(o);
+  return `GMT${o < 0 ? '-' : '+'}${Math.floor(a / 60)}${a % 60 ? ':' + pad(a % 60) : ''}`;
+};
+/** The main zone closest to the visitor's own clock. */
+const nearestMain = (detected: string) => {
+  const o = offsetMin(detected);
+  return MAIN_ZONES.reduce((best, z) => (Math.abs(offsetMin(z.id) - o) < Math.abs(offsetMin(best.id) - o) ? z : best)).id;
 };
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -55,7 +73,7 @@ export function BookingWidget() {
       .catch(() => setError('We could not load available times. Please refresh.'));
 
   useEffect(() => {
-    setTz(Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
+    setTz(nearestMain(Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'));
     void load();
   }, []);
 
@@ -69,18 +87,6 @@ export function BookingWidget() {
     return map;
   }, [av, tz]);
 
-  const zones = useMemo(() => {
-    let list: string[] = [];
-    try {
-      list = (Intl as unknown as { supportedValuesOf?: (k: string) => string[] }).supportedValuesOf?.('timeZone') ?? [];
-    } catch {
-      /* older browsers */
-    }
-    if (list.length === 0) list = FALLBACK_ZONES;
-    if (tz && !list.includes(tz)) list = [tz, ...list];
-    if (!list.includes('UTC')) list = [...list, 'UTC'];
-    return list.map((z) => ({ id: z, label: `${z.replace(/_/g, ' ')} (${offsetLabel(z).replace('GMT', 'GMT ') || 'GMT'})` }));
-  }, [tz]);
 
   // Start on the first month that has availability.
   useEffect(() => {
@@ -282,25 +288,28 @@ export function BookingWidget() {
                 ),
               )}
             </div>
-            <label className="bk-tzsel">
-              <Icon name="public" size={18} />
-              <select
-                value={tz}
-                aria-label="Time zone"
-                onChange={(e) => {
-                  setTz(e.target.value);
-                  setDay(null);
-                  setSlot(null);
-                  setMonth(null);
-                }}
-              >
-                {zones.map((z) => (
-                  <option key={z.id} value={z.id}>
-                    {z.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="bk-tzs" role="radiogroup" aria-label="Time zone">
+              {MAIN_ZONES.map((z) => (
+                <button
+                  type="button"
+                  key={z.id}
+                  role="radio"
+                  aria-checked={tz === z.id}
+                  className={cx('bk-tzb', tz === z.id && 'bk-tzb-on')}
+                  onClick={() => {
+                    setTz(z.id);
+                    setDay(null);
+                    setSlot(null);
+                    setMonth(null);
+                  }}
+                >
+                  <b>{z.name}</b>
+                  <span>
+                    {z.city} · {offsetLabel(z.id)}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="bk-slots">
