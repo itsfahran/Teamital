@@ -555,3 +555,4 @@
 }
 .wlp-top .bill-chip { padding: 5px 12px; border-radius: 999px; background: #e8f0ff; color: #1a56db; font-size: 12px; font-weight: 700; }
 .wlp-cta { flex: none; min-height: 52px; }
+.wl-sec-flush { padding-top: 0; }

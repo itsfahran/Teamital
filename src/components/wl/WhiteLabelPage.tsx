@@ -166,14 +166,6 @@ export function WhiteLabelPage() {
         </div>
       </section>
 
-      {/* Packages */}
-      <section className="wl-sec" id="packages">
-        <div className="wl-in">
-          <SectionHead title="White Label Packages" intro="Pick monthly or yearly. One simple setup fee, then everything you need to run Teamital under your own brand." />
-          <WlPackages />
-        </div>
-      </section>
-
       {/* Who can start */}
       <section className="wl-sec">
         <div className="wl-in">
@@ -189,6 +181,14 @@ export function WhiteLabelPage() {
               </Aos>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Packages */}
+      <section className="wl-sec wl-sec-flush" id="packages">
+        <div className="wl-in">
+          <SectionHead title="White Label Packages" intro="Pick monthly or yearly. One simple setup fee, then everything you need to run Teamital under your own brand." />
+          <WlPackages />
         </div>
       </section>
 
