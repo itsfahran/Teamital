@@ -15,6 +15,7 @@ import './admin.css';
 import { SITE } from '@/lib/config';
 import { ToastProvider } from '@/components/Toast';
 import { Intercom } from '@/components/Intercom';
+import { BookingModalProvider } from '@/components/booking/BookingModal';
 
 const poppins = localFont({
   src: [
@@ -75,7 +76,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
       </head>
       <body>
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          <BookingModalProvider>{children}</BookingModalProvider>
+        </ToastProvider>
         <Intercom />
       </body>
     </html>
