@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type Status = { connected: boolean; email: string | null; connectedAt: string | null };
+type Status = { connected: boolean; email: string | null; connectedAt: string | null; canEmail: boolean };
 
 const RESULT: Record<string, { kind: 'ok' | 'err'; text: string }> = {
   connected: { kind: 'ok', text: 'Google connected. New bookings now get a Google Calendar event with a Meet link.' },
@@ -48,7 +48,20 @@ export function GoogleMeetCard({ configured, status, result }: { configured: boo
             Connected as <b>{status.email ?? 'your Google account'}</b>. Every booking creates an event in that calendar with a unique Google Meet link, and Google
             emails the invitation to the visitor.
           </p>
+          {status.canEmail ? (
+            <div className="adm-alert adm-alert-ok">Email sending is on: booking confirmations (with the Meet link) are sent to the visitor and to you from this Google account.</div>
+          ) : (
+            <div className="adm-alert adm-alert-warn">
+              <b>Booking emails are NOT being sent.</b> This connection was made before email permission was added. Click <b>Reconnect Google</b> and tick the
+              “Send email on your behalf” permission. Also make sure the <b>Gmail API</b> is enabled in Google Cloud Console → APIs &amp; Services → Library.
+            </div>
+          )}
           <div className="adm-savebar" style={{ position: 'static' }}>
+            {!status.canEmail && (
+              <a className="adm-btn adm-btn-primary" href="/api/google/connect">
+                Reconnect Google
+              </a>
+            )}
             <button className="adm-btn adm-btn-danger" onClick={disconnect} disabled={busy}>
               {busy ? 'Disconnecting…' : 'Disconnect Google'}
             </button>

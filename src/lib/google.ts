@@ -98,11 +98,14 @@ export async function saveConnection(refreshToken: string, email: string | null,
   if (error) throw new Error(error.message);
 }
 
-export async function getConnectionStatus(): Promise<{ connected: boolean; email: string | null; connectedAt: string | null }> {
+export type ConnectionStatus = { connected: boolean; email: string | null; connectedAt: string | null; canEmail: boolean };
+
+export async function getConnectionStatus(): Promise<ConnectionStatus> {
   const db = serviceClient();
-  if (!db) return { connected: false, email: null, connectedAt: null };
-  const { data } = await db.from('google_connection').select('email,connected_at').eq('id', 1).maybeSingle();
-  return data ? { connected: true, email: data.email, connectedAt: data.connected_at } : { connected: false, email: null, connectedAt: null };
+  if (!db) return { connected: false, email: null, connectedAt: null, canEmail: false };
+  const { data } = await db.from('google_connection').select('email,connected_at,scope').eq('id', 1).maybeSingle();
+  if (!data) return { connected: false, email: null, connectedAt: null, canEmail: false };
+  return { connected: true, email: data.email, connectedAt: data.connected_at, canEmail: String(data.scope ?? '').includes('gmail.send') };
 }
 
 export async function disconnect() {
