@@ -1,5 +1,6 @@
 import type { CmsBlock, CmsPageContent } from '@/lib/cms';
 import { blockToSlot } from '@/lib/cms';
+import type { HomeVariants } from '@/content/home';
 import { Footer } from '../Footer';
 import { Header } from '../Header';
 import { HomeSlotView } from '../home/HomeSlots';
@@ -62,12 +63,13 @@ function GenericBlock({ block }: { block: CmsBlock }) {
   );
 }
 
-function renderBlock(block: CmsBlock, i: number) {
+function renderBlock(block: CmsBlock, i: number, v: HomeVariants['slots']) {
   if (block.type === 'slot') {
     return (
       <div className="cms-slot" key={i}>
         <HomeSlotView
           slot={blockToSlot(block)}
+          v={v}
           primaryHref={href(block.buttonHref, '/contact')}
           secondaryHref={href(block.button2Href, '/sign-up')}
         />
@@ -79,7 +81,7 @@ function renderBlock(block: CmsBlock, i: number) {
 }
 
 /** Renders a published CMS page using the same section types as Landing/Home. */
-export function CmsPageView({ page }: { page: CmsPageContent }) {
+export function CmsPageView({ page, v }: { page: CmsPageContent; v: HomeVariants['slots'] }) {
   return (
     <div className="page theme-app" style={{ background: '#fff' }}>
       <div className="page-header page-header-sticky">
@@ -87,7 +89,7 @@ export function CmsPageView({ page }: { page: CmsPageContent }) {
       </div>
       {page.blocks.map((b, i) => (
         <div key={i}>
-          {renderBlock(b, i)}
+          {renderBlock(b, i, v)}
           <div style={{ height: 8 }} />
         </div>
       ))}

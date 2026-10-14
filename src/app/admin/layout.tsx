@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { AdminNav } from '@/components/admin/AdminNav';
+import { ADMIN_UI, ADMIN_UI_KEY } from '@/content/admin-ui';
+import { getSiteContent } from '@/lib/content/server';
 import { createServerSupabase, isSupabaseConfigured } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
@@ -44,7 +46,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             editor run:
           </p>
           <pre className="adm-pre">{`insert into public.admin_users (user_id)\nselect id from auth.users where email = '${user.email}';`}</pre>
-          <AdminNav email={user.email ?? ''} signOutOnly />
+          <AdminNav email={user.email ?? ''} ui={await getSiteContent(ADMIN_UI_KEY, ADMIN_UI)} signOutOnly />
         </div>
       </div>
     );
@@ -52,7 +54,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="adm">
-      <AdminNav email={user.email ?? ''} />
+      <AdminNav email={user.email ?? ''} ui={await getSiteContent(ADMIN_UI_KEY, ADMIN_UI)} />
       <main className="adm-main">{children}</main>
     </div>
   );

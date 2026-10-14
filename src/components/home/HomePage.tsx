@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { HomeContent } from '@/content/home';
+import type { HomeContent, HomeVariants } from '@/content/home';
 import type { CmsPageContent } from '@/lib/cms';
 import { ROUTES } from '@/lib/config';
 import { Aos } from '../Aos';
@@ -140,7 +140,8 @@ function HeroMockup({ c }: { c: HomeContent }) {
   );
 }
 
-function HeroDashboardCard() {
+function HeroDashboardCard({ v }: { v: HomeVariants }) {
+  const d = v.dashboardCard;
   const stat = (v: string, l: string) => (
     <div className="hd-stat">
       <div className="hd-stat-v">{v}</div>
@@ -149,13 +150,9 @@ function HeroDashboardCard() {
   );
   return (
     <div className="hd-card">
-      <div className="hd-title">Live attendance</div>
-      <div className="hd-stats">
-        {stat('96%', 'Present')}
-        {stat('12', 'Late')}
-        {stat('4', 'Leave')}
-      </div>
-      {['William · 8h 12m', 'Sara · 7h 40m', 'Ali · On site'].map((l) => (
+      <div className="hd-title">{d.title}</div>
+      <div className="hd-stats">{d.stats.map((st) => stat(st.value, st.label))}</div>
+      {d.lines.map((l) => (
         <div className="hd-line" key={l}>
           {l}
         </div>
@@ -175,20 +172,20 @@ function PillBtns({ a, b, aDefault, bDefault, aHref, bHref }: {
   );
 }
 
-function titleFor(cms: Cms, variant: string): string {
+function titleFor(cms: Cms, variant: string, v: HomeVariants): string {
   const h = cms?.h1.trim() ?? '';
   if (h) return h;
-  if (variant === 'split-map') return 'Track, manage, and optimize your workforce';
-  if (variant === 'ops-dashboard') return 'See how your team spends the day';
-  return 'Automatic time tracking built for privacy';
+  if (variant === 'split-map') return v.hero.mapTitle;
+  if (variant === 'ops-dashboard') return v.hero.opsTitle;
+  return v.hero.defaultTitle;
 }
 
-function blurbFor(cms: Cms, variant: string): string {
+function blurbFor(cms: Cms, variant: string, v: HomeVariants): string {
   const b = cms?.body.trim() ?? '';
   if (b) return b;
-  if (variant === 'split-map') return 'Keep tabs on your team while they are clocked in, with live location.';
-  if (variant === 'ops-dashboard') return 'Live attendance, breaks, and hours in one view, so you know who is on site.';
-  return 'See the day as it happens, and keep activity data private.';
+  if (variant === 'split-map') return v.hero.mapBlurb;
+  if (variant === 'ops-dashboard') return v.hero.opsBlurb;
+  return v.hero.defaultBlurb;
 }
 
 const FLOAT_ICONS_L: Array<[string, string]> = [
@@ -216,7 +213,7 @@ function FloatIcon({ name, color }: { name: string; color: string }) {
   );
 }
 
-function HeroPrivacy({ cms, variant }: { cms: Cms; variant: string }) {
+function HeroPrivacy({ cms, variant, v }: { cms: Cms; variant: string; v: HomeVariants }) {
   return (
     <div className="hp">
       <PrivacyRibbons />
@@ -234,17 +231,17 @@ function HeroPrivacy({ cms, variant }: { cms: Cms; variant: string }) {
       </div>
       <div className="hp-center">
         <div className="hp-in">
-          <h1 className="hp-title">{titleFor(cms, variant)}</h1>
-          <p className="hp-blurb">{blurbFor(cms, variant)}</p>
+          <h1 className="hp-title">{titleFor(cms, variant, v)}</h1>
+          <p className="hp-blurb">{blurbFor(cms, variant, v)}</p>
           <div className="hp-cta">
             <Pill
-              label={cms?.buttonLabel.trim() ? cms.buttonLabel : 'Start free 14-day trial'}
+              label={cms?.buttonLabel.trim() ? cms.buttonLabel : v.hero.privacyButton}
               filled
               large
               href={heroHref(cms?.buttonHref, true)}
             />
           </div>
-          <div className="hp-note">No credit card required</div>
+          <div className="hp-note">{v.hero.privacyNote}</div>
           <div className="hp-icons-narrow">
             {[
               ['assignment', '#7C3AED'],
@@ -265,18 +262,18 @@ function HeroPrivacy({ cms, variant }: { cms: Cms; variant: string }) {
   );
 }
 
-function HeroWorkforce({ cms, variant }: { cms: Cms; variant: string }) {
+function HeroWorkforce({ cms, variant, v }: { cms: Cms; variant: string; v: HomeVariants }) {
   return (
     <div className="hw">
       <div className="hw-in">
         <div className="hw-copy">
-          <h1 className="hw-title">{titleFor(cms, variant)}</h1>
-          <p className="hw-blurb">{blurbFor(cms, variant)}</p>
+          <h1 className="hw-title">{titleFor(cms, variant, v)}</h1>
+          <p className="hw-blurb">{blurbFor(cms, variant, v)}</p>
           <PillBtns
             a={cms?.buttonLabel.trim() ? cms.buttonLabel : ''}
             b={cms?.button2Label.trim() ? cms.button2Label : ''}
-            aDefault="Create a free account"
-            bDefault="Request a free demo"
+            aDefault={v.hero.workforceA}
+            bDefault={v.hero.workforceB}
             aHref={heroHref(cms?.buttonHref, true)}
             bHref={heroHref(cms?.button2Href, false)}
           />
@@ -293,7 +290,8 @@ function HeroWorkforce({ cms, variant }: { cms: Cms; variant: string }) {
   );
 }
 
-function OpsBoard() {
+function OpsBoard({ v }: { v: HomeVariants }) {
+  const o = v.opsBoard;
   const row = (name: string, pct: string, pctColor: string, bar: number) => (
     <div className="ob-row" key={name}>
       <div className="ob-avatar">{name[0]}</div>
@@ -309,19 +307,19 @@ function OpsBoard() {
   return (
     <div className="ob">
       <div className="ob-card1">
-        <div className="ob-t">Activities</div>
-        <div className="ob-s">On site  ·  Break  ·  Late</div>
-        {row('Ayesha', '92%', '#16A34A', 0.86)}
-        {row('Hamza', '34%', '#EF4444', 0.34)}
-        {row('Sara', '76%', '#1A56DB', 0.7)}
+        <div className="ob-t">{o.title}</div>
+        <div className="ob-s">{o.sub}</div>
+        {row(o.people[0]?.name ?? '', o.people[0]?.percent ?? '', '#16A34A', 0.86)}
+        {row(o.people[1]?.name ?? '', o.people[1]?.percent ?? '', '#EF4444', 0.34)}
+        {row(o.people[2]?.name ?? '', o.people[2]?.percent ?? '', '#1A56DB', 0.7)}
       </div>
       <div className="ob-card2">
-        <div className="ob-c2-l">Work time</div>
-        <div className="ob-c2-v">02:43:02</div>
-        <div className="ob-c2-s">On site · 92%</div>
+        <div className="ob-c2-l">{o.workTimeLabel}</div>
+        <div className="ob-c2-v">{o.workTimeValue}</div>
+        <div className="ob-c2-s">{o.workTimeSub}</div>
       </div>
       <div className="ob-card3">
-        <div className="ob-c3-t">Team hours</div>
+        <div className="ob-c3-t">{o.teamHoursLabel}</div>
         <div className="ob-c3-bars">
           {[36, 58, 44, 72, 50, 66].map((h, i) => (
             <div key={i} className="ob-c3-col">
@@ -334,25 +332,25 @@ function OpsBoard() {
   );
 }
 
-function HeroOps({ cms, variant }: { cms: Cms; variant: string }) {
+function HeroOps({ cms, variant, v }: { cms: Cms; variant: string; v: HomeVariants }) {
   return (
     <div className="ho">
       <div className="ho-in">
         <div className="ho-copy">
-          <h1 className="ho-title">{titleFor(cms, variant)}</h1>
-          <p className="ho-blurb">{blurbFor(cms, variant)}</p>
+          <h1 className="ho-title">{titleFor(cms, variant, v)}</h1>
+          <p className="ho-blurb">{blurbFor(cms, variant, v)}</p>
           <PillBtns
             a={cms?.buttonLabel.trim() ? cms.buttonLabel : ''}
             b={cms?.button2Label.trim() ? cms.button2Label : ''}
-            aDefault="Book a demo"
-            bDefault="Start free trial"
+            aDefault={v.hero.opsA}
+            bDefault={v.hero.opsB}
             aHref={heroHref(cms?.buttonHref || '/contact', false)}
             bHref={heroHref(cms?.button2Href || '/sign-up', true)}
           />
-          <div className="ho-note">No credit card required</div>
+          <div className="ho-note">{v.hero.opsNote}</div>
         </div>
         <div className="ho-board">
-          <OpsBoard />
+          <OpsBoard v={v} />
         </div>
       </div>
     </div>
@@ -361,16 +359,16 @@ function HeroOps({ cms, variant }: { cms: Cms; variant: string }) {
 
 function Hero({ cms, c }: { cms: Cms; c: HomeContent }) {
   const variant = cms?.heroVariant.trim() || 'split-product';
-  if (variant === 'center-icons') return <HeroPrivacy cms={cms} variant={variant} />;
-  if (variant === 'split-map') return <HeroWorkforce cms={cms} variant={variant} />;
-  if (variant === 'ops-dashboard') return <HeroOps cms={cms} variant={variant} />;
+  if (variant === 'center-icons') return <HeroPrivacy cms={cms} variant={variant} v={c.variants} />;
+  if (variant === 'split-map') return <HeroWorkforce cms={cms} variant={variant} v={c.variants} />;
+  if (variant === 'ops-dashboard') return <HeroOps cms={cms} variant={variant} v={c.variants} />;
   return (
     <div className="hero">
       <div className="hero-in">
         <div className="hero-copy">
           <HeroCopy cms={cms} c={c.hero} />
         </div>
-        <div className="hero-vis">{variant === 'split-dashboard' ? <HeroDashboardCard /> : <HeroMockup c={c} />}</div>
+        <div className="hero-vis">{variant === 'split-dashboard' ? <HeroDashboardCard v={c.variants} /> : <HeroMockup c={c} />}</div>
       </div>
     </div>
   );
@@ -393,26 +391,19 @@ function Platforms() {
 
 /* ───────────────────────── Custom H2 / H3 ───────────────────────── */
 
-function H2Section({ cms }: { cms: Cms }) {
+function H2Section({ cms, v }: { cms: Cms; v: HomeVariants }) {
+  const t = v.h2;
   const variant = cms?.h2Variant.trim() ?? '';
   const title =
-    cms?.h2Heading.trim() || (variant === 'security-card' ? 'See who is on site, on every device' : 'Workforce tools built for every team');
+    cms?.h2Heading.trim() || (variant === 'security-card' ? t.securityTitle : t.title);
   const blurb =
     cms?.h2Body.trim() ||
-    (variant === 'security-card'
-      ? 'Attendance checks GPS, face, and fingerprint, then shows a clear pass or fail for the team.'
-      : 'Track attendance, tasks, and hours in real time, by person, shift, and site.');
+    (variant === 'security-card' ? t.securityBlurb : t.blurb);
   const lines = cms && cms.h2Items.length
     ? cms.h2Items
     : variant === 'security-card'
-      ? ['GPS check', 'Face check', 'Fingerprint', '- Outside the site', '- Missing photo']
-      : [
-          'Clock-in with GPS, face, and fingerprint',
-          'Leave, shifts, and task tracking',
-          'Live dashboards for managers',
-          'Reports your payroll team can use',
-          'Works on mobile, desktop, and web',
-        ];
+      ? t.securityLines
+      : t.lines;
   const clean = (l: string) => l.replace(/^[+-]\s*/, '');
 
   if (variant === 'security-card') {
@@ -423,14 +414,14 @@ function H2Section({ cms }: { cms: Cms }) {
             <div className="h2s-copy">
               <h2 className="h2s-title">{title}</h2>
               <p className="h2s-blurb">{blurb}</p>
-              <Pill filled label={cms?.h2Button.trim() ? cms.h2Button : 'Explore attendance checks'} href={ROUTES.signUp} />
+              <Pill filled label={cms?.h2Button.trim() ? cms.h2Button : t.securityButton} href={ROUTES.signUp} />
             </div>
             <div className="h2s-card">
               <div className="h2s-card-head">
                 <Icon name="laptop_mac" size={24} color="#2563EB" />
-                <span>Team devices</span>
+                <span>{t.cardTitle}</span>
               </div>
-              <div className="h2s-card-sub">Checks  ·  Needs review</div>
+              <div className="h2s-card-sub">{t.cardSub}</div>
               {lines.map((l, i) => {
                 const bad = l.trimStart().startsWith('-');
                 return (
@@ -462,18 +453,18 @@ function H2Section({ cms }: { cms: Cms }) {
               </div>
             </div>
             <div className="h2a-today">
-              <div className="h2a-today-t">Today</div>
+              <div className="h2a-today-t">{t.todayTitle}</div>
               <div className="h2a-stats">
-                {[['95%', 'On time'], ['76%', 'On site'], ['73%', 'Active']].map(([v, l]) => (
-                  <div className="h2a-stat" key={l}>
-                    <div className="h2a-stat-v">{v}</div>
-                    <div className="h2a-stat-l">{l}</div>
+                {t.stats.map((st) => (
+                  <div className="h2a-stat" key={st.label}>
+                    <div className="h2a-stat-v">{st.value}</div>
+                    <div className="h2a-stat-l">{st.label}</div>
                   </div>
                 ))}
               </div>
             </div>
             <div className="h2a-hours">
-              <div className="h2a-hours-t">Hours</div>
+              <div className="h2a-hours-t">{t.hoursLabel}</div>
               <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
                 <circle cx="32" cy="32" r="28" fill="none" stroke="#E5E7EB" strokeWidth="8" />
                 <circle
@@ -500,17 +491,13 @@ function H2Section({ cms }: { cms: Cms }) {
   );
 }
 
-function H3Why({ cms }: { cms: Cms }) {
-  const title = cms?.h3Heading.trim() || 'Why time tracking matters';
+function H3Why({ cms, v }: { cms: Cms; v: HomeVariants }) {
+  const t = v.h3;
+  const title = cms?.h3Heading.trim() || t.whyTitle;
   const lines =
     cms && cms.h3Items.length
       ? cms.h3Items
-      : [
-          'See hours clearly across every team.',
-          'Build a record your managers can trust.',
-          'Give clients a work log they can check.',
-          'Keep attendance ready for review.',
-        ];
+      : t.whyLines;
   return (
     <section className="sec-white h3w">
       <div className="h3w-in">
@@ -524,7 +511,7 @@ function H3Why({ cms }: { cms: Cms }) {
             </div>
           ))}
           <div className="gap-16" />
-          <Pill filled label={cms?.h3Button.trim() ? cms.h3Button : 'Get started'} href={ROUTES.signUp} />
+          <Pill filled label={cms?.h3Button.trim() ? cms.h3Button : t.whyButton} href={ROUTES.signUp} />
         </div>
         <div className="h3w-vis">
           <div className="h3w-vis-bg">
@@ -532,12 +519,12 @@ function H3Why({ cms }: { cms: Cms }) {
             <img src="/assets/screen-signin.webp" alt="" />
           </div>
           <div className="h3w-float">
-            <div className="h3w-float-t">00:21:25</div>
-            <div className="h3w-float-s">On site today</div>
+            <div className="h3w-float-t">{t.floatTime}</div>
+            <div className="h3w-float-s">{t.floatSub}</div>
             <div className="h3w-prog">
               <div style={{ width: '55%' }} />
             </div>
-            <div className="h3w-float-c">55% core work</div>
+            <div className="h3w-float-c">{t.floatCore}</div>
           </div>
         </div>
       </div>
@@ -545,12 +532,12 @@ function H3Why({ cms }: { cms: Cms }) {
   );
 }
 
-function H3Section({ cms }: { cms: Cms }) {
-  if (cms?.h3Variant.trim() === 'why-matters') return <H3Why cms={cms} />;
-  const title = cms?.h3Heading.trim() || 'Employee tracking on every device';
+function H3Section({ cms, v }: { cms: Cms; v: HomeVariants }) {
+  const t = v.h3;
+  if (cms?.h3Variant.trim() === 'why-matters') return <H3Why cms={cms} v={v} />;
+  const title = cms?.h3Heading.trim() || t.title;
   const blurb =
-    cms?.h3Body.trim() ||
-    'Clock in from Windows, Mac, and the web. Attendance, GPS, and live status stay in one place.';
+    cms?.h3Body.trim() || t.blurb;
   const os = (label: string, sel: boolean) => (
     <div className="os-tab" key={label}>
       <div className={cx('os-tab-t', sel && 'os-tab-on')}>{label}</div>
@@ -564,15 +551,15 @@ function H3Section({ cms }: { cms: Cms }) {
           <div className="h3d-dash-bg">
             <div className="h3d-card">
               <div className="h3d-card-top">
-                <span className="h3d-card-t">Tracked hours</span>
-                <span className="h3d-card-v">05:57</span>
+                <span className="h3d-card-t">{t.cardTitle}</span>
+                <span className="h3d-card-v">{t.cardValue}</span>
               </div>
-              <div className="h3d-card-on">On site · clocked in</div>
+              <div className="h3d-card-on">{t.cardOn}</div>
               <div className="h3d-mini-row">
-                {[['95%', 'On time'], ['76%', 'On site']].map(([v, l]) => (
-                  <div className="h3d-mini" key={l}>
-                    <div className="h3d-mini-v">{v}</div>
-                    <div className="h3d-mini-l">{l}</div>
+                {t.mini.map((m) => (
+                  <div className="h3d-mini" key={m.label}>
+                    <div className="h3d-mini-v">{m.value}</div>
+                    <div className="h3d-mini-l">{m.label}</div>
                   </div>
                 ))}
               </div>
@@ -584,15 +571,13 @@ function H3Section({ cms }: { cms: Cms }) {
             <h2 className="h3d-title">{title}</h2>
             <p className="h3d-blurb">{blurb}</p>
             <div className="os-tabs">
-              {os('Desktop', true)}
-              {os('Mobile', false)}
-              {os('Web', false)}
+              {t.tabs.map((tab, i) => os(tab, i === 0))}
             </div>
             <div className="os-pills">
-              {[['desktop_windows', 'Windows'], ['laptop_mac', 'macOS'], ['public', 'Web']].map(([i, l]) => (
-                <div className="os-pill" key={l}>
-                  <Icon name={i} size={18} color="#fff" />
-                  <span>{l}</span>
+              {t.pills.map((pl) => (
+                <div className="os-pill" key={pl.label}>
+                  <Icon name={pl.icon} size={18} color="#fff" />
+                  <span>{pl.label}</span>
                 </div>
               ))}
             </div>
@@ -613,6 +598,7 @@ export function HomePage({ cms, c }: { cms: Cms; c: HomeContent }) {
     return (
       <HomeSlotView
         slot={slot}
+        v={c.variants.slots}
         primaryHref={demoFirst ? ROUTES.contact : ROUTES.signUp}
         secondaryHref={demoFirst ? ROUTES.signUp : ROUTES.contact}
       />
@@ -629,8 +615,8 @@ export function HomePage({ cms, c }: { cms: Cms; c: HomeContent }) {
           <Platforms />
         </Aos>
       )}
-      <Aos>{isCustom(cms?.h2Variant.trim() ?? '') ? <H2Section cms={cms} /> : <FeaturesSection c={c.features} />}</Aos>
-      <Aos>{isCustom(cms?.h3Variant.trim() ?? '') ? <H3Section cms={cms} /> : <HowItWorksSection c={c.howItWorks} />}</Aos>
+      <Aos>{isCustom(cms?.h2Variant.trim() ?? '') ? <H2Section cms={cms} v={c.variants} /> : <FeaturesSection c={c.features} />}</Aos>
+      <Aos>{isCustom(cms?.h3Variant.trim() ?? '') ? <H3Section cms={cms} v={c.variants} /> : <HowItWorksSection c={c.howItWorks} />}</Aos>
       <Aos>{slotOr(4, <RolesSection c={c.roles} />)}</Aos>
       <Aos>{slotOr(5, <SecuritySection c={c.security} />)}</Aos>
       <Aos>{slotOr(6, <TestimonialsSection c={c.testimonials} />)}</Aos>

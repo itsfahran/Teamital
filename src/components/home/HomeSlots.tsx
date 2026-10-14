@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
+import type { HomeVariants } from '@/content/home';
 import type { HomeSlot } from '@/lib/cms';
 import { cx, Pill } from '../ui';
 
 type Props = {
   slot: HomeSlot;
+  v: HomeVariants['slots'];
   /** Hrefs for the primary / secondary pill. */
   primaryHref: string;
   secondaryHref: string;
@@ -18,36 +20,36 @@ function Pad({ children }: { children: ReactNode }) {
   );
 }
 
-export function HomeSlotView({ slot, primaryHref, secondaryHref }: Props) {
+export function HomeSlotView({ slot, v, primaryHref, secondaryHref }: Props) {
   switch (slot.variant) {
     case 'ops-board':
-      return <Ops slot={slot} primaryHref={primaryHref} secondaryHref={secondaryHref} />;
+      return <Ops slot={slot} v={v} primaryHref={primaryHref} secondaryHref={secondaryHref} />;
     case 'feature-chart':
-      return <FeatureChart slot={slot} />;
+      return <FeatureChart slot={slot} v={v} />;
     case 'story-rows':
-      return <StoryRows slot={slot} />;
+      return <StoryRows slot={slot} v={v} />;
     case 'ai-insight':
-      return <AiInsight slot={slot} primaryHref={primaryHref} />;
+      return <AiInsight slot={slot} v={v} primaryHref={primaryHref} />;
     case 'topic-menu':
-      return <TopicMenu slot={slot} primaryHref={primaryHref} />;
+      return <TopicMenu slot={slot} v={v} primaryHref={primaryHref} />;
     case 'ask-banner':
-      return <AskBanner slot={slot} primaryHref={primaryHref} secondaryHref={secondaryHref} />;
+      return <AskBanner slot={slot} v={v} primaryHref={primaryHref} secondaryHref={secondaryHref} />;
     default:
-      return <DeviceTracking slot={slot} />;
+      return <DeviceTracking slot={slot} v={v} />;
   }
 }
 
-function DeviceTracking({ slot }: { slot: HomeSlot }) {
+function DeviceTracking({ slot, v }: { slot: HomeSlot; v: HomeVariants['slots'] }) {
   const lines = slot.items.length
     ? slot.items
-    : ['Manual timer start and stop', 'Project and task selection', 'Optional photos', 'App tracking'];
+    : v.deviceLines;
   return (
     <Pad>
       <div className="slot-two slot-two-900">
         <div className="slot-col">
-          <h2 className="slot-h slot-h-primary">{slot.heading || 'Personal device tracking'}</h2>
+          <h2 className="slot-h slot-h-primary">{slot.heading || v.deviceHeading}</h2>
           <p className="slot-p slot-p-16">
-            {slot.body || 'Employees clock in on their own devices, and tracking stops when they clock out.'}
+            {slot.body || v.deviceBody}
           </p>
           <div className="slot-dots">
             {lines.map((line, i) => (
@@ -61,9 +63,9 @@ function DeviceTracking({ slot }: { slot: HomeSlot }) {
         <div className="slot-col">
           <div className="dev-card">
             <div className="dev-card-in">
-              <div className="dev-timer">00:21:25</div>
-              <div className="dev-on">On site</div>
-              <div className="dev-total">Total today 8:12</div>
+              <div className="dev-timer">{v.deviceTimer}</div>
+              <div className="dev-on">{v.deviceOn}</div>
+              <div className="dev-total">{v.deviceTotal}</div>
             </div>
           </div>
         </div>
@@ -72,23 +74,23 @@ function DeviceTracking({ slot }: { slot: HomeSlot }) {
   );
 }
 
-function Ops({ slot, primaryHref, secondaryHref }: Props) {
+function Ops({ slot, v, primaryHref, secondaryHref }: Props) {
   return (
     <Pad>
       <div className="slot-two slot-two-960 slot-ops">
         <div className="slot-col">
-          <h2 className="slot-h slot-h-ops">{slot.heading || 'See how your team spends the day'}</h2>
+          <h2 className="slot-h slot-h-ops">{slot.heading || v.opsHeading}</h2>
           <p className="slot-p slot-p-16 slot-p-ops">
-            {slot.body || 'Live attendance, breaks, and hours in one view.'}
+            {slot.body || v.opsBody}
           </p>
           <div className="slot-pills">
-            <Pill variant="slot" filled href={primaryHref} label={slot.button || 'Book a demo'} />
-            <Pill variant="slot" filled={false} href={secondaryHref} label={slot.button2 || 'Start free trial'} />
+            <Pill variant="slot" filled href={primaryHref} label={slot.button || v.opsA} />
+            <Pill variant="slot" filled={false} href={secondaryHref} label={slot.button2 || v.opsB} />
           </div>
         </div>
         <div className="slot-col">
           <div className="mini-board">
-            <div className="mini-board-title">Activities</div>
+            <div className="mini-board-title">{v.opsBoardTitle}</div>
             {[
               ['Ayesha', 0.9],
               ['Hamza', 0.35],
@@ -108,15 +110,10 @@ function Ops({ slot, primaryHref, secondaryHref }: Props) {
   );
 }
 
-function FeatureChart({ slot }: { slot: HomeSlot }) {
+function FeatureChart({ slot, v }: { slot: HomeSlot; v: HomeVariants['slots'] }) {
   const lines = slot.items.length
     ? slot.items
-    : [
-        'Real-time monitoring|See who is on site right now.',
-        'Time and attendance|Hours are recorded as people clock in.',
-        'Manual entries|Add a missing punch when needed.',
-        'Reports|Review hours by team and day.',
-      ];
+    : v.chartLines;
   return (
     <Pad>
       <div className="slot-two slot-two-900 slot-fc">
@@ -130,7 +127,7 @@ function FeatureChart({ slot }: { slot: HomeSlot }) {
         </div>
         <div className="slot-col">
           <div className="bar-card">
-            <div className="bar-card-title">Hours this week</div>
+            <div className="bar-card-title">{v.chartTitle}</div>
             <div className="bar-card-bars">
               {[40, 70, 55, 90, 64, 78, 48].map((h, i) => (
                 <div className="bar-card-col" key={i}>
@@ -145,14 +142,11 @@ function FeatureChart({ slot }: { slot: HomeSlot }) {
   );
 }
 
-function StoryRows({ slot }: { slot: HomeSlot }) {
+function StoryRows({ slot, v }: { slot: HomeSlot; v: HomeVariants['slots'] }) {
   const lines =
     slot.items.length >= 2
       ? slot.items
-      : [
-          'Clearer project estimates|Hours show how long work really takes.',
-          'Spot overload early|See when a team is carrying too many hours.',
-        ];
+      : v.storyLines;
   const row = (raw: string, flip: boolean) => {
     const parts = raw.split('|');
     const text = (
@@ -164,7 +158,7 @@ function StoryRows({ slot }: { slot: HomeSlot }) {
     const art = (
       <div className="story-art">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={flip ? '/assets/home/workload.jpg' : '/assets/home/estimates.jpg'} alt="" />
+        <img src={flip ? v.storyImageB : v.storyImageA} alt="" />
       </div>
     );
     return (
@@ -185,23 +179,23 @@ function StoryRows({ slot }: { slot: HomeSlot }) {
   );
 }
 
-function AiInsight({ slot, primaryHref }: { slot: HomeSlot; primaryHref: string }) {
+function AiInsight({ slot, v, primaryHref }: { slot: HomeSlot; v: HomeVariants['slots']; primaryHref: string }) {
   const lines = slot.items.length
     ? slot.items
-    : ['Average day is about 8 hours', 'On-site rate is steady this week', 'One team is over the usual hours'];
+    : v.aiLines;
   return (
     <Pad>
       <div className="slot-two slot-two-900 slot-ai">
         <div className="slot-col">
-          <h2 className="slot-h slot-h-ai">{slot.heading || 'A clearer view of the workday'}</h2>
+          <h2 className="slot-h slot-h-ai">{slot.heading || v.aiHeading}</h2>
           <p className="slot-p slot-p-16 slot-p-ai">
-            {slot.body || 'Attendance and hours, summarized so managers can act on the day, not guess.'}
+            {slot.body || v.aiBody}
           </p>
-          <Pill variant="slot" filled href={primaryHref} label={slot.button || 'Start free trial'} />
+          <Pill variant="slot" filled href={primaryHref} label={slot.button || v.aiButton} />
         </div>
         <div className="slot-col">
           <div className="ai-chat">
-            <div className="ai-chat-title">Today</div>
+            <div className="ai-chat-title">{v.aiTitle}</div>
             {lines.map((l, i) => (
               <div className="ai-chat-line" key={i}>
                 • {l}
@@ -214,8 +208,8 @@ function AiInsight({ slot, primaryHref }: { slot: HomeSlot; primaryHref: string 
   );
 }
 
-function TopicMenu({ slot, primaryHref }: { slot: HomeSlot; primaryHref: string }) {
-  const topics = slot.items.length ? slot.items : ['Leave requests', 'Clock in and out', 'Shifts', 'Reports'];
+function TopicMenu({ slot, v, primaryHref }: { slot: HomeSlot; v: HomeVariants['slots']; primaryHref: string }) {
+  const topics = slot.items.length ? slot.items : v.topics;
   return (
     <div className="topic-wrap">
       <div className="topic-in">
@@ -228,11 +222,11 @@ function TopicMenu({ slot, primaryHref }: { slot: HomeSlot; primaryHref: string 
             ))}
           </div>
           <div className="topic-panel">
-            <h3 className="topic-h">{slot.heading || 'Leave your team can request'}</h3>
+            <h3 className="topic-h">{slot.heading || v.topicHeading}</h3>
             <p className="topic-p">
-              {slot.body || 'People see their balance, request time off, and managers approve it in the same place.'}
+              {slot.body || v.topicBody}
             </p>
-            <Pill variant="slot" filled href={primaryHref} label={slot.button || 'Open leave'} />
+            <Pill variant="slot" filled href={primaryHref} label={slot.button || v.topicButton} />
           </div>
         </div>
       </div>
@@ -240,16 +234,16 @@ function TopicMenu({ slot, primaryHref }: { slot: HomeSlot; primaryHref: string 
   );
 }
 
-function AskBanner({ slot, primaryHref, secondaryHref }: Props) {
+function AskBanner({ slot, v, primaryHref, secondaryHref }: Props) {
   return (
     <div className="ask-wrap">
       <div className="ask-in">
         <div className="ask-box">
-          <h2 className="ask-h">{slot.heading || 'Want a closer look?'}</h2>
-          <p className="ask-p">{slot.body || 'Book a demo or start a free trial. No credit card required.'}</p>
+          <h2 className="ask-h">{slot.heading || v.askHeading}</h2>
+          <p className="ask-p">{slot.body || v.askBody}</p>
           <div className="ask-pills">
-            <Pill variant="slot" filled={false} href={primaryHref} label={slot.button || 'Book a demo'} />
-            <Pill variant="slot" filled={false} href={secondaryHref} label={slot.button2 || 'Start free trial'} />
+            <Pill variant="slot" filled={false} href={primaryHref} label={slot.button || v.askA} />
+            <Pill variant="slot" filled={false} href={secondaryHref} label={slot.button2 || v.askB} />
           </div>
         </div>
       </div>

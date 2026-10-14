@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { ADMIN_UI, ADMIN_UI_KEY } from '@/content/admin-ui';
+import { getSiteContent } from '@/lib/content/server';
 import { createServerSupabase } from '@/lib/supabase/server';
 
 export default async function AdminDashboard() {
   const db = await createServerSupabase();
+  const ui = (await getSiteContent(ADMIN_UI_KEY, ADMIN_UI)).dashboard;
   const count = async (table: string, filter?: (q: any) => any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     let q = db.from(table).select('*', { count: 'exact', head: true });
     if (filter) q = filter(q);
@@ -26,15 +29,15 @@ export default async function AdminDashboard() {
     .limit(5);
 
   const cards = [
-    { label: 'Pages', value: pages, sub: `${published} published`, href: '/admin/pages', icon: 'article' },
-    { label: 'Unread messages', value: unread, sub: `${messages} total`, href: '/admin/messages', icon: 'mail' },
-    { label: 'Upcoming calls', value: upcoming, sub: 'booked from /book-a-call', href: '/admin/bookings', icon: 'event' },
-    { label: 'Pricing plans', value: plans, sub: 'shown on /pricing', href: '/admin/plans', icon: 'sell' },
+    { label: ui.pagesLabel, value: pages, sub: `${published} ${ui.pagesSub}`, href: '/admin/pages', icon: 'article' },
+    { label: ui.unreadLabel, value: unread, sub: `${messages} ${ui.unreadSub}`, href: '/admin/messages', icon: 'mail' },
+    { label: ui.callsLabel, value: upcoming, sub: ui.callsSub, href: '/admin/bookings', icon: 'event' },
+    { label: ui.plansLabel, value: plans, sub: ui.plansSub, href: '/admin/plans', icon: 'sell' },
   ];
 
   return (
     <>
-      <h1 className="adm-h1">Dashboard</h1>
+      <h1 className="adm-h1">{ui.title}</h1>
       <div className="adm-cards">
         {cards.map((c) => (
           <Link key={c.label} href={c.href} className="adm-card adm-stat">
@@ -46,14 +49,14 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <h2 className="adm-h2">Latest messages</h2>
+      <h2 className="adm-h2">{ui.latestTitle}</h2>
       <div className="adm-card">
-        {(recent ?? []).length === 0 && <p className="adm-muted">No messages yet.</p>}
+        {(recent ?? []).length === 0 && <p className="adm-muted">{ui.noMessages}</p>}
         {(recent ?? []).map((m) => (
           <Link key={m.id} href="/admin/messages" className="adm-row">
             <div>
               <b>{m.name}</b> <span className="adm-muted">&lt;{m.email}&gt;</span>
-              {!m.is_read && <span className="adm-badge">new</span>}
+              {!m.is_read && <span className="adm-badge">{ui.newBadge}</span>}
               <div className="adm-muted adm-clip">{m.message}</div>
             </div>
             <div className="adm-muted">{new Date(m.created_at).toLocaleString()}</div>
