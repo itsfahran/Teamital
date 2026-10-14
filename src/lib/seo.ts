@@ -53,7 +53,7 @@ function build(path: string, title: string, description: string): Metadata {
 }
 
 /** Metadata for a route; CMS SEO (when a published page exists) wins over the static defaults. */
-export async function metadataFor(path: string, cmsSlug?: string): Promise<Metadata> {
+export async function metadataFor(path: string, cmsSlug?: string, seo?: { title?: string; description?: string }): Promise<Metadata> {
   if (cmsSlug) {
     const page = await getCmsPage(cmsSlug);
     if (page) {
@@ -62,5 +62,5 @@ export async function metadataFor(path: string, cmsSlug?: string): Promise<Metad
     }
   }
   const [t, d] = DEFAULTS[path] ?? [`${SITE.displayName} — Workforce Intelligence`, DEFAULT_DESCRIPTION];
-  return build(path, t, d);
+  return build(path, seo?.title?.trim() || t, seo?.description?.trim() || d);
 }

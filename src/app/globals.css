@@ -418,3 +418,19 @@ img {
   color: #111827;
 }
 .appbar-title { font-size: 22px; font-weight: 700; line-height: 28px; letter-spacing: 0; }
+
+/* Rich text produced by the admin editor (also used inside the editor itself) */
+.rt > :first-child { margin-top: 0; }
+.rt > :last-child { margin-bottom: 0; }
+.rt p { margin: 0 0 0.75em; }
+.rt h2, .rt h3, .rt h4 { margin: 1em 0 0.4em; line-height: 1.25; color: inherit; font-weight: 700; }
+.rt h2 { font-size: 1.35em; } .rt h3 { font-size: 1.15em; } .rt h4 { font-size: 1em; }
+.rt ul, .rt ol { margin: 0 0 0.75em; padding-left: 1.4em; }
+.rt ul { list-style: disc; } .rt ol { list-style: decimal; }
+.rt li { margin: 0.2em 0; }
+.rt a { color: #1a56db; text-decoration: underline; text-underline-offset: 2px; }
+.rt blockquote { margin: 0.8em 0; padding: 0.3em 1em; border-left: 3px solid #1a56db; color: #4b5563; background: #f5f8ff; border-radius: 0 8px 8px 0; }
+.rt img { max-width: 100%; height: auto; border-radius: 12px; margin: 0.4em 0; }
+.rt hr { border: 0; border-top: 1px solid #e5e7eb; margin: 1em 0; }
+.rt mark { background: #fef08a; padding: 0 2px; border-radius: 3px; }
+.rt code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }

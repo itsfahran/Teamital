@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { IconCard } from '@/content/white-label';
+import { RichText } from '../RichText';
 import { Icon, cx } from '../ui';
 
 /**
@@ -48,7 +49,7 @@ export function BuildShowcase({ items, compact = false }: { items: IconCard[]; c
             {String(active + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
           </span>
           <h3>{cur.title}</h3>
-          <p>{cur.text}</p>
+          <RichText value={cur.text} />
         </div>
         <div className="bs-dots" aria-hidden="true">
           {items.map((_, i) => (

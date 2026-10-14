@@ -1,6 +1,7 @@
-import { WL, type Tone } from '@/content/white-label';
+import type { Tone, WLContent } from '@/content/white-label';
 import { ROUTES } from '@/lib/config';
 import { Aos } from '../Aos';
+import { RichText } from '../RichText';
 import { SitePage } from '../SitePage';
 import { Icon, SmartLink, cx } from '../ui';
 import { BuildShowcase } from './BuildShowcase';
@@ -15,7 +16,7 @@ function SectionHead({ title, intro, center = true }: { title: string; intro?: s
   return (
     <div className={cx('wl-head', center && 'wl-head-center')}>
       <h2>{title}</h2>
-      {intro && <p>{intro}</p>}
+      {intro && <RichText value={intro} />}
     </div>
   );
 }
@@ -28,7 +29,7 @@ function Tile({ icon, tone }: { icon: string; tone: Tone }) {
   );
 }
 
-export function WhiteLabelPage() {
+export function WhiteLabelPage({ c: WL }: { c: WLContent }) {
   const tones: Tone[] = ['blue', 'violet', 'green', 'amber', 'rose', 'sky'];
   return (
     <SitePage compactBelow={980} overlayHeader background="#fff">
@@ -38,11 +39,11 @@ export function WhiteLabelPage() {
           <div className="wl-hero-copy">
             <span className="bhero-pill">
               <span className="bhero-dot" />
-              White Label Program
+              {WL.hero.pill}
             </span>
             <h1>{WL.hero.title}</h1>
             <p className="wl-tagline">{WL.hero.tagline}</p>
-            <p className="wl-hero-text">{WL.hero.text}</p>
+            <RichText className="wl-hero-text" value={WL.hero.text} />
             <div className="wl-btns">
               <SmartLink href={CONTACT} className="hero-btn hero-btn-primary">
                 <span>{WL.hero.primary}</span>
@@ -54,13 +55,21 @@ export function WhiteLabelPage() {
               </SmartLink>
             </div>
             <ul className="hc-trust">
-              <li><Icon name="check_circle" size={18} color="#10B981" />Your name, logo and domain</li>
-              <li><Icon name="check_circle" size={18} color="#10B981" />Your own pricing</li>
-              <li><Icon name="check_circle" size={18} color="#10B981" />24/7 technical support</li>
+              {WL.hero.trust.map((t) => (
+                <li key={t}>
+                  <Icon name="check_circle" size={18} color="#10B981" />
+                  {t}
+                </li>
+              ))}
             </ul>
           </div>
           <Aos fromRight>
-            <PartnerVisual />
+            {WL.hero.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="wl-hero-img" src={WL.hero.image} alt={WL.hero.title} />
+            ) : (
+              <PartnerVisual />
+            )}
           </Aos>
         </div>
       </section>
@@ -71,8 +80,8 @@ export function WhiteLabelPage() {
           <div className="wl-build">
             <h2 className="wl-build-title">{WL.build.title}</h2>
             <div className="wl-build-copy">
-              {WL.build.paragraphs.map((p) => (
-                <p key={p.slice(0, 24)}>{p}</p>
+              {WL.build.paragraphs.map((p, i) => (
+                <RichText key={i} value={p} />
               ))}
             </div>
             <BuildShowcase items={WL.build.pillars} />
@@ -100,7 +109,7 @@ export function WhiteLabelPage() {
           <SectionHead title={WL.portal.title} intro={WL.portal.intro} />
           <div className="guide-in wl-portal">
             <aside className="gtoc" aria-label="Partner portal sections">
-              <div className="gtoc-t">In this portal</div>
+              <div className="gtoc-t">{WL.portal.navTitle}</div>
               <ol>
                 {WL.portal.items.map((c, i) => (
                   <li key={c.title}>
@@ -125,7 +134,7 @@ export function WhiteLabelPage() {
                       </span>
                       <h3>{c.title}</h3>
                     </div>
-                    <p>{c.text}</p>
+                    <RichText value={c.text} />
                   </div>
                 </li>
               ))}
@@ -149,8 +158,8 @@ export function WhiteLabelPage() {
             <div className="wl-one">
               <div>
                 <h3>{WL.solutions.oneTitle}</h3>
-                {WL.solutions.onePara.map((p) => (
-                  <p key={p.slice(0, 24)}>{p}</p>
+                {WL.solutions.onePara.map((p, i) => (
+                  <RichText key={i} value={p} />
                 ))}
               </div>
               <div className="wl-btns wl-btns-col">
@@ -176,7 +185,7 @@ export function WhiteLabelPage() {
                 <div className="wl-card wl-card-who">
                   <Tile icon={c.icon} tone={c.tone ?? 'blue'} />
                   <h3>{c.title}</h3>
-                  <p>{c.text}</p>
+                  <RichText value={c.text} />
                 </div>
               </Aos>
             ))}
@@ -187,8 +196,8 @@ export function WhiteLabelPage() {
       {/* Packages */}
       <section className="wl-sec wl-sec-flush" id="packages">
         <div className="wl-in">
-          <SectionHead title="White Label Packages" intro="Pick Monthly or Yearly: a one-time setup fee plus a simple recurring cost to run Teamital under your own brand." />
-          <WlPackages />
+          <SectionHead title={WL.packages.title} intro={WL.packages.intro} />
+          <WlPackages c={WL.packages} />
         </div>
       </section>
 
@@ -197,8 +206,7 @@ export function WhiteLabelPage() {
         <div className="wl-in">
           <SectionHead title={WL.launch.title} intro={WL.launch.intro} />
           <ol className="lt">
-            {WL.launch.steps.map(([title, text], i) => {
-              const [, name] = title.split(/:\s*/);
+            {WL.launch.steps.map(({ title, text }, i) => {
               const side = i % 2 === 0 ? 'lt-left' : 'lt-right';
               const icon = LAUNCH_ICONS[i] ?? 'flag';
               return (
@@ -211,8 +219,8 @@ export function WhiteLabelPage() {
                         </span>
                         <span className="lt-chip">Step {i + 1}</span>
                       </div>
-                      <h3>{name ?? title}</h3>
-                      <p>{text}</p>
+                      <h3>{title}</h3>
+                      <RichText value={text} />
                     </div>
                   </Aos>
                   <span className="lt-node" aria-hidden="true">
@@ -236,13 +244,15 @@ export function WhiteLabelPage() {
         <div className="wl-in wl-in-narrow">
           <SectionHead title={WL.faq.title} />
           <div className="gfaq">
-            {WL.faq.items.map(([q, a]) => (
+            {WL.faq.items.map(({ q, a }) => (
               <details className="faq-item" key={q}>
                 <summary>
                   <span>{q}</span>
                   <Icon name="expand_more" size={24} color="#45464F" className="faq-chev" />
                 </summary>
-                <div className="faq-a">{a}</div>
+                <div className="faq-a">
+                  <RichText value={a} />
+                </div>
               </details>
             ))}
           </div>
@@ -252,8 +262,8 @@ export function WhiteLabelPage() {
       {/* Final CTA */}
       <section className="wl-final">
         <div className="wl-final-in">
-          <h2>Our Platform. Your Brand. Your Business.</h2>
-          <p>Talk to our team and see the White Label Partner Portal in action.</p>
+          <h2>{WL.final.title}</h2>
+          <RichText value={WL.final.text} />
           <div className="wl-btns wl-btns-center">
             <SmartLink href={CONTACT} className="hero-btn hero-btn-light">
               {WL.hero.primary}

@@ -4,7 +4,15 @@ export type Tone = 'blue' | 'violet' | 'green' | 'amber' | 'rose' | 'sky';
 export type IconCard = { icon: string; title: string; text: string; tone?: Tone };
 
 export const WL = {
+  seo: {
+    title: 'White Label Workforce Management Software | Teamital',
+    description: 'Launch your own SaaS business with Teamital white label workforce management software: your brand, your pricing, your customers.',
+  },
+
   hero: {
+    pill: 'White Label Program',
+    image: '',
+    trust: ['Your name, logo and domain', 'Your own pricing', '24/7 technical support'],
     title: 'Launch Your SaaS Business With Our White Label Workforce Management Software',
     tagline: 'Our Platform. Your Brand. Your Business.',
     text: "Launch your own SaaS business with Teamital's ready-to-use White Label Workforce Management Software. Customize the platform with your brand name, logo, colors, and custom domain. Create your own subscription plans, set your prices, manage multiple customer companies, and build recurring revenue without developing software from scratch.",
@@ -59,6 +67,7 @@ export const WL = {
   },
 
   portal: {
+    navTitle: 'In this portal',
     title: 'Complete White Label Partner Portal to Manage Your SaaS Business',
     intro:
       'Manage your White Label software business from one centralized platform. Teamital provides dedicated tools to help you manage customer companies, users, subscription packages, branding, and revenue.',
@@ -84,35 +93,35 @@ export const WL = {
       text: 'Give businesses a centralized dashboard to manage employees, monitor attendance, organize departments, assign tasks, track locations, and oversee daily workforce operations.',
       label: 'Company Admin Features:',
       features: [
-        ['Dashboard', 'View workforce statistics, including employee attendance, present and absent staff, late arrivals, and leave information.'],
-        ['Employees', 'Add, manage, and update employee profiles, employment details, and workforce records.'],
-        ['Attendance', 'Monitor employee clock-in/out records, attendance status, and working hours.'],
-        ['Departments', 'Create and manage departments to organize employees across different teams.'],
-        ['Leave', 'Review employee leave requests, approve or reject applications, and manage leave records.'],
-        ['Locations', 'Manage office locations, GPS tracking, and location-based attendance settings.'],
-        ['Reports', 'Generate workforce reports, review attendance data, and export information in PDF, Excel, or CSV formats.'],
-        ['Projects & Tasks', 'Create projects, assign tasks, and monitor employee responsibilities and progress.'],
-        ['Help & Support', 'Access assistance and support for workforce management activities.'],
-        ['Subscription', "View and manage the company's software subscription."],
-        ['Notifications', 'Receive updates about attendance, leave requests, tasks, and other workforce activities.'],
-        ['Community & AI', 'Access community features and use AI-powered assistance to manage supported workforce activities through simple prompts.'],
-      ] as Array<[string, string]>,
+        { title: 'Dashboard', text: 'View workforce statistics, including employee attendance, present and absent staff, late arrivals, and leave information.' },
+        { title: 'Employees', text: 'Add, manage, and update employee profiles, employment details, and workforce records.' },
+        { title: 'Attendance', text: 'Monitor employee clock-in/out records, attendance status, and working hours.' },
+        { title: 'Departments', text: 'Create and manage departments to organize employees across different teams.' },
+        { title: 'Leave', text: 'Review employee leave requests, approve or reject applications, and manage leave records.' },
+        { title: 'Locations', text: 'Manage office locations, GPS tracking, and location-based attendance settings.' },
+        { title: 'Reports', text: 'Generate workforce reports, review attendance data, and export information in PDF, Excel, or CSV formats.' },
+        { title: 'Projects & Tasks', text: 'Create projects, assign tasks, and monitor employee responsibilities and progress.' },
+        { title: 'Help & Support', text: 'Access assistance and support for workforce management activities.' },
+        { title: 'Subscription', text: "View and manage the company's software subscription." },
+        { title: 'Notifications', text: 'Receive updates about attendance, leave requests, tasks, and other workforce activities.' },
+        { title: 'Community & AI', text: 'Access community features and use AI-powered assistance to manage supported workforce activities through simple prompts.' },
+      ],
     },
     employee: {
       title: 'Employee Profile – Manage Daily Work Activities From One Place',
       text: 'Provide employees with a simple, user-friendly dashboard where they can manage attendance, view assigned tasks, check work schedules, request leave, and stay connected with their company.',
       label: 'Employee Features:',
       features: [
-        ['Dashboard', 'Access an overview of daily work activities, attendance information, assigned tasks, and important updates.'],
-        ['Clock In/Out', 'Record work attendance using supported verification methods, including facial recognition, device biometrics, and PIN.'],
-        ['Tasks', 'View assigned tasks, track responsibilities, and update task progress.'],
-        ['Notifications', 'Receive updates about assigned tasks, attendance, leave requests, and company activities.'],
-        ['Community & AI', 'Access community features and use AI-powered assistance for supported workforce activities.'],
-        ['Leave', 'Submit leave requests, check approval status, and view available leave balances.'],
-        ['Work Summary', 'Review working hours, attendance history, and daily or weekly work information.'],
-        ['Help & Support', 'Access help and assistance when needed.'],
-        ['Shift Schedules', 'View assigned shifts, working schedules, and roster information.'],
-      ] as Array<[string, string]>,
+        { title: 'Dashboard', text: 'Access an overview of daily work activities, attendance information, assigned tasks, and important updates.' },
+        { title: 'Clock In/Out', text: 'Record work attendance using supported verification methods, including facial recognition, device biometrics, and PIN.' },
+        { title: 'Tasks', text: 'View assigned tasks, track responsibilities, and update task progress.' },
+        { title: 'Notifications', text: 'Receive updates about assigned tasks, attendance, leave requests, and company activities.' },
+        { title: 'Community & AI', text: 'Access community features and use AI-powered assistance for supported workforce activities.' },
+        { title: 'Leave', text: 'Submit leave requests, check approval status, and view available leave balances.' },
+        { title: 'Work Summary', text: 'Review working hours, attendance history, and daily or weekly work information.' },
+        { title: 'Help & Support', text: 'Access help and assistance when needed.' },
+        { title: 'Shift Schedules', text: 'View assigned shifts, working schedules, and roster information.' },
+      ],
     },
     oneTitle: 'One Platform for Companies and Employees',
     onePara: [
@@ -141,29 +150,53 @@ export const WL = {
     intro: 'Get started with a straightforward partnership process and launch your branded workforce management platform.',
     cta: 'Schedule Your White Label Demo',
     steps: [
-      ['Step 1: Schedule a Demo', 'Connect with our team to explore the White Label platform, partner features, and business opportunities.'],
-      ['Step 2: Finalize Your Partnership', 'Discuss your requirements, review the fixed monthly or yearly platform fee, and complete your partnership agreement.'],
-      ['Step 3: Customize Your Platform', 'Our team helps set up your White Label platform with your business name, logo, brand colors, and custom domain.'],
-      ['Step 4: Create Your Subscription Plans', 'Build custom subscription packages and set your own customer pricing.'],
-      ['Step 5: Add Your Customers', 'Start adding customer companies, managing users, and offering your workforce management software.'],
-      ['Step 6: Grow Your SaaS Business', 'Manage companies, subscriptions, and revenue through your Partner Portal while expanding your customer base, with ongoing technical support from Teamital.'],
-    ] as Array<[string, string]>,
+      { title: 'Schedule a Demo', text: 'Connect with our team to explore the White Label platform, partner features, and business opportunities.' },
+      { title: 'Finalize Your Partnership', text: 'Discuss your requirements, review the fixed monthly or yearly platform fee, and complete your partnership agreement.' },
+      { title: 'Customize Your Platform', text: 'Our team helps set up your White Label platform with your business name, logo, brand colors, and custom domain.' },
+      { title: 'Create Your Subscription Plans', text: 'Build custom subscription packages and set your own customer pricing.' },
+      { title: 'Add Your Customers', text: 'Start adding customer companies, managing users, and offering your workforce management software.' },
+      { title: 'Grow Your SaaS Business', text: 'Manage companies, subscriptions, and revenue through your Partner Portal while expanding your customer base, with ongoing technical support from Teamital.' },
+    ],
   },
 
   faq: {
     title: 'Frequently Asked Questions',
     items: [
-      ['What is White Label Workforce Management Software?', 'White Label Workforce Management Software is an existing software solution that businesses can offer under their own brand. Teamital allows partners to customize branding, manage customers, create subscription plans, and offer workforce management tools without developing software from scratch.'],
-      ['Can I start my own SaaS business with Teamital?', "Yes. Teamital's White Label program allows you to launch a branded workforce management software business, manage customer companies, and offer your own subscription packages."],
-      ['Can I use my own business name, logo, and domain?', 'Yes. You can customize the platform with your business name, logo, brand colors, and custom domain. Teamital also helps with the initial platform setup.'],
-      ['Can I set my own subscription prices?', 'Yes. White Label Partners have complete control over the prices they charge customers.'],
-      ['How does Teamital White Label pricing work?', 'Partners pay Teamital a fixed monthly or yearly platform fee. Contact our team for partnership pricing details.'],
-      ['Who collects subscription payments from customers?', 'White Label Partners collect customer payments directly and manage their own billing relationships.'],
-      ['Can I manage multiple companies from one account?', 'Yes. Teamital provides a dedicated Partner Portal where you can add and manage multiple customer companies.'],
-      ['Does Teamital offer AI-powered workforce management?', 'Yes. Teamital includes Community & AI features that allow users to interact with AI and manage supported workforce activities using prompts.'],
-      ['Do I need to develop or maintain the software myself?', "You don't need to develop the underlying platform. Teamital provides the software, assists with setup, and offers 24/7 technical support. Partners manage their customers and provide customer-facing support."],
-      ['Which platforms does Teamital support?', 'Teamital supports Web, Android, iOS, and Windows. White Label branding capabilities may differ between the web platform and applications.'],
-      ['How can I become a White Label Partner?', 'Schedule a demo, discuss your requirements, finalize the partnership agreement, and work with our team to configure your White Label account before onboarding customers.'],
-    ] as Array<[string, string]>,
+      { q: 'What is White Label Workforce Management Software?', a: 'White Label Workforce Management Software is an existing software solution that businesses can offer under their own brand. Teamital allows partners to customize branding, manage customers, create subscription plans, and offer workforce management tools without developing software from scratch.' },
+      { q: 'Can I start my own SaaS business with Teamital?', a: "Yes. Teamital's White Label program allows you to launch a branded workforce management software business, manage customer companies, and offer your own subscription packages." },
+      { q: 'Can I use my own business name, logo, and domain?', a: 'Yes. You can customize the platform with your business name, logo, brand colors, and custom domain. Teamital also helps with the initial platform setup.' },
+      { q: 'Can I set my own subscription prices?', a: 'Yes. White Label Partners have complete control over the prices they charge customers.' },
+      { q: 'How does Teamital White Label pricing work?', a: 'Partners pay Teamital a fixed monthly or yearly platform fee. Contact our team for partnership pricing details.' },
+      { q: 'Who collects subscription payments from customers?', a: 'White Label Partners collect customer payments directly and manage their own billing relationships.' },
+      { q: 'Can I manage multiple companies from one account?', a: 'Yes. Teamital provides a dedicated Partner Portal where you can add and manage multiple customer companies.' },
+      { q: 'Does Teamital offer AI-powered workforce management?', a: 'Yes. Teamital includes Community & AI features that allow users to interact with AI and manage supported workforce activities using prompts.' },
+      { q: 'Do I need to develop or maintain the software myself?', a: "You don't need to develop the underlying platform. Teamital provides the software, assists with setup, and offers 24/7 technical support. Partners manage their customers and provide customer-facing support." },
+      { q: 'Which platforms does Teamital support?', a: 'Teamital supports Web, Android, iOS, and Windows. White Label branding capabilities may differ between the web platform and applications.' },
+      { q: 'How can I become a White Label Partner?', a: 'Schedule a demo, discuss your requirements, finalize the partnership agreement, and work with our team to configure your White Label account before onboarding customers.' },
+    ],
+  },
+
+  packages: {
+    title: 'White Label Packages',
+    intro: 'Pick Monthly or Yearly: a one-time setup fee plus a simple recurring cost to run Teamital under your own brand.',
+    monthlyTab: 'Monthly',
+    yearlyTab: '1 Year',
+    cta: 'Become a partner',
+    monthly: [
+      { name: 'Monthly License', price: '€1,000', unit: '/month', features: ['Up to 10 Companies', 'Up to 1,000 Employees'] },
+      { name: 'Monthly Usage-Based', price: '€500', unit: '/One-time Setup Fee', features: ['50% OFF all packages listed on Teamital’s official website price list', 'Pay according to the packages selected'] },
+    ],
+    yearly: [
+      { name: 'Yearly License', price: '€5,000', unit: '/year', features: ['Up to 50 Companies', 'Up to 2,000 Employees'] },
+      { name: 'Yearly Usage-Based', price: '€500', unit: '/One-time Setup Fee', features: ['60% OFF all packages listed on Teamital’s official website price list', 'Pay according to the packages selected'] },
+    ],
+  },
+
+  final: {
+    title: 'Our Platform. Your Brand. Your Business.',
+    text: 'Talk to our team and see the White Label Partner Portal in action.',
   },
 };
+
+export type WLContent = typeof WL;
+export const WL_PAGE_KEY = 'white-label';

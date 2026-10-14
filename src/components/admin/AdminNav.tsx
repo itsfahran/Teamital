@@ -6,7 +6,8 @@ import { createClient } from '@/lib/supabase/client';
 
 const ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: 'dashboard' },
-  { href: '/admin/pages', label: 'Pages', icon: 'article' },
+  { href: '/admin/content', label: 'Site content', icon: 'edit_note' },
+  { href: '/admin/pages', label: 'Custom pages', icon: 'article' },
   { href: '/admin/navigation', label: 'Navigation', icon: 'menu' },
   { href: '/admin/plans', label: 'Pricing plans', icon: 'sell' },
   { href: '/admin/bookings', label: 'Call bookings', icon: 'event' },
