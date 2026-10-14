@@ -285,3 +285,28 @@ export function formatDate(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
+
+/* ───────── CMS document (Admin → Site content → Blog) ───────── */
+export const BLOG_PAGE_KEY = 'blog';
+
+export type CmsBlock = { type: 'heading' | 'paragraph' | 'list'; text: string; items: string[] };
+
+const toBlock = (b: PostBlock): CmsBlock =>
+  b.t === 'h' ? { type: 'heading', text: b.text, items: [] } : b.t === 'p' ? { type: 'paragraph', text: b.text, items: [] } : { type: 'list', text: '', items: b.items };
+
+export const BLOG = {
+  seo: { title: 'Blog | Teamital', description: 'Guides on attendance, GPS and HR ops.' },
+  hero: {
+    pill: 'Teamital Blog',
+    title: 'Insights for modern workforce teams',
+    sub: 'Practical guides on attendance, GPS, HR operations and compliance, written for the people who keep teams running.',
+  },
+  authorName: AUTHOR,
+  searchPlaceholder: 'Search articles',
+  cta: { title: 'Put these ideas to work', text: 'Start a free trial and see attendance, GPS and leave in one place.', button: 'Start free trial' },
+  postCta: { title: 'See it in action', text: 'Try Teamital free: attendance, GPS and leave in one place.', button: 'Start free trial' },
+  posts: BLOG_POSTS.map((p) => ({ ...p, cover: '', body: p.body.map(toBlock) })),
+};
+
+export type BlogContent = typeof BLOG;
+export type CmsPost = BlogContent['posts'][number];

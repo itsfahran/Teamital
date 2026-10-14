@@ -1,40 +1,46 @@
+import type { Metadata } from 'next';
 import { BlogIndex } from '@/components/blog/BlogIndex';
+import { RichText } from '@/components/RichText';
 import { SitePage } from '@/components/SitePage';
 import { SmartLink } from '@/components/ui';
-import { BLOG_POSTS } from '@/content/blog';
+import { BLOG, BLOG_PAGE_KEY } from '@/content/blog';
 import { ROUTES } from '@/lib/config';
+import { getSiteContent } from '@/lib/content/server';
 import { metadataFor } from '@/lib/seo';
 
-export const generateMetadata = () => metadataFor('/blog');
+export const revalidate = 60;
 
-export default function Page() {
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getSiteContent(BLOG_PAGE_KEY, BLOG);
+  return metadataFor('/blog', undefined, c.seo);
+}
+
+export default async function Page() {
+  const c = await getSiteContent(BLOG_PAGE_KEY, BLOG);
   return (
     <SitePage compactBelow={980} overlayHeader background="#fff">
       <section className="bhero">
         <div className="bhero-in">
           <span className="bhero-pill">
             <span className="bhero-dot" />
-            Teamital Blog
+            {c.hero.pill}
           </span>
-          <h1 className="bhero-title">Insights for modern workforce teams</h1>
-          <p className="bhero-sub">
-            Practical guides on attendance, GPS, HR operations and compliance, written for the people who keep teams
-            running.
-          </p>
+          <h1 className="bhero-title">{c.hero.title}</h1>
+          <RichText className="bhero-sub" value={c.hero.sub} />
         </div>
       </section>
 
       <section className="blog">
         <div className="blog-in">
-          <BlogIndex posts={BLOG_POSTS} />
+          <BlogIndex posts={c.posts} author={c.authorName} searchPlaceholder={c.searchPlaceholder} />
 
           <div className="bcta">
             <div>
-              <div className="bcta-t">Put these ideas to work</div>
-              <div className="bcta-s">Start a free trial and see attendance, GPS and leave in one place.</div>
+              <div className="bcta-t">{c.cta.title}</div>
+              <div className="bcta-s">{c.cta.text}</div>
             </div>
             <SmartLink href={ROUTES.signUp} className="hero-btn hero-btn-light">
-              Start free trial
+              {c.cta.button}
             </SmartLink>
           </div>
         </div>

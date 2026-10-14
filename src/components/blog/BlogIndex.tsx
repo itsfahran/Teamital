@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { AUTHOR, formatDate, type BlogPost } from '@/content/blog';
+import { formatDate, type CmsPost as BlogPost } from '@/content/blog';
 import { Icon, cx } from '../ui';
 import { BlogCover } from './BlogCover';
 
@@ -16,7 +16,7 @@ function Meta({ post }: { post: BlogPost }) {
   );
 }
 
-export function BlogIndex({ posts }: { posts: BlogPost[] }) {
+export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles' }: { posts: BlogPost[]; author: string; searchPlaceholder?: string }) {
   const [category, setCategory] = useState('All');
   const [query, setQuery] = useState('');
 
@@ -53,7 +53,7 @@ export function BlogIndex({ posts }: { posts: BlogPost[] }) {
           <Icon name="search" size={20} color="#6B7280" />
           <input
             type="search"
-            placeholder="Search articles"
+            placeholder={searchPlaceholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Search articles"
@@ -128,7 +128,7 @@ export function BlogIndex({ posts }: { posts: BlogPost[] }) {
           </button>
         </div>
       )}
-      <span className="sr-only">{AUTHOR}</span>
+      <span className="sr-only">{author}</span>
     </>
   );
 }

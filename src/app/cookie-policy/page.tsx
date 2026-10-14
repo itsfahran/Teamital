@@ -1,9 +1,17 @@
+import type { Metadata } from 'next';
 import { PolicyPage } from '@/components/policy/PolicyPage';
-import { COOKIE_POLICY } from '@/content/policies';
+import { POLICY_DOCS } from '@/content/policies-cms';
+import { getSiteContent } from '@/lib/content/server';
 import { metadataFor } from '@/lib/seo';
 
-export const generateMetadata = () => metadataFor('/cookie-policy');
+export const revalidate = 60;
 
-export default function Page() {
-  return <PolicyPage kind="cookies" blocks={COOKIE_POLICY} />;
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getSiteContent('cookie-policy', POLICY_DOCS['cookie-policy']);
+  return metadataFor('/cookie-policy', undefined, c.seo);
+}
+
+export default async function Page() {
+  const c = await getSiteContent('cookie-policy', POLICY_DOCS['cookie-policy']);
+  return <PolicyPage kind="cookies" doc={c} />;
 }

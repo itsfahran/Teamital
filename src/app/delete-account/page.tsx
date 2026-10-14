@@ -1,63 +1,48 @@
-import { PolicyBullets, PolicyH, PolicyP } from '@/components/pages/PolicyView';
+import type { Metadata } from 'next';
+import { PolicyBullets, PolicyH } from '@/components/pages/PolicyView';
+import { RichText } from '@/components/RichText';
 import { PolicyShell } from '@/components/SitePage';
+import { DELETE_ACCOUNT, DELETE_ACCOUNT_KEY } from '@/content/delete-account';
 import { SITE } from '@/lib/config';
+import { getSiteContent } from '@/lib/content/server';
+import { plainText } from '@/lib/content/utils';
 import { metadataFor } from '@/lib/seo';
 
-export const generateMetadata = () => metadataFor('/delete-account');
+export const revalidate = 60;
 
-const SUBJECT = encodeURIComponent('Teamital — Account deletion request');
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getSiteContent(DELETE_ACCOUNT_KEY, DELETE_ACCOUNT);
+  return metadataFor('/delete-account', undefined, c.seo);
+}
 
-export default function Page() {
-  const mail = `mailto:${SITE.contactEmail}?subject=${SUBJECT}`;
+export default async function Page() {
+  const c = await getSiteContent(DELETE_ACCOUNT_KEY, DELETE_ACCOUNT);
+  const mail = `mailto:${SITE.contactEmail}?subject=${encodeURIComponent(c.mailSubject)}`;
   return (
-    <PolicyShell title="Delete account">
+    <PolicyShell title={c.appBarTitle}>
       <div className="pol">
         <div className="pol-in">
-          <h1 className="pol-title pol-title-del">Delete Your Teamital Account</h1>
+          <h1 className="pol-title pol-title-del">{c.title}</h1>
           <div className="gap-16" />
-          <PolicyP>
-            If you would like to delete your Teamital account and associated personal data, you can submit a deletion
-            request using the instructions below.
-          </PolicyP>
-          <PolicyH>How to request account deletion</PolicyH>
-          <PolicyP>
-            Please contact us using the email address associated with your Teamital account and request that your
-            account be deleted.
-          </PolicyP>
-          <div className="gap-8" />
-          <div className="del-mail">
-            <span className="del-mail-l">Email: </span>
-            <a href={mail} className="del-mail-a">
-              {SITE.contactEmail}
-            </a>
-          </div>
-          <div className="gap-16" />
-          <PolicyP>Please include:</PolicyP>
-          <PolicyBullets
-            items={['Your registered email address or username', 'Your request to delete your Teamital account']}
-          />
-          <PolicyP>We may ask you to verify your identity before processing the request.</PolicyP>
-          <PolicyH>What happens when your account is deleted?</PolicyH>
-          <PolicyP>When your account deletion request is processed:</PolicyP>
-          <PolicyBullets
-            items={[
-              'Your Teamital account will be permanently deleted.',
-              'Personal information associated with your account will be deleted.',
-              'Employee/profile information associated with your account will be deleted.',
-              'Any other data that is not required to be retained for legitimate legal or security purposes will be deleted.',
-            ]}
-          />
-          <PolicyP>
-            Some information may be retained for a limited period when required by law, for fraud prevention,
-            security, accounting, or other legitimate legal purposes. Any retained information will be securely stored
-            and deleted when the applicable retention requirement expires.
-          </PolicyP>
-          <PolicyH>Account deletion is permanent</PolicyH>
-          <PolicyP>
-            Account deletion is permanent and cannot be undone. Once your account and associated data have been
-            deleted, they cannot be recovered.
-          </PolicyP>
-          <PolicyP>If you have questions about account deletion or your data, please contact us at:</PolicyP>
+          {c.blocks.map((b, i) => (
+            <div key={i}>
+              {b.type === 'heading' && <PolicyH>{plainText(b.text)}</PolicyH>}
+              {b.type === 'paragraph' && <RichText className="pol-p" value={b.text} />}
+              {b.type === 'list' && <PolicyBullets items={b.items} />}
+              {i + 1 === c.mailAfterBlock && (
+                <>
+                  <div className="gap-8" />
+                  <div className="del-mail">
+                    <span className="del-mail-l">{c.emailLabel}</span>
+                    <a href={mail} className="del-mail-a">
+                      {SITE.contactEmail}
+                    </a>
+                  </div>
+                  <div className="gap-16" />
+                </>
+              )}
+            </div>
+          ))}
           <a href={mail} className="del-mail-a">
             {SITE.contactEmail}
           </a>

@@ -4,18 +4,25 @@ import { notFound } from 'next/navigation';
 import { BlogCover } from '@/components/blog/BlogCover';
 import { SitePage } from '@/components/SitePage';
 import { Icon, SmartLink, cx } from '@/components/ui';
-import { AUTHOR, BLOG_POSTS, formatDate, getPost } from '@/content/blog';
+import { BLOG, BLOG_PAGE_KEY, formatDate } from '@/content/blog';
+import { RichText } from '@/components/RichText';
+import { getSiteContent } from '@/lib/content/server';
+import { plainText } from '@/lib/content/utils';
 import { ROUTES, SITE } from '@/lib/config';
 
 type Params = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return BLOG_POSTS.map((p) => ({ slug: p.slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const c = await getSiteContent(BLOG_PAGE_KEY, BLOG);
+  return c.posts.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const c = await getSiteContent(BLOG_PAGE_KEY, BLOG);
+  const post = c.posts.find((p) => p.slug === slug);
   if (!post) return {};
   const url = `${SITE.publicSiteUrl}/blog/${post.slug}`;
   return {
@@ -28,10 +35,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function Page({ params }: Params) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const c = await getSiteContent(BLOG_PAGE_KEY, BLOG);
+  const post = c.posts.find((p) => p.slug === slug);
   if (!post) notFound();
 
-  const related = BLOG_POSTS.filter((p) => p.slug !== post.slug)
+  const related = c.posts.filter((p) => p.slug !== post.slug)
     .sort((a, b) => Number(b.category === post.category) - Number(a.category === post.category))
     .slice(0, 3);
 
@@ -45,11 +53,11 @@ export default async function Page({ params }: Params) {
           </Link>
           <span className={cx('bpill', 'bpill-tone', `tone-${post.tone}`)}>{post.category}</span>
           <h1 className="bpost-title">{post.title}</h1>
-          <p className="bhero-sub">{post.excerpt}</p>
+          <RichText className="bhero-sub" value={post.excerpt} />
           <div className="bpost-by">
             <span className="bpost-avatar">T</span>
             <span>
-              <span className="bpost-author">{AUTHOR}</span>
+              <span className="bpost-author">{c.authorName}</span>
               <span className="bpost-meta">
                 {formatDate(post.date)} · {post.readMins} min read
               </span>
@@ -68,8 +76,8 @@ export default async function Page({ params }: Params) {
               Key takeaways
             </div>
             <ul>
-              {post.takeaways.map((t) => (
-                <li key={t}>
+              {post.takeaways.map((t, i) => (
+                <li key={i}>
                   <Icon name="check_circle" size={18} color="#10B981" />
                   <span>{t}</span>
                 </li>
@@ -79,12 +87,12 @@ export default async function Page({ params }: Params) {
 
           <div className="bbody">
             {post.body.map((b, i) => {
-              if (b.t === 'h') return <h2 key={i}>{b.text}</h2>;
-              if (b.t === 'p') return <p key={i}>{b.text}</p>;
+              if (b.type === 'heading') return <h2 key={i}>{plainText(b.text)}</h2>;
+              if (b.type === 'paragraph') return <RichText key={i} value={b.text} />;
               return (
                 <ul key={i}>
-                  {b.items.map((it) => (
-                    <li key={it}>{it}</li>
+                  {b.items.map((it, j) => (
+                    <li key={j}>{it}</li>
                   ))}
                 </ul>
               );
@@ -93,11 +101,11 @@ export default async function Page({ params }: Params) {
 
           <div className="bcta bcta-post">
             <div>
-              <div className="bcta-t">See it in action</div>
-              <div className="bcta-s">Try Teamital free: attendance, GPS and leave in one place.</div>
+              <div className="bcta-t">{c.postCta.title}</div>
+              <div className="bcta-s">{c.postCta.text}</div>
             </div>
             <SmartLink href={ROUTES.signUp} className="hero-btn hero-btn-light">
-              Start free trial
+              {c.postCta.button}
             </SmartLink>
           </div>
         </div>

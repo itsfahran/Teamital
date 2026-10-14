@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { POLICY_LAST_UPDATED, type PolicyBlock } from '@/content/policies';
-import { SITE } from '@/lib/config';
+import type { PolicyCmsBlock as PolicyBlock, PolicyDoc } from '@/content/policies-cms';
+import { plainText } from '@/lib/content/utils';
+import { RichText } from '../RichText';
 import { Aos } from '../Aos';
 import { SitePage } from '../SitePage';
 import { Icon, SmartLink, cx } from '../ui';
@@ -52,18 +53,18 @@ type Section = { id: string; num: string; title: string; blocks: PolicyBlock[] }
 /** Group blocks into numbered sections ("1. Introduction"); other headings become sub-headings. */
 function toSections(blocks: PolicyBlock[]): { intro: PolicyBlock[]; sections: Section[] } {
   const numbered = /^(\d+)\.\s*(.*)$/;
-  const hasNumbered = blocks.some((b) => b.t === 'h' && numbered.test(b.text));
+  const hasNumbered = blocks.some((b) => b.type === 'heading' && numbered.test(plainText(b.text)));
   const intro: PolicyBlock[] = [];
   const sections: Section[] = [];
   let cur: Section | null = null;
   for (const b of blocks) {
-    const isSection = b.t === 'h' && (hasNumbered ? numbered.test(b.text) : true);
-    if (isSection && b.t === 'h') {
-      const m = numbered.exec(b.text);
+    const isSection = b.type === 'heading' && (hasNumbered ? numbered.test(plainText(b.text)) : true);
+    if (isSection && b.type === 'heading') {
+      const m = numbered.exec(plainText(b.text));
       cur = {
         id: `sec-${sections.length + 1}`,
         num: m ? m[1] : String(sections.length + 1),
-        title: m ? m[2] : b.text,
+        title: m ? m[2] : plainText(b.text),
         blocks: [],
       };
       sections.push(cur);
@@ -77,19 +78,19 @@ function toSections(blocks: PolicyBlock[]): { intro: PolicyBlock[]; sections: Se
 }
 
 function words(blocks: PolicyBlock[]): number {
-  return blocks.reduce((n, b) => n + (b.t === 'bullets' ? b.items.join(' ') : b.text).split(/\s+/).length, 0);
+  return blocks.reduce((n, b) => n + (b.type === 'list' ? b.items.join(' ') : plainText(b.text)).split(/\s+/).length, 0);
 }
 
 function Blocks({ blocks }: { blocks: PolicyBlock[] }) {
   return (
     <>
       {blocks.map((b, i) => {
-        if (b.t === 'h') return <h3 className="pg-sub" key={i}>{b.text}</h3>;
-        if (b.t === 'p') return <p className="pg-p" key={i}>{b.text}</p>;
+        if (b.type === 'heading') return <h3 className="pg-sub" key={i}>{plainText(b.text)}</h3>;
+        if (b.type === 'paragraph') return <RichText className="pg-p" value={b.text} key={i} />;
         return (
           <ul className="pg-ul" key={i}>
-            {b.items.map((it) => (
-              <li key={it}>
+            {b.items.map((it, j) => (
+              <li key={j}>
                 <span className="pg-dot" />
                 <span>{it}</span>
               </li>
@@ -101,8 +102,10 @@ function Blocks({ blocks }: { blocks: PolicyBlock[] }) {
   );
 }
 
-export function PolicyPage({ kind, blocks }: { kind: PolicyKey; blocks: PolicyBlock[] }) {
+export function PolicyPage({ kind, doc }: { kind: PolicyKey; doc: PolicyDoc }) {
   const meta = POLICY_META[kind];
+  const blocks = doc.blocks;
+  const L = doc.labels;
   const { intro, sections } = toSections(blocks);
   const toc: TocItem[] = sections.map((s) => ({ id: s.id, num: s.num, title: s.title }));
   const mins = Math.max(2, Math.round(words(blocks) / 220));
@@ -115,22 +118,22 @@ export function PolicyPage({ kind, blocks }: { kind: PolicyKey; blocks: PolicyBl
           <div className="pg-hero-copy">
             <span className="pg-pill">
               <Icon name="verified_user" size={16} />
-              Legal
+              {L.pill}
             </span>
-            <h1>{meta.title}</h1>
-            <p>{meta.subtitle}</p>
+            <h1>{doc.title}</h1>
+            <RichText value={doc.subtitle} />
             <div className="pg-chips">
               <span>
                 <Icon name="event" size={18} />
-                Last updated {POLICY_LAST_UPDATED}
+                {L.lastUpdated} {doc.lastUpdated}
               </span>
               <span>
                 <Icon name="format_list_numbered" size={18} />
-                {sections.length} sections
+                {sections.length} {L.sections}
               </span>
               <span>
                 <Icon name="schedule" size={18} />
-                {mins} min read
+                {mins} {L.minRead}
               </span>
             </div>
           </div>
@@ -185,11 +188,11 @@ export function PolicyPage({ kind, blocks }: { kind: PolicyKey; blocks: PolicyBl
                   <Icon name="mail" size={26} color="#fff" />
                 </span>
                 <div>
-                  <h3>Questions about this policy?</h3>
-                  <p>Our team is happy to help. Reach us at {SITE.contactEmail}.</p>
+                  <h3>{L.contactTitle}</h3>
+                  <p>{plainText(L.contactText)}</p>
                 </div>
                 <SmartLink href="/contact" className="hero-btn hero-btn-primary">
-                  <span>Contact us</span>
+                  <span>{L.contactButton}</span>
                   <Icon name="arrow_forward" size={20} color="#fff" className="hero-btn-arrow" />
                 </SmartLink>
               </div>
@@ -198,7 +201,7 @@ export function PolicyPage({ kind, blocks }: { kind: PolicyKey; blocks: PolicyBl
         </div>
 
         <div className="pg-more">
-          <h2>More from Teamital Legal</h2>
+          <h2>{L.moreTitle}</h2>
           <div className="pg-more-grid">
             {others.map((k) => {
               const m = POLICY_META[k];

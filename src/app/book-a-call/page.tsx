@@ -1,18 +1,22 @@
+import type { Metadata } from 'next';
 import { BookingWidget } from '@/components/booking/BookingWidget';
+import { RichText } from '@/components/RichText';
 import { SitePage } from '@/components/SitePage';
 import { Icon } from '@/components/ui';
+import { BOOK_CALL, BOOK_CALL_KEY } from '@/content/book-call';
+import { getSiteContent } from '@/lib/content/server';
+import { plainText } from '@/lib/content/utils';
 import { metadataFor } from '@/lib/seo';
 
-export const generateMetadata = () => metadataFor('/book-a-call');
+export const revalidate = 60;
 
-const POINTS: Array<[string, string, string]> = [
-  ['rocket_launch', 'A live product walkthrough', 'See attendance, GPS, leave and tasks working end to end.'],
-  ['tune', 'Tailored to your team', 'We map Teamital to your sites, shifts and approval flow.'],
-  ['sell', 'Straight answers on pricing', 'Plans, billing and our White Label program explained.'],
-  ['support_agent', 'No pressure', 'A friendly 30-minute conversation. Ask us anything.'],
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getSiteContent(BOOK_CALL_KEY, BOOK_CALL);
+  return metadataFor('/book-a-call', undefined, c.seo);
+}
 
-export default function Page() {
+export default async function Page() {
+  const c = await getSiteContent(BOOK_CALL_KEY, BOOK_CALL);
   return (
     <SitePage compactBelow={980} overlayHeader background="#fff">
       <section className="bk-hero">
@@ -20,33 +24,27 @@ export default function Page() {
           <aside className="bk-info">
             <span className="bhero-pill">
               <span className="bhero-dot" />
-              Free 1:1 call
+              {c.pill}
             </span>
-            <h1>Book a free call with the Teamital team</h1>
-            <p>Pick a time that suits you. We will show you how Teamital fits your business and answer every question.</p>
+            <h1>{c.title}</h1>
+            <RichText value={c.text} />
             <div className="bk-meta">
-              <span>
-                <Icon name="schedule" size={18} color="#1A56DB" />
-                30 minutes
-              </span>
-              <span>
-                <Icon name="videocam" size={18} color="#1A56DB" />
-                Online meeting
-              </span>
-              <span>
-                <Icon name="payments" size={18} color="#1A56DB" />
-                Free, no obligation
-              </span>
+              {c.meta.map((m, i) => (
+                <span key={i}>
+                  <Icon name={m.icon} size={18} color="#1A56DB" />
+                  {m.text}
+                </span>
+              ))}
             </div>
             <ul className="bk-points">
-              {POINTS.map(([icon, t, s]) => (
-                <li key={t}>
+              {c.points.map((pt, i) => (
+                <li key={i}>
                   <span className="bk-point-ico">
-                    <Icon name={icon} size={22} />
+                    <Icon name={pt.icon} size={22} />
                   </span>
                   <span>
-                    <b>{t}</b>
-                    {s}
+                    <b>{pt.title}</b>
+                    {plainText(pt.text)}
                   </span>
                 </li>
               ))}

@@ -1,11 +1,12 @@
 import Link from 'next/link';
-import { GUIDES, type Guide } from '@/content/guides';
+import type { GuideDocItem, GuidesDoc } from '@/content/guides';
 import { ROUTES } from '@/lib/config';
+import { plainText } from '@/lib/content/utils';
+import { RichText } from '../RichText';
 import { SitePage } from '../SitePage';
 import { Icon, SmartLink, cx } from '../ui';
 
-export function GuideView({ guide }: { guide: Guide }) {
-  const other = GUIDES.find((g) => g.slug !== guide.slug)!;
+export function GuideView({ guide, other, labels, cta }: { guide: GuideDocItem; other: GuideDocItem; labels: GuidesDoc['labels']; cta: GuidesDoc['cta'] }) {
   return (
     <SitePage compactBelow={980} overlayHeader background="#fff">
       <section className="bhero ghero">
@@ -15,15 +16,15 @@ export function GuideView({ guide }: { guide: Guide }) {
             {guide.audience}
           </span>
           <h1 className="bhero-title">{guide.title}</h1>
-          <p className="bhero-sub">{guide.subtitle}</p>
+          <RichText className="bhero-sub" value={guide.subtitle} />
           <div className="gmeta">
             <span>
               <Icon name="format_list_numbered" size={18} color="#1A56DB" />
-              {guide.steps.length} steps
+              {guide.steps.length} {labels.stepsWord}
             </span>
             <span>
               <Icon name="schedule" size={18} color="#1A56DB" />
-              {guide.readMins} min read
+              {guide.readMins} {labels.minRead}
             </span>
           </div>
         </div>
@@ -32,10 +33,10 @@ export function GuideView({ guide }: { guide: Guide }) {
       <section className="guide">
         <div className="guide-in">
           <aside className="gtoc" aria-label="On this page">
-            <div className="gtoc-t">In this guide</div>
+            <div className="gtoc-t">{labels.inThisGuide}</div>
             <ol>
               {guide.steps.map((s, i) => (
-                <li key={s.title}>
+                <li key={i}>
                   <a href={`#step-${i + 1}`}>
                     <span className="gtoc-n">{i + 1}</span>
                     {s.title}
@@ -47,7 +48,7 @@ export function GuideView({ guide }: { guide: Guide }) {
                   <span className="gtoc-n">
                     <Icon name="help" size={14} />
                   </span>
-                  FAQs
+                  {labels.faqLink}
                 </a>
               </li>
             </ol>
@@ -56,7 +57,7 @@ export function GuideView({ guide }: { guide: Guide }) {
           <div className="gmain">
             <ol className="gsteps">
               {guide.steps.map((s, i) => (
-                <li className="gstep" id={`step-${i + 1}`} key={s.title}>
+                <li className="gstep" id={`step-${i + 1}`} key={i}>
                   <div className="gstep-rail">
                     <span className={cx('gstep-n', `tone-${guide.tone}`)}>{i + 1}</span>
                   </div>
@@ -67,13 +68,13 @@ export function GuideView({ guide }: { guide: Guide }) {
                       </span>
                       <h2>{s.title}</h2>
                     </div>
-                    <p>{s.text}</p>
-                    {s.bullets && (
+                    <RichText value={s.text} />
+                    {s.bullets.length > 0 && (
                       <ul>
-                        {s.bullets.map((b) => (
-                          <li key={b}>
+                        {s.bullets.map((b, j) => (
+                          <li key={j}>
                             <Icon name="check_circle" size={18} color="#10B981" />
-                            <span>{b}</span>
+                            <span>{plainText(b)}</span>
                           </li>
                         ))}
                       </ul>
@@ -86,26 +87,28 @@ export function GuideView({ guide }: { guide: Guide }) {
             <div className="gtips">
               <div className="gtips-t">
                 <Icon name="lightbulb" size={20} color="#D97706" />
-                Pro tips
+                {labels.proTips}
               </div>
               <ul>
-                {guide.tips.map((t) => (
-                  <li key={t}>{t}</li>
+                {guide.tips.map((t, i) => (
+                  <li key={i}>{t}</li>
                 ))}
               </ul>
             </div>
 
             <h2 className="gfaq-t" id="faq">
-              Frequently asked questions
+              {labels.faqTitle}
             </h2>
             <div className="gfaq">
-              {guide.faqs.map(([q, a]) => (
-                <details className="faq-item" key={q}>
+              {guide.faqs.map((f, i) => (
+                <details className="faq-item" key={i}>
                   <summary>
-                    <span>{q}</span>
+                    <span>{f.q}</span>
                     <Icon name="expand_more" size={24} color="#45464F" className="faq-chev" />
                   </summary>
-                  <div className="faq-a">{a}</div>
+                  <div className="faq-a">
+                    <RichText value={f.a} />
+                  </div>
                 </details>
               ))}
             </div>
@@ -115,7 +118,7 @@ export function GuideView({ guide }: { guide: Guide }) {
                 <Icon name={other.icon} size={22} />
               </span>
               <span className="gother-txt">
-                <span className="gother-k">Also read</span>
+                <span className="gother-k">{labels.alsoRead}</span>
                 <span className="gother-t">{other.title}</span>
               </span>
               <Icon name="arrow_forward" size={20} color="#1A56DB" />
@@ -123,11 +126,11 @@ export function GuideView({ guide }: { guide: Guide }) {
 
             <div className="bcta bcta-post">
               <div>
-                <div className="bcta-t">Ready to get started?</div>
-                <div className="bcta-s">Create your account and follow along. It takes a few minutes.</div>
+                <div className="bcta-t">{cta.title}</div>
+                <div className="bcta-s">{plainText(cta.text)}</div>
               </div>
               <SmartLink href={ROUTES.signUp} className="hero-btn hero-btn-light">
-                Start free trial
+                {cta.button}
               </SmartLink>
             </div>
           </div>

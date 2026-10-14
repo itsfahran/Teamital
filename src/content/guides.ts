@@ -177,3 +177,46 @@ export const GUIDES: Guide[] = [
 ];
 
 export const getGuide = (slug: string) => GUIDES.find((g) => g.slug === slug);
+
+/* ───────── CMS document (Admin → Site content → Guides) ───────── */
+export const GUIDES_PAGE_KEY = 'guides';
+
+const guideDoc = (g: Guide, seoTitle: string, seoDescription: string) => ({
+  seo: { title: seoTitle, description: seoDescription },
+  slug: g.slug as string,
+  path: g.path,
+  audience: g.audience,
+  title: g.title,
+  subtitle: g.subtitle,
+  icon: g.icon,
+  tone: g.tone as string,
+  readMins: g.readMins,
+  steps: g.steps.map((s) => ({ icon: s.icon, title: s.title, text: s.text, bullets: s.bullets ?? [] })),
+  tips: g.tips,
+  faqs: g.faqs.map(([q, a]) => ({ q, a })),
+});
+
+export const GUIDES_DOC = {
+  seo: { title: 'Guides | Teamital', description: 'Step-by-step guides for companies and employees using Teamital.' },
+  hub: {
+    pill: 'Guides',
+    title: 'Learn how to use Teamital',
+    sub: 'Step-by-step guides for company admins and for employees.',
+    readLabel: 'Read the guide',
+  },
+  labels: {
+    inThisGuide: 'In this guide',
+    faqLink: 'FAQs',
+    stepsWord: 'steps',
+    minRead: 'min read',
+    proTips: 'Pro tips',
+    faqTitle: 'Frequently asked questions',
+    alsoRead: 'Also read',
+  },
+  cta: { title: 'Ready to get started?', text: 'Create your account and follow along. It takes a few minutes.', button: 'Start free trial' },
+  companies: guideDoc(GUIDES[0], 'Guide for Companies | Teamital', 'How to set up Teamital for your company: employees, attendance rules, shifts, leave and reports.'),
+  employees: guideDoc(GUIDES[1], 'Guide for Employees | Teamital', 'How employees use Teamital: clock in and out, hours, leave, tasks and chat.'),
+};
+
+export type GuidesDoc = typeof GUIDES_DOC;
+export type GuideDocItem = GuidesDoc['companies'];

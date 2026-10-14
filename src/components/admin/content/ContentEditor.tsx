@@ -15,6 +15,7 @@ const RICH_KEY = /^(body|text|description|intro|answer|a|paragraphs|onePara|summ
 const IMAGE_KEY = /(image|img|photo|picture|logo|cover|thumbnail|banner|avatar|background)$/i;
 const LINK_KEY = /(href|url|link)$/i;
 const TONES = ['blue', 'violet', 'green', 'amber', 'rose', 'sky'];
+const BLOCK_TYPES = ['heading', 'paragraph', 'list'];
 
 const humanize = (k: string) => {
   const s = k.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').trim();
@@ -35,8 +36,9 @@ const setAt = (root: Json, path: Path, value: Json): Json => {
 const firstText = (v: Json): string => {
   if (typeof v === 'string') return v.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   if (isObj(v)) {
-    for (const k of ['title', 'name', 'q', 'label', 'heading', 'tab']) if (typeof v[k] === 'string' && v[k]) return firstText(v[k]);
-    for (const x of Object.values(v)) if (typeof x === 'string' && x) return firstText(x);
+    for (const k of ['title', 'name', 'q', 'label', 'heading', 'tab', 'text', 'quote', 'role']) if (typeof v[k] === 'string' && v[k]) return firstText(v[k]);
+    if (Array.isArray(v.items) && typeof v.items[0] === 'string') return '• ' + firstText(v.items[0]);
+    for (const [k, x] of Object.entries(v)) if (k !== 'type' && k !== 'kind' && typeof x === 'string' && x) return firstText(x);
   }
   return '';
 };
@@ -93,7 +95,7 @@ function Leaf({ label, k, parentKey, value, onChange }: { label: string; k: stri
 
 const Labels = createContext<Record<string, string>>({});
 
-function Node({ label: baseLabel, k, parentKey, value, path, set, depth }: { label: string; k: string; parentKey: string; value: Json; path: Path; set: (p: Path, v: Json) => void; depth: number }) {
+function Node({ label: baseLabel, k, parentKey, value, path, set, depth, flat: flatProp = false }: { label: string; k: string; parentKey: string; value: Json; path: Path; set: (p: Path, v: Json) => void; depth: number; flat?: boolean }) {
   const labels = useContext(Labels);
   const label = labels[path.filter((x) => typeof x === "string").join(".")] ?? baseLabel;
   const [open, setOpen] = useState(depth < 1);
@@ -147,7 +149,7 @@ function Node({ label: baseLabel, k, parentKey, value, path, set, depth }: { lab
                 onDelete={() => mutate(value.filter((_, x) => x !== i))}
                 onDuplicate={() => mutate([...value.slice(0, i + 1), JSON.parse(JSON.stringify(item)), ...value.slice(i + 1)])}
               >
-                <Node label={simple ? label.replace(/s$/, '') : `Item ${i + 1}`} k={simple ? parentKey || k : String(i)} parentKey={k} value={item} path={[...path, i]} set={set} depth={depth + 1} />
+                <Node label={simple ? label.replace(/s$/, '') : `Item ${i + 1}`} k={simple ? parentKey || k : String(i)} parentKey={k} value={item} path={[...path, i]} set={set} depth={depth + 1} flat />
               </ArrayItem>
             ))}
             <button type="button" className="adm-btn" onClick={() => mutate([...value, value.length ? blank(value[value.length - 1]) : ''])}>
@@ -159,9 +161,28 @@ function Node({ label: baseLabel, k, parentKey, value, path, set, depth }: { lab
     );
   }
 
+  if (isObj(value) && typeof value.type === 'string' && BLOCK_TYPES.includes(value.type) && 'text' in value && 'items' in value) {
+    const t = value.type;
+    return (
+      <div className="cx-flat">
+        <label className="cx-field">
+          <span className="cx-label">Block type</span>
+          <select className="adm-input" value={t} onChange={(e) => set([...path, 'type'], e.target.value)}>
+            <option value="heading">Heading</option>
+            <option value="paragraph">Paragraph (rich text)</option>
+            <option value="list">Bullet list</option>
+          </select>
+        </label>
+        {t === 'heading' && <Leaf label="Heading" k="heading" parentKey="" value={String(value.text)} onChange={(v) => set([...path, 'text'], v)} />}
+        {t === 'paragraph' && <Leaf label="Text" k="text" parentKey="" value={String(value.text)} onChange={(v) => set([...path, 'text'], v)} />}
+        {t === 'list' && <Node label="List items" k="items" parentKey="items" value={value.items} path={[...path, 'items']} set={set} depth={depth + 1} />}
+      </div>
+    );
+  }
+
   if (isObj(value)) {
     const entries = Object.entries(value);
-    const flat = depth === 0;
+    const flat = depth === 0 || flatProp;
     const body = entries.map(([kk, vv]) => (
       <Node key={kk} label={humanize(kk)} k={kk} parentKey={k} value={vv} path={[...path, kk]} set={set} depth={depth + 1} />
     ));
