@@ -50,9 +50,10 @@ export function WlPackages() {
 
       <div className="plans-wrap wlp-wrap" key={tab}>
         <div className="plans wlp-plans">
-          {packagesFor(tab).map((p) => (
+          {packagesFor(tab).map((p, i) => (
             <div className="plan" key={p.key}>
               <div className="plan-top">
+                <span className="wlp-num">{i + 1}</span>
                 <div className="plan-name">{p.name}</div>
                 <span className={cx('bill-chip', tab === '1 Year' ? 'chip-year' : 'chip-month')}>{tab === '1 Year' ? 'Yearly' : 'Monthly'}</span>
               </div>
