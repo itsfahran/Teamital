@@ -8,7 +8,7 @@ import { diffContent, isObj, sameValue } from '@/lib/content/utils';
 import { ImageField } from './ImageField';
 import { RichTextEditor } from './RichTextEditor';
 
-type Path = Array<string | number>;
+export type Path = Array<string | number>;
 type Json = unknown;
 
 const RICH_KEY = /^(body|text|description|intro|answer|a|paragraphs|onePara|summary|content|subtext|details|sub|captionText)$/i;
@@ -22,7 +22,7 @@ const humanize = (k: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 };
 
-const setAt = (root: Json, path: Path, value: Json): Json => {
+export const setAt = (root: Json, path: Path, value: Json): Json => {
   if (path.length === 0) return value;
   const [head, ...rest] = path;
   if (Array.isArray(root)) {
@@ -93,9 +93,9 @@ function Leaf({ label, k, parentKey, value, onChange }: { label: string; k: stri
   );
 }
 
-const Labels = createContext<Record<string, string>>({});
+export const Labels = createContext<Record<string, string>>({});
 
-function Node({ label: baseLabel, k, parentKey, value, path, set, depth, flat: flatProp = false }: { label: string; k: string; parentKey: string; value: Json; path: Path; set: (p: Path, v: Json) => void; depth: number; flat?: boolean }) {
+export function Node({ label: baseLabel, k, parentKey, value, path, set, depth, flat: flatProp = false }: { label: string; k: string; parentKey: string; value: Json; path: Path; set: (p: Path, v: Json) => void; depth: number; flat?: boolean }) {
   const labels = useContext(Labels);
   const label = labels[path.filter((x) => typeof x === "string").join(".")] ?? baseLabel;
   const [open, setOpen] = useState(depth < 1);

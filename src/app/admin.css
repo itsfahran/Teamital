@@ -192,3 +192,43 @@ textarea.adm-input { resize: vertical; }
 .rte-src { width: 100%; min-height: 160px; border: 0; padding: 12px 14px; font: 13px/1.5 ui-monospace, Consolas, monospace; outline: none; resize: vertical; }
 .rte-srcbtn { display: block; width: 100%; border: 0; border-top: 1px solid #eef2f7; background: #f8fafc; padding: 7px; font: inherit; font-size: 12px; color: #6b7280; cursor: pointer; }
 .rte-srcbtn:hover { color: #1a56db; }
+
+.ld-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px 18px; margin-bottom: 12px; }
+.ld-grid span { display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; }
+.ld-grid b { font-size: 14px; color: #111827; word-break: break-word; }
+
+/* ───── Page builder ───── */
+.pb-slug { display: flex; align-items: center; gap: 4px; }
+.pb-slug i { font-style: normal; color: #94a3b8; font-weight: 700; }
+.pb-empty { text-align: center; padding: 40px 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #64748b; }
+.pb-empty .mi { font-size: 44px; color: #93b4f3; }
+.pb-empty b { color: #111827; font-size: 17px; }
+.pb-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+.pb-sec { border: 1px solid #e5e7eb; border-radius: 16px; background: #fff; overflow: hidden; }
+.pb-sec-h { display: flex; align-items: center; gap: 8px; padding: 8px 10px; }
+.pb-sec-t { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; background: none; border: 0; padding: 4px; cursor: pointer; text-align: left; font: inherit; color: #111827; }
+.pb-sec-n { flex: none; width: 26px; height: 26px; border-radius: 50%; background: #1a56db; color: #fff; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.pb-sec-ico { flex: none; width: 40px; height: 40px; border-radius: 12px; background: #e8f0ff; color: #1a56db; display: inline-flex; align-items: center; justify-content: center; }
+.pb-sec-name { flex: 1; display: flex; flex-direction: column; }
+.pb-sec-name b { font-size: 15px; }
+.pb-sec-name i { font-style: normal; font-size: 12.5px; color: #64748b; }
+.pb-sec-b { padding: 6px 16px 18px; border-top: 1px solid #eef2f7; display: flex; flex-direction: column; gap: 12px; }
+.pb-variants { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.pb-var { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 10px; border: 2px solid #e5e7eb; border-radius: 14px; background: #fff; cursor: pointer; font: inherit; transition: border-color 160ms, box-shadow 160ms; }
+.pb-var:hover { border-color: #93b4f3; }
+.pb-var-on { border-color: #1a56db; box-shadow: 0 10px 24px -14px rgba(26, 86, 219, 0.6); background: #f5f9ff; }
+.pb-var b { font-size: 13.5px; color: #111827; }
+.pb-var i { font-style: normal; font-size: 12px; color: #6b7280; line-height: 1.35; }
+.pb-thumb { position: relative; width: 100%; aspect-ratio: 100 / 60; border-radius: 8px; background: #eef2f9; border: 1px solid #dde4f0; overflow: hidden; margin-bottom: 4px; }
+.pb-th { position: absolute; display: block; border-radius: 2px; }
+.pb-th-card { border: 1px solid #cfd9ec; border-radius: 4px; }
+.pb-th-btn { border-radius: 99px; }
+.pb-fields { padding-top: 6px; }
+.pb-modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(15, 23, 42, 0.55); }
+.pb-modal-in { width: 100%; max-width: 860px; max-height: 90vh; overflow-y: auto; background: #fff; border-radius: 20px; padding: 22px; }
+.pb-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.pb-type { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; text-align: left; padding: 16px; border: 2px solid #e5e7eb; border-radius: 16px; background: #fff; cursor: pointer; font: inherit; transition: border-color 160ms, transform 160ms; }
+.pb-type:hover { border-color: #1a56db; transform: translateY(-2px); }
+.pb-type b { font-size: 15px; margin-top: 8px; }
+.pb-type i { font-style: normal; font-size: 12.5px; color: #6b7280; line-height: 1.4; }
+.pb-type em { font-style: normal; font-size: 11.5px; font-weight: 700; color: #1a56db; margin-top: 4px; }

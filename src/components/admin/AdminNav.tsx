@@ -13,6 +13,7 @@ const ITEMS = [
   { href: '/admin/plans', key: 'plans', icon: 'sell' },
   { href: '/admin/bookings', key: 'bookings', icon: 'event' },
   { href: '/admin/availability', key: 'availability', icon: 'edit_calendar' },
+  { href: '/admin/leads', key: 'leads', icon: 'contact_page' },
   { href: '/admin/messages', key: 'messages', icon: 'mail' },
 ] as const;
 

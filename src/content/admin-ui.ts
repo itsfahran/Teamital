@@ -13,6 +13,7 @@ export const ADMIN_UI = {
     plans: 'Pricing plans',
     bookings: 'Call bookings',
     availability: 'Availability',
+    leads: 'Leads',
     messages: 'Messages',
   },
   dashboard: {

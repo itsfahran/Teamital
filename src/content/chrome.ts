@@ -155,10 +155,12 @@ export const CHROME = {
     homeLabel: 'Home',
     howItWorksLabel: 'How It Works',
     pricingLabel: 'Pricing',
-    scheduleLabel: 'Schedule 1:1 Demo',
-    scheduleShortLabel: 'Schedule demo',
-    signInLabel: 'Sign in',
-    trialLabel: 'Start 14-days trial',
+    buttons: {
+      signIn: { show: true, label: 'Sign In', href: ROUTES.signIn },
+      signUp: { show: true, label: 'Sign Up', href: ROUTES.signUp },
+      trial: { show: true, label: '14-Day Free Trial', href: ROUTES.signUp },
+      demo: { show: true, label: 'Schedule Demo', shortLabel: 'Schedule demo', href: ROUTES.bookCall },
+    },
     menus: HEADER_MENUS,
   },
   footer: {

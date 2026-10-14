@@ -2,6 +2,7 @@ import { CHROME, CHROME_PAGE_KEY } from './chrome';
 import { HOME, HOME_PAGE_KEY } from './home';
 import { ADMIN_UI, ADMIN_UI_KEY } from './admin-ui';
 import { BLOG, BLOG_PAGE_KEY } from './blog';
+import { LEAD_SETTINGS, LEAD_SETTINGS_KEY } from './lead-settings';
 import { BOOK_CALL, BOOK_CALL_KEY } from './book-call';
 import { DELETE_ACCOUNT, DELETE_ACCOUNT_KEY } from './delete-account';
 import { GUIDES_DOC, GUIDES_PAGE_KEY } from './guides';
@@ -137,9 +138,11 @@ CONTENT_PAGES.push(
       "booking.topics": "Call topics (dropdown)",
       "booking.teamSizes": "Team sizes (dropdown)",
       notFound: "404 page",
-      "header.scheduleLabel": "Schedule demo button",
-      "header.scheduleShortLabel": "Schedule demo button (small screens)",
-      "header.trialLabel": "Free trial button",
+      "header.buttons": "Header buttons (show/hide, label and link)",
+      "header.buttons.signIn": "Sign In",
+      "header.buttons.signUp": "Sign Up",
+      "header.buttons.trial": "14-Day Free Trial",
+      "header.buttons.demo": "Schedule Demo (opens the booking pop-up when the link is /book-a-call)",
       footer: "Footer",
       "footer.columns": "Link columns",
       "footer.bottomLinks": "Bottom bar links",
@@ -178,6 +181,7 @@ CONTENT_PAGES.push(
   { key: 'privacy-policy', label: 'Privacy Policy', route: '/privacy-policy', description: 'Full legal text, last-updated date and page labels.', icon: 'privacy_tip', defaults: POLICY_DOCS['privacy-policy'], labels: POLICY_LABELS },
   { key: 'terms-and-conditions', label: 'Terms & Conditions', route: '/terms-and-conditions', description: 'Full legal text, last-updated date and page labels.', icon: 'gavel', defaults: POLICY_DOCS['terms-and-conditions'], labels: POLICY_LABELS },
   { key: 'cookie-policy', label: 'Cookie Policy', route: '/cookie-policy', description: 'Full legal text, last-updated date and page labels.', icon: 'cookie', defaults: POLICY_DOCS['cookie-policy'], labels: POLICY_LABELS },
+  { key: LEAD_SETTINGS_KEY, label: 'Lead notifications', route: '/admin/leads', description: 'Which email address receives lead-form submissions.', icon: 'forward_to_inbox', defaults: LEAD_SETTINGS, labels: { notifyEmail: 'Send leads to this email (falls back to the booking notification email, then contact@teamital.com)', extraRecipients: 'Extra recipients (also receive every lead)', subjectPrefix: 'Email subject prefix' } },
   { key: ADMIN_UI_KEY, label: 'Admin panel labels', route: '/admin', description: 'Sidebar menu names, dashboard texts and the headings of the admin pages.', icon: 'admin_panel_settings', defaults: ADMIN_UI, labels: { nav: 'Sidebar menu', dashboard: 'Dashboard', pages: 'Page headings' } },
   { key: BOOK_CALL_KEY, label: 'Book a call', route: '/book-a-call', description: 'Text beside the booking calendar (the calendar itself is configured under Availability).', icon: 'event', defaults: BOOK_CALL, labels: { seo: SEO, meta: 'Info chips', points: 'Benefit points' } },
   { key: DELETE_ACCOUNT_KEY, label: 'Delete account', route: '/delete-account', description: 'Account deletion instructions page.', icon: 'person_remove', defaults: DELETE_ACCOUNT, labels: { seo: SEO, blocks: 'Content (headings, paragraphs and lists, in order)', mailAfterBlock: 'Show the email box after block number', mailSubject: 'Email subject line' } },

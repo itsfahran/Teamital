@@ -61,7 +61,7 @@ export function MessagesList({ messages }: { messages: Message[] }) {
                   {!m.is_read && <span className="adm-badge">new</span>}
                   {!isOpen && <div className="adm-muted adm-clip">{m.message}</div>}
                 </div>
-                <div className="adm-muted">{new Date(m.created_at).toLocaleString()}</div>
+                <div className="adm-muted" suppressHydrationWarning>{new Date(m.created_at).toLocaleString()}</div>
               </button>
               {isOpen && (
                 <div className="adm-msg-body">

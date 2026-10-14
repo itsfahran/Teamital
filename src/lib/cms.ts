@@ -1,3 +1,4 @@
+import { isBuilderContent, type SectionBlock } from '@/content/sections';
 import { createPublicSupabase, isSupabaseConfigured } from './supabase/server';
 
 export type CmsBlock = {
@@ -49,6 +50,8 @@ export type CmsPageContent = {
   h3Items: string[];
   slots: Record<number, HomeSlot>;
   blocks: CmsBlock[];
+  /** Page-builder sections (null for legacy block pages). */
+  sections: SectionBlock[] | null;
 };
 
 type Obj = Record<string, unknown>;
@@ -178,6 +181,7 @@ export function pageFromRow(row: Obj, seo: Obj | null): CmsPageContent {
     h3Variant, h3Heading, h3Body, h3Button, h3Items,
     slots,
     blocks,
+    sections: isBuilderContent(content) ? content : Array.isArray(content) && content.length === 0 ? [] : null,
   };
 }
 

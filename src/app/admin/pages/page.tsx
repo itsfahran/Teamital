@@ -18,8 +18,7 @@ export default async function PagesList() {
         </Link>
       </div>
       <p className="adm-muted">
-        The page with slug <code>home</code> controls the homepage. Other published pages are served at{' '}
-        <code>/&lt;slug&gt;</code>.
+        Build new landing pages from sections (Hero, Features, Content, Benefits, Call to action, FAQ, Testimonials, Lead form), each with several designs. Published pages are served at <code>/&lt;address&gt;</code>.
       </p>
       {error && <div className="adm-alert adm-alert-err">{error.message}</div>}
       <div className="adm-card adm-table">

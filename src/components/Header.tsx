@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { appAbsolute, ROUTES } from '@/lib/config';
+import { ROUTES, resolveHref } from '@/lib/config';
 import { useChrome } from './ChromeProvider';
 import { BRAND_ICONS } from './brand-icons';
 import { BrandLogo, Icon, SmartLink, cx } from './ui';
@@ -46,6 +46,8 @@ function GlyphIcon({ name, size, className }: { name: string; size: number; clas
 export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) {
   const { header: hd } = useChrome();
   const MENUS: MegaMenu[] = hd.menus;
+  const btn = hd.buttons;
+  const go = (h: string) => resolveHref(h).href;
   const pathname = usePathname() || '/';
   const current = currentFor(pathname);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -200,26 +202,37 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
             })}
             {tab('howItWorks', hd.howItWorksLabel, ROUTES.howItWorks)}
             {tab('pricing', hd.pricingLabel, ROUTES.pricing)}
-            <li className="hdr-li hdr-li-book">
-              <div className="book-capsule">
-                <Link href={ROUTES.bookCall} className="book-pill" onClick={closeAll}>
-                  <span>{hd.scheduleLabel}</span>
-                  <Icon name="north_east" size={18} className="book-pill-arrow" />
-                </Link>
-              </div>
-            </li>
+            {btn.demo.show && (
+              <li className="hdr-li hdr-li-book">
+                <div className="book-capsule">
+                  <Link href={go(btn.demo.href)} className="book-pill" onClick={closeAll}>
+                    <span>{btn.demo.label}</span>
+                    <Icon name="north_east" size={18} className="book-pill-arrow" />
+                  </Link>
+                </div>
+              </li>
+            )}
           </ul>
         </nav>
 
         <div className="hdr-actions">
-          <a href={appAbsolute(ROUTES.signIn)} className="hdr-signin">
-            <Icon name="login" size={18} />
-            {hd.signInLabel}
-          </a>
-          <a href={appAbsolute(ROUTES.signUp)} className="hdr-cta">
-            {hd.trialLabel}
-            <Icon name="arrow_forward" size={18} color="#fff" className="hdr-cta-arrow" />
-          </a>
+          {btn.signIn.show && (
+            <a href={go(btn.signIn.href)} className="hdr-signin">
+              <Icon name="login" size={18} />
+              {btn.signIn.label}
+            </a>
+          )}
+          {btn.signUp.show && (
+            <a href={go(btn.signUp.href)} className="hdr-signup">
+              {btn.signUp.label}
+            </a>
+          )}
+          {btn.trial.show && (
+            <a href={go(btn.trial.href)} className="hdr-cta">
+              {btn.trial.label}
+              <Icon name="arrow_forward" size={18} color="#fff" className="hdr-cta-arrow" />
+            </a>
+          )}
         </div>
       </div>
 
@@ -229,8 +242,8 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
           <BrandLogo height={60} />
         </Link>
         <span style={{ flex: 1 }} />
-        <Link href={ROUTES.bookCall} className="book-pill book-pill-sm">
-          <span>{hd.scheduleShortLabel}</span>
+        <Link href={go(btn.demo.href)} className="book-pill book-pill-sm" hidden={!btn.demo.show}>
+          <span>{btn.demo.shortLabel}</span>
           <Icon name="north_east" size={16} className="book-pill-arrow" />
         </Link>
         <button type="button" className="hdr-burger" aria-label="Open menu" onClick={() => setSheet(true)}>
@@ -304,16 +317,25 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
               ))}
             </div>
             <div className="sheet-cta">
-              <Link href={ROUTES.bookCall} className="sheet-btn sheet-btn-book" onClick={() => setSheet(false)}>
-                {hd.scheduleLabel}
+              <Link href={go(btn.demo.href)} className="sheet-btn sheet-btn-book" onClick={() => setSheet(false)} hidden={!btn.demo.show}>
+                {btn.demo.label}
                 <Icon name="north_east" size={18} color="#fff" />
               </Link>
-              <a href={appAbsolute(ROUTES.signIn)} className="sheet-btn sheet-btn-ghost">
-                {hd.signInLabel}
-              </a>
-              <a href={appAbsolute(ROUTES.signUp)} className="sheet-btn sheet-btn-primary">
-                {hd.trialLabel}
-              </a>
+              {btn.signIn.show && (
+                <a href={go(btn.signIn.href)} className="sheet-btn sheet-btn-ghost">
+                  {btn.signIn.label}
+                </a>
+              )}
+              {btn.signUp.show && (
+                <a href={go(btn.signUp.href)} className="sheet-btn sheet-btn-ghost">
+                  {btn.signUp.label}
+                </a>
+              )}
+              {btn.trial.show && (
+                <a href={go(btn.trial.href)} className="sheet-btn sheet-btn-primary">
+                  {btn.trial.label}
+                </a>
+              )}
             </div>
           </div>
         </div>

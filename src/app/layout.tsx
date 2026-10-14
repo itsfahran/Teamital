@@ -11,6 +11,7 @@ import './wl.css';
 import './policy.css';
 import './home-sections.css';
 import './booking.css';
+import './sections.css';
 import './admin.css';
 import { SITE } from '@/lib/config';
 import { ToastProvider } from '@/components/Toast';

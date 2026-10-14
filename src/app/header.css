@@ -86,6 +86,8 @@
   transition: color 160ms ease;
 }
 .hdr-signin:hover { color: #1a56db; }
+.hdr-signup { display: inline-flex; align-items: center; height: 42px; padding: 0 12px 0 14px; font-size: 14px; font-weight: 600; color: #1f2937; border-left: 1px solid #e5e7eb; margin-left: -2px; transition: color 160ms ease; white-space: nowrap; }
+.hdr-signup:hover { color: #1a56db; }
 .hdr-cta {
   display: inline-flex;
   align-items: center;
@@ -122,6 +124,7 @@
 /* Responsive: full bar >= 1240px, hamburger below. Tighten + hide "Sign in" on the way down. */
 @media (max-width: 1799.98px) {
   .hdr-signin { padding: 0 6px; font-size: 13.5px; gap: 4px; }
+  .hdr-signup { padding: 0 8px 0 10px; font-size: 13.5px; }
   .hdr-cta { height: 42px; padding: 0 12px; font-size: 12.5px; gap: 6px; }
   .hdr-bar { gap: 10px; }
   .hdr-logo .brand-logo { width: 180px !important; }

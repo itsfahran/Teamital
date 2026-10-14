@@ -165,7 +165,7 @@ export function buildIcs(opts: { uid: string; start: Date; end: Date; title: str
 
 /* ───────────── email (Resend, optional) ───────────── */
 
-const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+export const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export function fmtWhen(iso: string, tz: string): string {
   return new Intl.DateTimeFormat('en-GB', {
@@ -208,7 +208,7 @@ export async function sendEmail(to: string[], subject: string, html: string, rep
 const BLUE = '#1a56db';
 const FONT = "'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 
-function shell(opts: { preheader: string; title: string; intro: string; body: string }) {
+export function shell(opts: { preheader: string; title: string; intro: string; body: string }) {
   const logo = `${SITE.publicSiteUrl}/brand-logo.png`;
   return `<!doctype html><html><body style="margin:0;padding:0;background:#f1f5fb">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${esc(opts.preheader)}</div>
@@ -233,15 +233,15 @@ function shell(opts: { preheader: string; title: string; intro: string; body: st
 </table></td></tr></table></body></html>`;
 }
 
-const button = (href: string, label: string, primary = true) =>
+export const button = (href: string, label: string, primary = true) =>
   `<a href="${esc(href)}" style="display:inline-block;font-weight:700;font-size:15px;text-decoration:none;border-radius:12px;padding:14px 26px;${
     primary ? `background:${BLUE};color:#ffffff;` : `background:#eff6ff;color:${BLUE};border:1px solid #bfdbfe;`
   }">${label}</a>`;
 
-const detailRow = (label: string, value: string) =>
+export const detailRow = (label: string, value: string) =>
   `<tr><td style="padding:9px 0;width:120px;color:#6b7280;font-size:13px;vertical-align:top;border-bottom:1px solid #eef2f7">${label}</td><td style="padding:9px 0;font-size:14px;font-weight:600;color:#111827;border-bottom:1px solid #eef2f7">${value}</td></tr>`;
 
-const card = (inner: string) =>
+export const card = (inner: string) =>
   `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e5eaf3;border-radius:14px;margin:0 0 22px"><tr><td style="padding:8px 20px">${inner}</td></tr></table>`;
 
 const linkBox = (link: string) =>

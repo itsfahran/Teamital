@@ -13,13 +13,15 @@ export default async function AdminDashboard() {
     return c ?? 0;
   };
 
-  const [pages, published, unread, messages, plans, upcoming] = await Promise.all([
+  const [pages, published, unread, messages, plans, upcoming, newLeads, allLeads] = await Promise.all([
     count('cms_pages'),
     count('cms_pages', (q) => q.eq('status', 'published')),
     count('contact_messages', (q) => q.eq('is_read', false)),
     count('contact_messages'),
     count('subscription_plans'),
     count('meeting_bookings', (q) => q.eq('status', 'confirmed').gte('start_at', new Date().toISOString())),
+    count('leads', (q) => q.eq('status', 'new')),
+    count('leads'),
   ]);
 
   const { data: recent } = await db
@@ -30,6 +32,7 @@ export default async function AdminDashboard() {
 
   const cards = [
     { label: ui.pagesLabel, value: pages, sub: `${published} ${ui.pagesSub}`, href: '/admin/pages', icon: 'article' },
+    { label: 'New leads', value: newLeads, sub: `${allLeads} total`, href: '/admin/leads', icon: 'contact_page' },
     { label: ui.unreadLabel, value: unread, sub: `${messages} ${ui.unreadSub}`, href: '/admin/messages', icon: 'mail' },
     { label: ui.callsLabel, value: upcoming, sub: ui.callsSub, href: '/admin/bookings', icon: 'event' },
     { label: ui.plansLabel, value: plans, sub: ui.plansSub, href: '/admin/plans', icon: 'sell' },
