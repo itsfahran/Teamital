@@ -533,3 +533,4 @@
 .wlp-unit { font-size: 16px; font-weight: 600; color: #6b7280; margin-left: 2px; }
 .wlp-num { flex: none; width: 30px; height: 30px; margin-right: 12px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a56db, #1381e3); color: #fff; font-size: 14px; font-weight: 800; }
 .wlp-plans .plan-name { font-size: 17px; min-width: 0; } .wlp-plans .bill-chip { flex: none; margin-left: 10px; }
+.wlp-plans { align-items: stretch; } .wlp-plans .plan { display: flex; flex-direction: column; } .wlp-plans .plan-feats { flex: 1; }
