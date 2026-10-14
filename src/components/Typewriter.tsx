@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const PHRASES = ['Track attendance.', 'Manage teams.', 'Grow faster.', 'Stay in sync.'];
+const DEFAULT_PHRASES = ['Track attendance.', 'Manage teams.', 'Grow faster.', 'Stay in sync.'];
 const COLORS = ['#1A56DB', '#0EA5E9', '#7C3AED', '#059669'];
 
 /** Short cycling typewriter headline with color changes (port of WebTypewriterHeading). */
-export function Typewriter({ fontSize = 42 }: { fontSize?: number }) {
+export function Typewriter({ fontSize = 42, phrases }: { fontSize?: number; phrases?: string[] }) {
+  const PHRASES = phrases && phrases.length ? phrases : DEFAULT_PHRASES;
   const [phrase, setPhrase] = useState(0);
   const [shown, setShown] = useState('');
   const state = useRef({ phrase: 0, shown: '', deleting: false });

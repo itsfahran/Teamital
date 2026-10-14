@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { appAbsolute, ROUTES, STORE_LINKS } from '@/lib/config';
+import { appAbsolute, ROUTES } from '@/lib/config';
+import { useChrome } from './ChromeProvider';
 import { BRAND_ICONS } from './brand-icons';
 import { BrandLogo, Icon, SmartLink, cx } from './ui';
 
@@ -11,103 +12,6 @@ type MegaItem = { icon: string; title: string; subtitle: string; href?: string; 
 type MegaCol = { title: string; items: MegaItem[] };
 type MegaMenu = { id: string; label: string; columns: MegaCol[] };
 
-const MENUS: MegaMenu[] = [
-  {
-    id: 'Features',
-    label: 'Features',
-    columns: [
-      {
-        title: 'Workforce',
-        items: [
-          { icon: 'fingerprint', title: 'Clock in / out', subtitle: 'GPS, face & biometric attendance' },
-          { icon: 'task_alt', title: 'Tasks', subtitle: 'Assign work and track progress' },
-          { icon: 'beach_access', title: 'Leave', subtitle: 'Requests, balances & approvals' },
-          { icon: 'schedule', title: 'Shifts', subtitle: 'Schedules your team can trust' },
-        ],
-      },
-      {
-        title: 'Insights',
-        items: [
-          { icon: 'bar_chart', title: 'Live dashboards', subtitle: 'Realtime hours & attendance charts' },
-          { icon: 'assignment', title: 'Work summary', subtitle: 'Hours, overtime & attendance %' },
-          { icon: 'notifications', title: 'Alerts', subtitle: 'Clock-in reminders & updates' },
-        ],
-      },
-      {
-        title: 'Collaboration',
-        items: [
-          { icon: 'forum', title: 'Community & AI', subtitle: 'Chat with HR and company teams' },
-          { icon: 'support_agent', title: 'Help desk', subtitle: 'Tickets and support in-app' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'Solutions',
-    label: 'Solutions',
-    columns: [
-      {
-        title: 'Teams',
-        items: [
-          { icon: 'rocket_launch', title: 'For Startups', subtitle: 'Get attendance live without a big HR team' },
-          { icon: 'storefront', title: 'For Small Businesses', subtitle: 'One place for clock-in, leave and reports' },
-          { icon: 'apartment', title: 'For Enterprises', subtitle: 'Multi-site workforce with role-based access' },
-          { icon: 'wifi', title: 'For Remote Teams', subtitle: 'See who is working, from any location' },
-          { icon: 'location_on', title: 'For Field Employees', subtitle: 'GPS-verified presence on site' },
-          { icon: 'verified', title: 'White Label Program', subtitle: 'Launch your own branded SaaS', href: ROUTES.whiteLabel },
-        ],
-      },
-      {
-        title: 'Industries',
-        items: [
-          { icon: 'trending_up', title: 'For Sales Teams', subtitle: 'Track field visits and daily activity' },
-          { icon: 'local_shipping', title: 'For Delivery Teams', subtitle: 'Confirm stops and on-the-road hours' },
-          { icon: 'construction', title: 'For Construction Companies', subtitle: 'Site attendance with geofencing' },
-          { icon: 'handyman', title: 'For Service Businesses', subtitle: 'Technicians, jobs and time on site' },
-          { icon: 'precision_manufacturing', title: 'For Manufacturing Companies', subtitle: 'Shift attendance across factory floors' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'Platforms',
-    label: 'Platforms',
-    columns: [
-      {
-        title: 'Get the app',
-        items: [
-          { icon: 'android', title: 'Android', subtitle: 'Download on Google Play', href: STORE_LINKS.playStore, external: true },
-          { icon: 'apple', title: 'iOS', subtitle: 'Download on the App Store', href: STORE_LINKS.appStore, external: true },
-          { icon: 'desktop_windows', title: 'Windows', subtitle: 'Install from Microsoft Store', href: STORE_LINKS.microsoftStore, external: true },
-          { icon: 'language', title: 'Web', subtitle: 'Open the browser app', href: ROUTES.signIn },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'Resources',
-    label: 'Resources',
-    columns: [
-      {
-        title: 'Learn',
-        items: [
-          { icon: 'article', title: 'Blog', subtitle: 'Guides on attendance and GPS', href: ROUTES.blog },
-          { icon: 'apartment', title: 'Guide for Companies', subtitle: 'Set up your team, rules and reports', href: ROUTES.guideCompanies },
-          { icon: 'menu_book', title: 'Guide for Employees', subtitle: 'Clock in, hours, leave and tasks', href: ROUTES.guideEmployees },
-          { icon: 'new_releases', title: 'Product Updates', subtitle: 'What is new in Teamital' },
-        ],
-      },
-      {
-        title: 'Support',
-        items: [
-          { icon: 'help_center', title: 'Help Center', subtitle: 'Get answers and how-to steps' },
-          { icon: 'quiz', title: 'FAQs', subtitle: 'Common questions about the workflow' },
-          { icon: 'mail_outline', title: 'Contact Support', subtitle: 'Reach our support inbox', href: ROUTES.contact },
-        ],
-      },
-    ],
-  },
-];
 
 const TONES = ['blue', 'violet', 'green', 'amber', 'rose', 'sky'] as const;
 
@@ -140,6 +44,8 @@ function GlyphIcon({ name, size, className }: { name: string; size: number; clas
 }
 
 export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) {
+  const { header: hd } = useChrome();
+  const MENUS: MegaMenu[] = hd.menus;
   const pathname = usePathname() || '/';
   const current = currentFor(pathname);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -273,7 +179,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
 
         <nav className="hdr-nav" aria-label="Primary">
           <ul className="hdr-list">
-            {tab('home', 'Home', '/')}
+            {tab('home', hd.homeLabel, '/')}
             {MENUS.map((m) => {
               const isOpen = openMenu === m.id;
               const active = isOpen || current === m.id;
@@ -292,12 +198,12 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
                 </li>
               );
             })}
-            {tab('howItWorks', 'How It Works', ROUTES.howItWorks)}
-            {tab('pricing', 'Pricing', ROUTES.pricing)}
+            {tab('howItWorks', hd.howItWorksLabel, ROUTES.howItWorks)}
+            {tab('pricing', hd.pricingLabel, ROUTES.pricing)}
             <li className="hdr-li hdr-li-book">
               <div className="book-capsule">
                 <Link href={ROUTES.bookCall} className="book-pill" onClick={closeAll}>
-                  <span>Schedule 1:1 Demo</span>
+                  <span>{hd.scheduleLabel}</span>
                   <Icon name="north_east" size={18} className="book-pill-arrow" />
                 </Link>
               </div>
@@ -308,10 +214,10 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
         <div className="hdr-actions">
           <a href={appAbsolute(ROUTES.signIn)} className="hdr-signin">
             <Icon name="login" size={18} />
-            Sign in
+            {hd.signInLabel}
           </a>
           <a href={appAbsolute(ROUTES.signUp)} className="hdr-cta">
-            Start 14-days trial
+            {hd.trialLabel}
             <Icon name="arrow_forward" size={18} color="#fff" className="hdr-cta-arrow" />
           </a>
         </div>
@@ -324,7 +230,7 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
         </Link>
         <span style={{ flex: 1 }} />
         <Link href={ROUTES.bookCall} className="book-pill book-pill-sm">
-          <span>Schedule demo</span>
+          <span>{hd.scheduleShortLabel}</span>
           <Icon name="north_east" size={16} className="book-pill-arrow" />
         </Link>
         <button type="button" className="hdr-burger" aria-label="Open menu" onClick={() => setSheet(true)}>
@@ -379,13 +285,13 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
             <div className="sheet-body">
               <div className="sheet-quick">
                 <Link href="/" className={cx('sheet-chip', current === 'home' && 'sheet-chip-on')} onClick={closeAll}>
-                  Home
+                  {hd.homeLabel}
                 </Link>
                 <Link href={ROUTES.howItWorks} className={cx('sheet-chip', current === 'howItWorks' && 'sheet-chip-on')} onClick={closeAll}>
-                  How It Works
+                  {hd.howItWorksLabel}
                 </Link>
                 <Link href={ROUTES.pricing} className={cx('sheet-chip', current === 'pricing' && 'sheet-chip-on')} onClick={closeAll}>
-                  Pricing
+                  {hd.pricingLabel}
                 </Link>
               </div>
               {MENUS.map((m) => (
@@ -399,14 +305,14 @@ export function Header({ compactBelow = 980 }: { compactBelow?: CompactBelow }) 
             </div>
             <div className="sheet-cta">
               <Link href={ROUTES.bookCall} className="sheet-btn sheet-btn-book" onClick={() => setSheet(false)}>
-                Schedule 1:1 Demo
+                {hd.scheduleLabel}
                 <Icon name="north_east" size={18} color="#fff" />
               </Link>
               <a href={appAbsolute(ROUTES.signIn)} className="sheet-btn sheet-btn-ghost">
-                Sign in
+                {hd.signInLabel}
               </a>
               <a href={appAbsolute(ROUTES.signUp)} className="sheet-btn sheet-btn-primary">
-                Start 14-days trial
+                {hd.trialLabel}
               </a>
             </div>
           </div>

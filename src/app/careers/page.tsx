@@ -1,9 +1,17 @@
+import type { Metadata } from 'next';
 import { StaticPageView } from '@/components/pages/StaticPageView';
-import { STATIC_PAGES } from '@/content/static-pages';
+import { CAREERS, PAGE_KEYS } from '@/content/pages';
+import { getSiteContent } from '@/lib/content/server';
 import { metadataFor } from '@/lib/seo';
 
-export const generateMetadata = () => metadataFor('/careers');
+export const revalidate = 60;
 
-export default function Page() {
-  return <StaticPageView page={STATIC_PAGES.careers} />;
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getSiteContent(PAGE_KEYS.careers, CAREERS);
+  return metadataFor('/careers', undefined, c.seo);
+}
+
+export default async function Page() {
+  const c = await getSiteContent(PAGE_KEYS.careers, CAREERS);
+  return <StaticPageView page={c} />;
 }

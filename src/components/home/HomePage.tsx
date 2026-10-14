@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
+import type { HomeContent } from '@/content/home';
 import type { CmsPageContent } from '@/lib/cms';
 import { ROUTES } from '@/lib/config';
 import { Aos } from '../Aos';
+import { RichText } from '../RichText';
 import { SitePage } from '../SitePage';
 import { AvailableFor } from '../AvailableFor';
 import { Typewriter } from '../Typewriter';
@@ -86,23 +88,20 @@ function Svg({ name, height, fill = false }: { name: string; height: number; fil
 
 /* ───────────────────────── Heroes ───────────────────────── */
 
-function HeroCopy({ cms }: { cms: Cms }) {
+function HeroCopy({ cms, c }: { cms: Cms; c: HomeContent['hero'] }) {
   const h1 = cms?.h1.trim();
   const body = cms?.body.trim();
-  const primary = cms?.buttonLabel.trim() ? cms.buttonLabel : 'Get started free';
-  const secondary = cms?.button2Label.trim() ? cms.button2Label : 'Sign in';
+  const primary = cms?.buttonLabel.trim() ? cms.buttonLabel : c.primary;
+  const secondary = cms?.button2Label.trim() ? cms.button2Label : c.secondary;
   return (
     <div className="hc">
       <div className="hc-brand">
         <span className="hc-brand-dot" />
-        Teamital · Workforce intelligence
+        {c.badge}
       </div>
-      <div className="hc-h1">{h1 || 'Workforce tools that'}</div>
-      <Typewriter fontSize={40} />
-      <p className="hc-body">
-        {body ||
-          'Clock in with GPS and biometrics, manage leave and tasks, and see live workforce insights — on every device.'}
-      </p>
+      <div className="hc-h1">{h1 || c.title}</div>
+      <Typewriter fontSize={40} phrases={c.typewriter} />
+      <RichText className="hc-body" value={body || c.body} />
       <div className="hc-btns">
         <SmartLink href={ROUTES.signUp} className="hero-btn hero-btn-primary">
           <span>{primary}</span>
@@ -114,30 +113,29 @@ function HeroCopy({ cms }: { cms: Cms }) {
         </SmartLink>
       </div>
       <ul className="hc-trust">
-        <li>
-          <Icon name="check_circle" size={18} color="#10B981" />
-          No credit card required
-        </li>
-        <li>
-          <Icon name="check_circle" size={18} color="#10B981" />
-          14-day free trial
-        </li>
-        <li>
-          <Icon name="check_circle" size={18} color="#10B981" />
-          Cancel anytime
-        </li>
+        {c.trust.map((t, i) => (
+          <li key={i}>
+            <Icon name="check_circle" size={18} color="#10B981" />
+            {t}
+          </li>
+        ))}
       </ul>
       <div className="hc-avail">
-        <AvailableFor label="Available on:" align="left" />
+        <AvailableFor label={c.availableLabel} align="left" />
       </div>
     </div>
   );
 }
 
-function HeroMockup() {
+function HeroMockup({ c }: { c: HomeContent }) {
   return (
     <Aos fromRight>
-      <HeroVisual />
+      {c.hero.image ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img className="hero-img" src={c.hero.image} alt={c.hero.title} />
+      ) : (
+        <HeroVisual c={c.heroChat} />
+      )}
     </Aos>
   );
 }
@@ -361,7 +359,7 @@ function HeroOps({ cms, variant }: { cms: Cms; variant: string }) {
   );
 }
 
-function Hero({ cms }: { cms: Cms }) {
+function Hero({ cms, c }: { cms: Cms; c: HomeContent }) {
   const variant = cms?.heroVariant.trim() || 'split-product';
   if (variant === 'center-icons') return <HeroPrivacy cms={cms} variant={variant} />;
   if (variant === 'split-map') return <HeroWorkforce cms={cms} variant={variant} />;
@@ -370,9 +368,9 @@ function Hero({ cms }: { cms: Cms }) {
     <div className="hero">
       <div className="hero-in">
         <div className="hero-copy">
-          <HeroCopy cms={cms} />
+          <HeroCopy cms={cms} c={c.hero} />
         </div>
-        <div className="hero-vis">{variant === 'split-dashboard' ? <HeroDashboardCard /> : <HeroMockup />}</div>
+        <div className="hero-vis">{variant === 'split-dashboard' ? <HeroDashboardCard /> : <HeroMockup c={c} />}</div>
       </div>
     </div>
   );
@@ -607,7 +605,7 @@ function H3Section({ cms }: { cms: Cms }) {
 
 /* ───────────────────────── Page ───────────────────────── */
 
-export function HomePage({ cms }: { cms: Cms }) {
+export function HomePage({ cms, c }: { cms: Cms; c: HomeContent }) {
   const slotOr = (n: number, original: ReactNode) => {
     const slot = cms?.slots[n];
     if (!slot || !isCustom(slot.variant)) return original;
@@ -624,25 +622,25 @@ export function HomePage({ cms }: { cms: Cms }) {
   return (
     <SitePage compactBelow={980} overlayHeader>
       <Aos>
-        <Hero cms={cms} />
+        <Hero cms={cms} c={c} />
       </Aos>
       {!HERO_WITH_OWN_ROW(cms) && (
         <Aos delay={80}>
           <Platforms />
         </Aos>
       )}
-      <Aos>{isCustom(cms?.h2Variant.trim() ?? '') ? <H2Section cms={cms} /> : <FeaturesSection />}</Aos>
-      <Aos>{isCustom(cms?.h3Variant.trim() ?? '') ? <H3Section cms={cms} /> : <HowItWorksSection />}</Aos>
-      <Aos>{slotOr(4, <RolesSection />)}</Aos>
-      <Aos>{slotOr(5, <SecuritySection />)}</Aos>
-      <Aos>{slotOr(6, <TestimonialsSection />)}</Aos>
-      <Aos>{slotOr(7, <WhyUsSection />)}</Aos>
-      <Aos>{slotOr(8, <ToolkitSection />)}</Aos>
-      <Aos>{slotOr(9, <StatsSection />)}</Aos>
+      <Aos>{isCustom(cms?.h2Variant.trim() ?? '') ? <H2Section cms={cms} /> : <FeaturesSection c={c.features} />}</Aos>
+      <Aos>{isCustom(cms?.h3Variant.trim() ?? '') ? <H3Section cms={cms} /> : <HowItWorksSection c={c.howItWorks} />}</Aos>
+      <Aos>{slotOr(4, <RolesSection c={c.roles} />)}</Aos>
+      <Aos>{slotOr(5, <SecuritySection c={c.security} />)}</Aos>
+      <Aos>{slotOr(6, <TestimonialsSection c={c.testimonials} />)}</Aos>
+      <Aos>{slotOr(7, <WhyUsSection c={c.whyUs} />)}</Aos>
+      <Aos>{slotOr(8, <ToolkitSection c={c.toolkit} />)}</Aos>
+      <Aos>{slotOr(9, <StatsSection c={c.stats} />)}</Aos>
       <Aos>
-        <FaqSection />
+        <FaqSection c={c.faq} />
       </Aos>
-      <Aos>{slotOr(10, <CtaSection />)}</Aos>
+      <Aos>{slotOr(10, <CtaSection c={c.cta} signUpHref={ROUTES.signUp} contactHref={ROUTES.contact} />)}</Aos>
     </SitePage>
   );
 }

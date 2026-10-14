@@ -15,6 +15,9 @@ import {
   priceLabel,
 } from '@/lib/plans';
 import { Aos } from '../Aos';
+import type { PricingPageContent } from '@/content/pages';
+import { plainText } from '@/lib/content/utils';
+import { RichText } from '../RichText';
 import { SitePage } from '../SitePage';
 import { Icon, SmartLink, cx } from '../ui';
 
@@ -39,7 +42,7 @@ function yearlySaving(plan: SubscriptionPlan, all: SubscriptionPlan[]) {
   return { save: save.toFixed(2), percent: ((save / full) * 100).toFixed(2), full: full.toFixed(2) };
 }
 
-function PlanCard({ plan, all }: { plan: SubscriptionPlan; all: SubscriptionPlan[] }) {
+function PlanCard({ plan, all, buttonLabel }: { plan: SubscriptionPlan; all: SubscriptionPlan[]; buttonLabel: string }) {
   const saving = yearlySaving(plan, all);
   const features = featureLines(plan);
   const name = String(plan.name ?? 'Plan');
@@ -69,13 +72,13 @@ function PlanCard({ plan, all }: { plan: SubscriptionPlan; all: SubscriptionPlan
         ))}
       </div>
       <SmartLink href={custom ? ROUTES.contact : ROUTES.signUp} className="plan-btn">
-        {custom ? 'Contact sales' : 'Choose plan'}
+        {custom ? 'Contact sales' : buttonLabel}
       </SmartLink>
     </div>
   );
 }
 
-export function PricingView({ plans }: { plans: SubscriptionPlan[] }) {
+export function PricingView({ plans, c }: { plans: SubscriptionPlan[]; c: PricingPageContent }) {
   const [tab, setTab] = useState<string>('Monthly');
   const publicPlans = useMemo(() => plans.filter((p) => !isFiveYearBilling(p.billing as string)), [plans]);
   const filtered = useMemo(
@@ -92,8 +95,8 @@ export function PricingView({ plans }: { plans: SubscriptionPlan[] }) {
         <div className="pr-in">
           <Aos>
             <div className="pr-head">
-              <h1 className="pr-title">Pricing</h1>
-              <p className="pr-sub">Same subscription plans as the mobile app — pick Monthly or Yearly.</p>
+              <h1 className="pr-title">{c.title}</h1>
+              <RichText className="pr-sub" value={c.subtitle} />
               <div className="pr-toggle">
                 {WEB_BILLING_TABS.map((t) => (
                   <button
@@ -111,14 +114,14 @@ export function PricingView({ plans }: { plans: SubscriptionPlan[] }) {
           <div className="gap-36" />
           {shown.length === 0 ? (
             <Aos>
-              <p className="pr-empty">No plans available right now.</p>
+              <p className="pr-empty">{c.emptyText}</p>
             </Aos>
           ) : (
             <div className="plans-wrap">
               <div className="plans">
                 {shown.map((p, i) => (
                   <Aos key={String(p.id ?? i)} delay={80 * i}>
-                    <PlanCard plan={p} all={plans} />
+                    <PlanCard plan={p} all={plans} buttonLabel={c.planButton} />
                   </Aos>
                 ))}
               </div>
@@ -127,10 +130,10 @@ export function PricingView({ plans }: { plans: SubscriptionPlan[] }) {
           <div className="gap-48" />
           <Aos>
             <div className="pr-cta">
-              <div className="pr-cta-t">Ready to activate a plan?</div>
-              <div className="pr-cta-s">Sign up, then choose your plan from the company subscription screen.</div>
+              <div className="pr-cta-t">{c.ctaTitle}</div>
+              <div className="pr-cta-s">{plainText(c.ctaText)}</div>
               <SmartLink href={ROUTES.signUp} className="btn-filled pr-cta-btn">
-                Get started
+                {c.ctaButton}
               </SmartLink>
             </div>
           </Aos>

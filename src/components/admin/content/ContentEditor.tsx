@@ -11,7 +11,7 @@ import { RichTextEditor } from './RichTextEditor';
 type Path = Array<string | number>;
 type Json = unknown;
 
-const RICH_KEY = /^(body|text|description|intro|answer|a|paragraphs|onePara|summary|content|subtext|details)$/i;
+const RICH_KEY = /^(body|text|description|intro|answer|a|paragraphs|onePara|summary|content|subtext|details|sub|captionText)$/i;
 const IMAGE_KEY = /(image|img|photo|picture|logo|cover|thumbnail|banner|avatar|background)$/i;
 const LINK_KEY = /(href|url|link)$/i;
 const TONES = ['blue', 'violet', 'green', 'amber', 'rose', 'sky'];

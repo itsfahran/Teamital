@@ -1,33 +1,33 @@
+import type { Metadata } from 'next';
 import { Aos } from '@/components/Aos';
+import { RichText } from '@/components/RichText';
 import { SitePage } from '@/components/SitePage';
 import { Icon, SmartLink } from '@/components/ui';
 import { ROUTES } from '@/lib/config';
+import { HOW_IT_WORKS, PAGE_KEYS } from '@/content/pages';
+import { getSiteContent } from '@/lib/content/server';
 import { metadataFor } from '@/lib/seo';
 
-export const generateMetadata = () => metadataFor('/how-it-works');
+export const revalidate = 60;
 
-const STEPS: Array<[string, string, string]> = [
-  ['apartment', 'Create your company account', 'Sign up, name your workspace, and invite the first admin.'],
-  ['group_add', 'Add employees', 'Invite people by email or add them from the company dashboard.'],
-  ['location_on', 'Set attendance rules and locations', 'Choose clock-in methods, GPS geofences, and working hours.'],
-  ['fingerprint', 'Employees clock in and out', 'Teams punch with GPS, face, or biometrics on web and mobile.'],
-  ['insights', 'Track attendance and workforce activity', 'See who is present, late, or on site from live dashboards.'],
-  ['assignment', 'Manage projects and leave', 'Assign work, approve time off, and keep one source of truth.'],
-  ['bar_chart', 'Generate reports', 'Export hours, overtime, and attendance summaries for payroll.'],
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getSiteContent(PAGE_KEYS.howItWorks, HOW_IT_WORKS);
+  return metadataFor('/how-it-works', undefined, c.seo);
+}
 
-export default function Page() {
+export default async function Page() {
+  const c = await getSiteContent(PAGE_KEYS.howItWorks, HOW_IT_WORKS);
   return (
     <SitePage stickyHeader compactBelow={980}>
       <div className="hw2">
         <div className="hw2-in">
           <Aos>
-            <h1 className="hw2-title">How It Works</h1>
-            <p className="hw2-sub">The complete Teamital workflow — from signup to reports.</p>
+            <h1 className="hw2-title">{c.title}</h1>
+            <RichText className="hw2-sub" value={c.subtitle} />
           </Aos>
           <div className="gap-32" />
-          {STEPS.map(([icon, title, body], i) => (
-            <Aos key={title} delay={60 * i}>
+          {c.steps.map(({ icon, title, text }, i) => (
+            <Aos key={i} delay={60 * i}>
               <div className="hw2-step">
                 <div className="hw2-ico">
                   <Icon name={icon} size={22} color="#fff" />
@@ -36,14 +36,14 @@ export default function Page() {
                   <div className="hw2-step-t">
                     {i + 1}. {title}
                   </div>
-                  <div className="hw2-step-d">{body}</div>
+                  <RichText className="hw2-step-d" value={text} />
                 </div>
               </div>
             </Aos>
           ))}
           <div className="gap-24" />
           <SmartLink href={ROUTES.signUp} className="btn-filled hw2-btn">
-            Create your company account
+            {c.buttonLabel}
           </SmartLink>
         </div>
       </div>

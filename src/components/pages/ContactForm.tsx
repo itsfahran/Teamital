@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import type { ContactContent } from '@/content/pages';
 import { SITE } from '@/lib/config';
 import { Icon, cx } from '../ui';
 import { useToast } from '../Toast';
 
 type Errors = Partial<Record<'name' | 'email' | 'message', string>>;
 
-export function ContactForm() {
+export function ContactForm({ c }: { c: ContactContent['form'] }) {
   const toast = useToast();
   const [values, setValues] = useState({ name: '', email: '', company: '', message: '' });
   const [errors, setErrors] = useState<Errors>({});
@@ -46,7 +47,7 @@ export function ContactForm() {
         body: JSON.stringify({ name, email, company, message }),
       });
       if (res.ok) {
-        toast.success('Message sent — we will reply soon.');
+        toast.success(c.successMessage);
         clear();
         return;
       }
@@ -92,16 +93,16 @@ export function ContactForm() {
 
   return (
     <form className="cf" onSubmit={submit} noValidate>
-      <div className="cf-title">Send a message</div>
-      <div className="cf-sub">We typically respond within one business day.</div>
+      <div className="cf-title">{c.title}</div>
+      <div className="cf-sub">{c.subtitle}</div>
       <div className="cf-fields">
-        {field('name', 'Your name', 'person_outline')}
-        {field('email', 'Work email', 'email', { type: 'email' })}
-        {field('company', 'Company', 'apartment')}
-        {field('message', 'Message', 'chat_bubble_outline', { multiline: true })}
+        {field('name', c.nameLabel, 'person_outline')}
+        {field('email', c.emailLabel, 'email', { type: 'email' })}
+        {field('company', c.companyLabel, 'apartment')}
+        {field('message', c.messageLabel, 'chat_bubble_outline', { multiline: true })}
       </div>
       <button type="submit" className="cf-submit" disabled={sending}>
-        {sending ? <span className="cf-spin" /> : 'Submit message'}
+        {sending ? <span className="cf-spin" /> : c.submitLabel}
       </button>
     </form>
   );

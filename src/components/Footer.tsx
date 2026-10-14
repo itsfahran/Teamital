@@ -1,57 +1,11 @@
-import { ROUTES, SITE } from '@/lib/config';
+'use client';
+
+import { SITE } from '@/lib/config';
+import { useChrome } from './ChromeProvider';
+import { RichText } from './RichText';
 import { AvailableFor } from './AvailableFor';
 import { BRAND_ICONS, type BrandIconName } from './brand-icons';
 import { BrandLogo, Icon, SmartLink } from './ui';
-
-const SOCIALS: Array<{ name: BrandIconName; label: string; url: string }> = [
-  { name: 'linkedin', label: 'LinkedIn', url: SITE.socialLinkedIn },
-  { name: 'x', label: 'X (Twitter)', url: SITE.socialX },
-  { name: 'youtube', label: 'YouTube', url: SITE.socialYouTube },
-  { name: 'facebook', label: 'Facebook', url: SITE.socialFacebook },
-  { name: 'instagram', label: 'Instagram', url: SITE.socialInstagram },
-  { name: 'pinterest', label: 'Pinterest', url: SITE.socialPinterest },
-  { name: 'tiktok', label: 'TikTok', url: SITE.socialTikTok },
-];
-
-const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
-  {
-    title: 'Product',
-    links: [
-      ['Features', ROUTES.features],
-      ['How it works', ROUTES.howItWorks],
-      ['Pricing', ROUTES.pricing],
-      ['Sign in', ROUTES.signIn],
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      ['About us', ROUTES.about],
-      ['Contact', ROUTES.contact],
-      ['Book a call', ROUTES.bookCall],
-      ['Careers', ROUTES.careers],
-      ['White Label Program', ROUTES.whiteLabel],
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      ['Guide for Companies', ROUTES.guideCompanies],
-      ['Guide for Employees', ROUTES.guideEmployees],
-      ['Blog', ROUTES.blog],
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      ['Privacy Policy', ROUTES.privacyPolicy],
-      ['Terms & Conditions', ROUTES.terms],
-      ['Cookie Policy', ROUTES.cookies],
-      ['Security Policy', ROUTES.security],
-      ['Delete account', ROUTES.deleteAccount],
-    ],
-  },
-];
 
 function SocialIcon({ name }: { name: BrandIconName }) {
   return (
@@ -63,6 +17,7 @@ function SocialIcon({ name }: { name: BrandIconName }) {
 
 /** Shared marketing footer: brand + contact, link columns, app badges and legal bar. */
 export function Footer() {
+  const { footer: f } = useChrome();
   const year = new Date().getFullYear();
   return (
     <footer className="ft">
@@ -73,22 +28,19 @@ export function Footer() {
             <div className="ft-logo-box">
               <BrandLogo height={72} />
             </div>
-            <p className="ft-tag">
-              Complete workforce intelligence in one place: attendance, GPS, leave, tasks and live insights for every
-              team.
-            </p>
+            <RichText className="ft-tag" value={f.tagline} />
             <ul className="ft-contact">
               <li>
                 <Icon name="mail_outline" size={18} color="#1A56DB" />
-                <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
+                <a href={`mailto:${f.email}`}>{f.email}</a>
               </li>
               <li>
                 <Icon name="location_on" size={18} color="#1A56DB" />
-                <span>Kandoy House, 2 Fairview Strand, Clontarf West, Dublin, D03 R8P3, Ireland</span>
+                <span>{f.address}</span>
               </li>
             </ul>
             <div className="ft-social" role="list">
-              {SOCIALS.map((s) => (
+              {f.social.filter((s) => s.url).map((s) => (
                 <a
                   key={s.name}
                   href={s.url}
@@ -99,19 +51,19 @@ export function Footer() {
                   role="listitem"
                   className={`ft-social-btn ft-social-${s.name}`}
                 >
-                  <SocialIcon name={s.name} />
+                  <SocialIcon name={s.name as BrandIconName} />
                 </a>
               ))}
             </div>
           </div>
 
           <nav className="ft-cols" aria-label="Footer">
-            {COLUMNS.map((c) => (
+            {f.columns.map((c) => (
               <div className="ft-col" key={c.title}>
                 <div className="ft-col-title">{c.title}</div>
                 <ul className="ft-links">
-                  {c.links.map(([label, href]) => (
-                    <li key={label}>
+                  {c.links.map(({ label, href }, li) => (
+                    <li key={li}>
                       <SmartLink href={href} className="ft-link">
                         {label}
                       </SmartLink>
@@ -124,18 +76,19 @@ export function Footer() {
         </div>
 
         <div className="ft-avail">
-          <AvailableFor />
+          <AvailableFor label={f.availableLabel} />
         </div>
 
         <div className="ft-bottom">
           <div className="ft-copy">
-            © {year} {SITE.displayName}. All rights reserved.
+            © {year} {SITE.displayName}. {f.copyright}
           </div>
           <div className="ft-bottom-links">
-            <SmartLink href={ROUTES.privacyPolicy}>Privacy</SmartLink>
-            <SmartLink href={ROUTES.terms}>Terms</SmartLink>
-            <SmartLink href={ROUTES.cookies}>Cookies</SmartLink>
-            <SmartLink href={ROUTES.security}>Security</SmartLink>
+            {f.bottomLinks.map((l, i) => (
+              <SmartLink href={l.href} key={i}>
+                {l.label}
+              </SmartLink>
+            ))}
           </div>
         </div>
       </div>

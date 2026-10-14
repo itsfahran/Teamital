@@ -16,6 +16,9 @@ import { SITE } from '@/lib/config';
 import { ToastProvider } from '@/components/Toast';
 import { Intercom } from '@/components/Intercom';
 import { BookingModalProvider } from '@/components/booking/BookingModal';
+import { ChromeProvider } from '@/components/ChromeProvider';
+import { CHROME, CHROME_PAGE_KEY } from '@/content/chrome';
+import { getSiteContent } from '@/lib/content/server';
 
 const poppins = localFont({
   src: [
@@ -67,7 +70,8 @@ export const viewport: Viewport = {
   themeColor: '#FFFFFF',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const chrome = await getSiteContent(CHROME_PAGE_KEY, CHROME);
   return (
     <html lang="en" className={`${poppins.variable} ${roboto.variable}`}>
       <head>
@@ -77,7 +81,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ToastProvider>
-          <BookingModalProvider>{children}</BookingModalProvider>
+          <ChromeProvider value={chrome}>
+            <BookingModalProvider>{children}</BookingModalProvider>
+          </ChromeProvider>
         </ToastProvider>
         <Intercom />
       </body>

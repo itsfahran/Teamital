@@ -1,20 +1,23 @@
-import type { StaticPage } from '@/content/static-pages';
+import type { StaticPageContent } from '@/content/pages';
 import { Aos } from '../Aos';
+import { RichText } from '../RichText';
 import { SitePage } from '../SitePage';
 
-export function StaticPageView({ page }: { page: StaticPage }) {
+export function StaticPageView({ page }: { page: StaticPageContent }) {
   return (
     <SitePage stickyHeader compactBelow={980}>
       <div className="lp">
         <div className="lp-in">
           <Aos>
             <h1 className="lp-title">{page.title}</h1>
-            <p className="lp-sub">{page.subtitle}</p>
+            <RichText className="lp-sub" value={page.subtitle} />
             <div className="gap-28" />
-            {page.paragraphs.map((p) => (
-              <p className="lp-p" key={p}>
-                {p}
-              </p>
+            {page.image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="lp-img" src={page.image} alt={page.title} />
+            )}
+            {page.paragraphs.map((p, i) => (
+              <RichText className="lp-p" value={p} key={i} />
             ))}
           </Aos>
         </div>
