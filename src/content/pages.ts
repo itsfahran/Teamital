@@ -47,6 +47,11 @@ export const CONTACT = {
     messageLabel: 'Message',
     submitLabel: 'Submit message',
     successMessage: 'Message sent — we will reply soon.',
+    fallbackMessage: 'Opening your email app — send to finish.',
+    nameRequired: 'Name is required',
+    emailRequired: 'Email is required',
+    emailInvalid: 'Enter a valid email',
+    messageShort: 'Please write a short message',
   },
 };
 export type ContactContent = typeof CONTACT;

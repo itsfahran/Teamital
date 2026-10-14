@@ -19,10 +19,10 @@ export function ContactForm({ c }: { c: ContactContent['form'] }) {
 
   const validate = (): boolean => {
     const next: Errors = {};
-    if (!values.name.trim()) next.name = 'Name is required';
-    if (!values.email.trim()) next.email = 'Email is required';
-    else if (!values.email.includes('@')) next.email = 'Enter a valid email';
-    if (values.message.trim().length < 8) next.message = 'Please write a short message';
+    if (!values.name.trim()) next.name = c.nameRequired;
+    if (!values.email.trim()) next.email = c.emailRequired;
+    else if (!values.email.includes('@')) next.email = c.emailInvalid;
+    if (values.message.trim().length < 8) next.message = c.messageShort;
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -60,7 +60,7 @@ export function ContactForm({ c }: { c: ContactContent['form'] }) {
         `Name: ${name}\nEmail: ${email}\nCompany: ${company || '-'}\n\n${message}`,
       );
       window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-      toast.success('Opening your email app — send to finish.');
+      toast.success(c.fallbackMessage);
       clear();
     } finally {
       setSending(false);

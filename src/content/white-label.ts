@@ -176,6 +176,29 @@ export const WL = {
     ],
   },
 
+  visual: {
+    url: 'app.yourbrand.com',
+    brand: 'Your Brand',
+    initials: 'YB',
+    nav: [
+      { icon: 'dashboard', label: 'Dashboard' },
+      { icon: 'domain', label: 'Companies' },
+      { icon: 'workspace_premium', label: 'Plans' },
+      { icon: 'brush', label: 'Branding' },
+      { icon: 'query_stats', label: 'Revenue' },
+    ],
+    stats: [
+      { label: 'Companies', value: '24' },
+      { label: 'Users', value: '1,280' },
+      { label: 'Monthly revenue', value: '€18.4k' },
+    ],
+    chartTitle: 'Revenue growth',
+    domainTitle: 'Custom domain live',
+    colorsLabel: 'Brand colours',
+    planLabel: 'New plan',
+    planText: 'Pro · €29/mo',
+  },
+
   labels: {
     profileHint: 'Hover to see features',
     profileHintActive: 'Features shown on the right',

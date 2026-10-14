@@ -102,7 +102,7 @@ function Blocks({ blocks }: { blocks: PolicyBlock[] }) {
   );
 }
 
-export function PolicyPage({ kind, doc }: { kind: PolicyKey; doc: PolicyDoc }) {
+export function PolicyPage({ kind, doc, related }: { kind: PolicyKey; doc: PolicyDoc; related: Record<string, { title: string; subtitle: string }> }) {
   const meta = POLICY_META[kind];
   const blocks = doc.blocks;
   const L = doc.labels;
@@ -145,11 +145,11 @@ export function PolicyPage({ kind, doc }: { kind: PolicyKey; doc: PolicyDoc }) {
             </span>
             <span className="pg-art-chip pg-art-chip-a">
               <Icon name={meta.chips[0][1]} size={16} />
-              {meta.chips[0][0]}
+              {doc.chipA}
             </span>
             <span className="pg-art-chip pg-art-chip-b">
               <Icon name={meta.chips[1][1]} size={16} />
-              {meta.chips[1][0]}
+              {doc.chipB}
             </span>
           </div>
         </div>
@@ -211,8 +211,8 @@ export function PolicyPage({ kind, doc }: { kind: PolicyKey; doc: PolicyDoc }) {
                     <Icon name={m.icon} size={24} />
                   </span>
                   <span className="pg-more-txt">
-                    <b>{m.title}</b>
-                    <span>{m.subtitle}</span>
+                    <b>{related[k]?.title ?? m.title}</b>
+                    <span>{plainText(related[k]?.subtitle ?? m.subtitle)}</span>
                   </span>
                   <Icon name="arrow_forward" size={20} className="pg-more-arrow" />
                 </Link>

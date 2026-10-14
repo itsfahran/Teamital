@@ -68,7 +68,7 @@ export function WhiteLabelPage({ c: WL }: { c: WLContent }) {
               // eslint-disable-next-line @next/next/no-img-element
               <img className="wl-hero-img" src={WL.hero.image} alt={WL.hero.title} />
             ) : (
-              <PartnerVisual />
+              <PartnerVisual c={WL.visual} />
             )}
           </Aos>
         </div>
