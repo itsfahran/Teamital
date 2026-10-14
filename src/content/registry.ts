@@ -120,6 +120,11 @@ CONTENT_PAGES.push(
     labels: {
       header: "Header (navbar)",
       "header.menus": "Dropdown menus",
+      booking: "Booking pop-up texts (calendar, form, confirmation, manage page)",
+      "booking.steps": "Step names",
+      "booking.topics": "Call topics (dropdown)",
+      "booking.teamSizes": "Team sizes (dropdown)",
+      notFound: "404 page",
       "header.scheduleLabel": "Schedule demo button",
       "header.scheduleShortLabel": "Schedule demo button (small screens)",
       "header.trialLabel": "Free trial button",

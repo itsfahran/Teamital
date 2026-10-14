@@ -60,6 +60,10 @@ export const PRICING_PAGE = {
   ctaText: 'Sign up, then choose your plan from the company subscription screen.',
   ctaButton: 'Get started',
   planButton: 'Choose plan',
+  contactSalesButton: 'Contact sales',
+  monthlyTab: 'Monthly',
+  yearlyTab: '1 Year',
+  popularLabel: 'Popular',
 };
 export type PricingPageContent = typeof PRICING_PAGE;
 

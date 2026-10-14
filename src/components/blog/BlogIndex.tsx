@@ -2,21 +2,23 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { formatDate, type CmsPost as BlogPost } from '@/content/blog';
+import { formatDate, type BlogContent, type CmsPost as BlogPost } from '@/content/blog';
 import { Icon, cx } from '../ui';
 import { BlogCover } from './BlogCover';
 
-function Meta({ post }: { post: BlogPost }) {
+function Meta({ post, minRead }: { post: BlogPost; minRead: string }) {
   return (
     <div className="bmeta">
       <span>{formatDate(post.date)}</span>
       <span className="bmeta-dot" />
-      <span>{post.readMins} min read</span>
+      <span>
+        {post.readMins} {minRead}
+      </span>
     </div>
   );
 }
 
-export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles' }: { posts: BlogPost[]; author: string; searchPlaceholder?: string }) {
+export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles', labels }: { posts: BlogPost[]; author: string; searchPlaceholder?: string; labels: BlogContent['labels'] }) {
   const [category, setCategory] = useState('All');
   const [query, setQuery] = useState('');
 
@@ -45,7 +47,7 @@ export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles'
               className={cx('blog-chip', c === category && 'blog-chip-on')}
               onClick={() => setCategory(c)}
             >
-              {c}
+              {c === 'All' ? labels.all : c}
             </button>
           ))}
         </div>
@@ -65,12 +67,14 @@ export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles'
         <Link href={`/blog/${featured.slug}`} className="bfeat">
           <BlogCover post={featured} size="featured" />
           <div className="bfeat-body">
-            <span className="bpill">Featured · {featured.category}</span>
+            <span className="bpill">
+              {labels.featured} · {featured.category}
+            </span>
             <h2 className="bfeat-title">{featured.title}</h2>
             <p className="bfeat-ex">{featured.excerpt}</p>
-            <Meta post={featured} />
+            <Meta post={featured} minRead={labels.minRead} />
             <span className="bfeat-link">
-              Read article
+              {labels.readArticle}
               <Icon name="arrow_forward" size={18} />
             </span>
           </div>
@@ -87,7 +91,7 @@ export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles'
                 <h3 className="bcard-title">{p.title}</h3>
                 <p className="bcard-ex">{p.excerpt}</p>
                 <div className="bcard-foot">
-                  <Meta post={p} />
+                  <Meta post={p} minRead={labels.minRead} />
                   <span className="bcard-arrow">
                     <Icon name="arrow_forward" size={18} />
                   </span>
@@ -100,10 +104,10 @@ export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles'
               <span className="bnote-ico">
                 <Icon name="edit_note" size={28} color="#1A56DB" />
               </span>
-              <div className="bnote-t">Have a topic in mind?</div>
-              <div className="bnote-s">Tell us what you would like us to cover next on attendance, GPS or HR operations.</div>
+              <div className="bnote-t">{labels.suggestTitle}</div>
+              <div className="bnote-s">{labels.suggestText}</div>
               <Link href="/contact" className="bnote-link">
-                Suggest a topic
+                {labels.suggestLink}
                 <Icon name="arrow_forward" size={16} />
               </Link>
             </div>
@@ -114,8 +118,8 @@ export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles'
       {filtered.length === 0 && (
         <div className="bempty">
           <Icon name="search_off" size={36} color="#9CA3AF" />
-          <div className="bempty-t">No articles found</div>
-          <div className="bempty-s">Try another keyword or choose a different category.</div>
+          <div className="bempty-t">{labels.emptyTitle}</div>
+          <div className="bempty-s">{labels.emptyText}</div>
           <button
             type="button"
             className="blog-chip blog-chip-on"
@@ -124,7 +128,7 @@ export function BlogIndex({ posts, author, searchPlaceholder = 'Search articles'
               setQuery('');
             }}
           >
-            Clear filters
+            {labels.clearFilters}
           </button>
         </div>
       )}

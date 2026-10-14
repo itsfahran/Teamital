@@ -42,7 +42,7 @@ function yearlySaving(plan: SubscriptionPlan, all: SubscriptionPlan[]) {
   return { save: save.toFixed(2), percent: ((save / full) * 100).toFixed(2), full: full.toFixed(2) };
 }
 
-function PlanCard({ plan, all, buttonLabel }: { plan: SubscriptionPlan; all: SubscriptionPlan[]; buttonLabel: string }) {
+function PlanCard({ plan, all, buttonLabel, contactLabel, popularLabel }: { plan: SubscriptionPlan; all: SubscriptionPlan[]; buttonLabel: string; contactLabel: string; popularLabel: string }) {
   const saving = yearlySaving(plan, all);
   const features = featureLines(plan);
   const name = String(plan.name ?? 'Plan');
@@ -55,7 +55,7 @@ function PlanCard({ plan, all, buttonLabel }: { plan: SubscriptionPlan; all: Sub
         <div className="plan-name">{name}</div>
         <BillingChip billing={plan.billing as string | undefined} />
       </div>
-      {popular && <div className="plan-pop">Popular</div>}
+      {popular && <div className="plan-pop">{popularLabel}</div>}
       <div className="plan-price">{priceLabel(plan)}</div>
       {saving && (
         <div className="plan-save">
@@ -72,7 +72,7 @@ function PlanCard({ plan, all, buttonLabel }: { plan: SubscriptionPlan; all: Sub
         ))}
       </div>
       <SmartLink href={custom ? ROUTES.contact : ROUTES.signUp} className="plan-btn">
-        {custom ? 'Contact sales' : buttonLabel}
+        {custom ? contactLabel : buttonLabel}
       </SmartLink>
     </div>
   );
@@ -105,7 +105,7 @@ export function PricingView({ plans, c }: { plans: SubscriptionPlan[]; c: Pricin
                     className={cx('seg', t === selected && 'seg-on')}
                     onClick={() => setTab(t)}
                   >
-                    {t}
+                    {t === 'Monthly' ? c.monthlyTab : t === '1 Year' ? c.yearlyTab : t}
                   </button>
                 ))}
               </div>
@@ -121,7 +121,7 @@ export function PricingView({ plans, c }: { plans: SubscriptionPlan[]; c: Pricin
               <div className="plans">
                 {shown.map((p, i) => (
                   <Aos key={String(p.id ?? i)} delay={80 * i}>
-                    <PlanCard plan={p} all={plans} buttonLabel={c.planButton} />
+                    <PlanCard plan={p} all={plans} buttonLabel={c.planButton} contactLabel={c.contactSalesButton} popularLabel={c.popularLabel} />
                   </Aos>
                 ))}
               </div>

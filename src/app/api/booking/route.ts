@@ -2,8 +2,6 @@ import { NextResponse, after } from 'next/server';
 import { SITE } from '@/lib/config';
 import {
   DURATIONS,
-  TEAM_SIZES,
-  TOPICS,
   confirmationEmail,
   fmtWhen,
   getAvailableSlots,
@@ -36,8 +34,8 @@ export async function POST(req: Request) {
   const message = clean(body.message, 3000);
   const visitorTz = clean(body.timezone, 80);
   const startIso = clean(body.start, 40);
-  const topic = TOPICS.includes(body.topic as (typeof TOPICS)[number]) ? (body.topic as string) : '';
-  const teamSize = TEAM_SIZES.includes(body.teamSize as (typeof TEAM_SIZES)[number]) ? (body.teamSize as string) : '';
+  const topic = clean(body.topic, 100);
+  const teamSize = clean(body.teamSize, 40);
 
   if (!name) return NextResponse.json({ error: 'Please enter your name.' }, { status: 400 });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: 'Please enter a valid email.' }, { status: 400 });

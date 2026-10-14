@@ -32,7 +32,7 @@ export default async function Page() {
 
       <section className="blog">
         <div className="blog-in">
-          <BlogIndex posts={c.posts} author={c.authorName} searchPlaceholder={c.searchPlaceholder} />
+          <BlogIndex posts={c.posts} author={c.authorName} searchPlaceholder={c.searchPlaceholder} labels={c.labels} />
 
           <div className="bcta">
             <div>

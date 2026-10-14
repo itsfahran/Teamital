@@ -176,6 +176,13 @@ export const WL = {
     ],
   },
 
+  labels: {
+    profileHint: 'Hover to see features',
+    profileHintActive: 'Features shown on the right',
+    featuresWord: 'features',
+    featuresIncluded: 'features included',
+  },
+
   packages: {
     title: 'White Label Packages',
     intro: 'Pick Monthly or Yearly: a one-time setup fee plus a simple recurring cost to run Teamital under your own brand.',

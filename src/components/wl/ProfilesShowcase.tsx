@@ -17,7 +17,7 @@ type Profile = {
  * Left column: the two profile cards, stacked. Right column: the details of the card that is
  * hovered / focused / tapped, popping in with an animation.
  */
-export function ProfilesShowcase({ profiles }: { profiles: Profile[] }) {
+export function ProfilesShowcase({ profiles, labels }: { profiles: Profile[]; labels: { profileHint: string; profileHintActive: string; featuresWord: string; featuresIncluded: string } }) {
   const [active, setActive] = useState(0);
   const cur = profiles[active];
 
@@ -39,12 +39,12 @@ export function ProfilesShowcase({ profiles }: { profiles: Profile[] }) {
               <span className="ps-card-ico">
                 <Icon name={p.icon} size={26} />
               </span>
-              <span className="ps-card-count">{p.features.length} features</span>
+              <span className="ps-card-count">{p.features.length} {labels.featuresWord}</span>
             </span>
             <span className="ps-card-title">{p.title}</span>
             <span className="ps-card-text">{plainText(p.text)}</span>
             <span className="ps-card-hint">
-              {i === active ? 'Features shown on the right' : 'Hover to see features'}
+              {i === active ? labels.profileHintActive : labels.profileHint}
               <Icon name="arrow_forward" size={18} className="ps-card-arrow" />
             </span>
           </button>
@@ -60,7 +60,7 @@ export function ProfilesShowcase({ profiles }: { profiles: Profile[] }) {
             </span>
             <span>
               <span className="ps-panel-label">{cur.label}</span>
-              <span className="ps-right-sub">{cur.features.length} features included</span>
+              <span className="ps-right-sub">{cur.features.length} {labels.featuresIncluded}</span>
             </span>
           </div>
           <ul>

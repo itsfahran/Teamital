@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/lib/config';
+import { useChrome } from '../ChromeProvider';
 import { Icon } from '../ui';
 import { BookingWidget } from './BookingWidget';
 
@@ -16,6 +17,7 @@ export const useBookingModal = () => useContext(Ctx);
  */
 export function BookingModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setOpen] = useState(false);
+  const bk = useChrome().booking;
   const pathname = usePathname();
   const open = useCallback(() => setOpen(true), []);
   const close = useCallback(() => setOpen(false), []);
@@ -55,12 +57,12 @@ export function BookingModalProvider({ children }: { children: ReactNode }) {
     <Ctx.Provider value={value}>
       {children}
       {isOpen && (
-        <div className="bkm" role="dialog" aria-modal="true" aria-label="Book a free call" onMouseDown={(e) => e.target === e.currentTarget && close()}>
+        <div className="bkm" role="dialog" aria-modal="true" aria-label={bk.modalTitle} onMouseDown={(e) => e.target === e.currentTarget && close()}>
           <div className="bkm-panel">
             <div className="bkm-head">
               <span className="bkm-title">
                 <Icon name="event_available" size={22} color="#1A56DB" />
-                Book a free 1:1 call
+                {bk.modalTitle}
               </span>
               <button type="button" className="bkm-close" onClick={close} aria-label="Close">
                 <Icon name="close" size={22} />

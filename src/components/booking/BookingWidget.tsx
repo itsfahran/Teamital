@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { DURATIONS, TEAM_SIZES, TOPICS } from '@/lib/booking-constants';
+import { DURATIONS } from '@/lib/booking-constants';
+import { useChrome } from '../ChromeProvider';
 import { Icon, cx } from '../ui';
 import { CopyLink } from './CopyLink';
 
@@ -53,6 +54,7 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export function BookingWidget() {
+  const t = useChrome().booking;
   const [av, setAv] = useState<Availability | null>(null);
   const [error, setError] = useState('');
   const [tz, setTz] = useState('');
@@ -61,7 +63,7 @@ export function BookingWidget() {
   const [day, setDay] = useState<string | null>(null);
   const [slot, setSlot] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', teamSize: '', topic: TOPICS[0] as string, message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', teamSize: '', topic: t.topics[0] ?? '', message: '' });
   const [busy, setBusy] = useState(false);
   const [formError, setFormError] = useState('');
   const [done, setDone] = useState<Done | null>(null);
@@ -70,7 +72,7 @@ export function BookingWidget() {
     fetch('/api/booking/availability', { cache: 'no-store' })
       .then((r) => r.json())
       .then((d: Availability) => setAv(d))
-      .catch(() => setError('We could not load available times. Please refresh.'));
+      .catch(() => setError(t.loadError));
 
   useEffect(() => {
     setTz(nearestMain(Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'));
@@ -168,13 +170,13 @@ export function BookingWidget() {
   };
 
   if (error) return <div className="bk-card bk-msg">{error}</div>;
-  if (!av) return <div className="bk-card bk-loading"><span className="cf-spin bk-spin" /> Loading available times…</div>;
+  if (!av) return <div className="bk-card bk-loading"><span className="cf-spin bk-spin" /> {t.loading}</div>;
   if (!av.enabled || av.slots.length === 0) {
     return (
       <div className="bk-card bk-msg">
         <Icon name="event_busy" size={40} color="#9CA3AF" />
-        <h3>No times available right now</h3>
-        <p>New slots open up regularly. Please check back soon or email us and we will arrange a time.</p>
+        <h3>{t.noTimesTitle}</h3>
+        <p>{t.noTimesText}</p>
       </div>
     );
   }
@@ -187,9 +189,9 @@ export function BookingWidget() {
         <div className="bk-done-check">
           <Icon name="check" size={44} color="#fff" />
         </div>
-        <h3>You are booked in!</h3>
+        <h3>{t.doneTitle}</h3>
         <p>
-          We sent a confirmation to <b>{form.email}</b>.{done.googleInvite ? ' A Google Calendar invitation is on its way too.' : ''}
+          {t.sentTo} <b>{form.email}</b>.{done.googleInvite ? ` ${t.inviteNote}` : ''}
         </p>
         <div className="bk-summary">
           <div>
@@ -204,34 +206,34 @@ export function BookingWidget() {
           </div>
           <div>
             <Icon name="videocam" size={20} color="#1A56DB" />
-            <span>{done.meetingLink ? 'Google Meet link included' : 'Meeting details will be emailed to you'}</span>
+            <span>{done.meetingLink ? t.meetIncluded : t.meetLater}</span>
           </div>
         </div>
         {done.meetingLink && <CopyLink link={done.meetingLink} />}
         {done.meetingLink && (
           <p className="bk-sent">
             <Icon name="mark_email_read" size={18} color="#047857" />
-            We have also emailed this link to <b>{form.email}</b>.
+            {t.emailedLinkTo} <b>{form.email}</b>.
           </p>
         )}
         <div className="bk-done-btns">
           {done.meetingLink && (
             <a className="hero-btn hero-btn-primary" href={done.meetingLink} target="_blank" rel="noopener noreferrer">
-              <span>Join Google Meet</span>
+              <span>{t.joinMeet}</span>
               <Icon name="arrow_forward" size={20} color="#fff" />
             </a>
           )}
           <a className="hero-btn hero-btn-ghost" href={gcal(done)} target="_blank" rel="noopener noreferrer">
             <Icon name="event" size={20} color="#1A56DB" />
-            <span>Google Calendar</span>
+            <span>{t.googleCalendar}</span>
           </a>
           <a className="hero-btn hero-btn-ghost" href={`${origin}/api/booking/ics?token=${done.token}`}>
             <Icon name="download" size={20} color="#1A56DB" />
-            <span>Apple / Outlook (.ics)</span>
+            <span>{t.icsButton}</span>
           </a>
         </div>
         <a className="bk-cancel" href={`/book-a-call/manage?token=${done.token}`}>
-          Need to cancel? Manage this booking
+          {t.manageLink}
         </a>
       </div>
     );
@@ -243,10 +245,10 @@ export function BookingWidget() {
   return (
     <div className="bk-card">
       <div className="bk-steps" aria-label="Progress">
-        {['Choose a time', 'Your details', 'Confirmed'].map((t, i) => (
-          <span key={t} className={cx('bk-step', step === i + 1 && 'bk-step-on', step > i + 1 && 'bk-step-done')}>
+        {t.steps.map((label, i) => (
+          <span key={i} className={cx('bk-step', step === i + 1 && 'bk-step-on', step > i + 1 && 'bk-step-done')}>
             <b>{step > i + 1 ? <Icon name="check" size={14} color="#fff" /> : i + 1}</b>
-            {t}
+            {label}
           </span>
         ))}
       </div>
@@ -316,14 +318,14 @@ export function BookingWidget() {
             <div className="bk-dur" role="radiogroup" aria-label="Call length">
               {(av.durations?.length ? av.durations : [...DURATIONS]).map((m) => (
                 <button type="button" key={m} role="radio" aria-checked={duration === m} className={cx('bk-dur-b', duration === m && 'bk-dur-on')} onClick={() => setDuration(m)}>
-                  {m} min
+                  {m} {t.minutesWord}
                 </button>
               ))}
             </div>
             {!day ? (
               <div className="bk-slots-empty">
                 <Icon name="touch_app" size={34} color="#93C5FD" />
-                <span>Select a date to see available times</span>
+                <span>{t.selectDate}</span>
               </div>
             ) : (
               <>
@@ -341,7 +343,7 @@ export function BookingWidget() {
                   ))}
                 </div>
                 <button type="button" className="hero-btn hero-btn-primary bk-next" disabled={!slot} onClick={() => setStep(2)}>
-                  <span>Continue</span>
+                  <span>{t.continueButton}</span>
                   <Icon name="arrow_forward" size={20} color="#fff" />
                 </button>
               </>
@@ -357,51 +359,51 @@ export function BookingWidget() {
             <span>
               <b>{longFmt.format(new Date(slot))}</b>
               <i>
-                {timeFmt.format(new Date(slot))} · {duration} min ·{tz.replace(/_/g, ' ')}
+                {timeFmt.format(new Date(slot))} · {duration} {t.minutesWord} ·{tz.replace(/_/g, ' ')}
               </i>
             </span>
             <button type="button" onClick={() => setStep(1)}>
-              Change
+              {t.changeButton}
             </button>
           </div>
 
           <div className="bk-grid2">
             <label>
-              Full name *
+              {t.nameLabel}
               <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoComplete="name" />
             </label>
             <label>
-              Work email *
+              {t.emailLabel}
               <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} autoComplete="email" />
             </label>
             <label>
-              Phone
+              {t.phoneLabel}
               <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} autoComplete="tel" />
             </label>
             <label>
-              Company
+              {t.companyLabel}
               <input value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} autoComplete="organization" />
             </label>
             <label>
-              Team size
+              {t.teamSizeLabel}
               <select value={form.teamSize} onChange={(e) => setForm({ ...form, teamSize: e.target.value })}>
-                <option value="">Select…</option>
-                {TEAM_SIZES.map((t) => (
-                  <option key={t}>{t}</option>
+                <option value="">{t.selectPlaceholder}</option>
+                {t.teamSizes.map((o) => (
+                  <option key={o}>{o}</option>
                 ))}
               </select>
             </label>
             <label>
-              What is the call about?
+              {t.topicLabel}
               <select value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })}>
-                {TOPICS.map((t) => (
-                  <option key={t}>{t}</option>
+                {t.topics.map((o) => (
+                  <option key={o}>{o}</option>
                 ))}
               </select>
             </label>
           </div>
           <label>
-            Anything we should know? (optional)
+            {t.messageLabel}
             <textarea rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
           </label>
 
@@ -410,14 +412,14 @@ export function BookingWidget() {
           <div className="bk-form-btns">
             <button type="button" className="hero-btn hero-btn-ghost" onClick={() => setStep(1)}>
               <Icon name="arrow_back" size={20} color="#1A56DB" />
-              <span>Back</span>
+              <span>{t.backButton}</span>
             </button>
             <button type="submit" className="hero-btn hero-btn-primary" disabled={busy}>
-              {busy ? <span className="cf-spin" /> : <span>Confirm booking</span>}
+              {busy ? <span className="cf-spin" /> : <span>{t.confirmButton}</span>}
               {!busy && <Icon name="check" size={20} color="#fff" />}
             </button>
           </div>
-          <p className="bk-fine">By booking you agree to be contacted about your request. We never share your details.</p>
+          <p className="bk-fine">{t.finePrint}</p>
         </form>
       )}
     </div>

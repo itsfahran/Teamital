@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Icon, SmartLink } from '../ui';
+import { useChrome } from '../ChromeProvider';
 import { CopyLink } from './CopyLink';
 
 type B = { name: string; topic: string | null; start: string; end: string; status: string; meetLink: string | null };
 
 export function ManageBooking() {
+  const t = useChrome().booking;
   const token = useSearchParams().get('token') ?? '';
   const [b, setB] = useState<B | null>(null);
   const [state, setState] = useState<'loading' | 'missing' | 'ready' | 'cancelled'>('loading');
@@ -27,7 +29,7 @@ export function ManageBooking() {
   }, [token]);
 
   const cancel = async () => {
-    if (!confirm('Cancel this booking?')) return;
+    if (!confirm(t.cancelConfirm)) return;
     setBusy(true);
     setErr('');
     const res = await fetch('/api/booking/manage', {
@@ -51,17 +53,17 @@ export function ManageBooking() {
       {state === 'missing' && (
         <>
           <Icon name="link_off" size={40} color="#9CA3AF" />
-          <h3>Booking not found</h3>
-          <p>This link is invalid or has expired.</p>
+          <h3>{t.notFoundTitle}</h3>
+          <p>{t.notFoundText}</p>
         </>
       )}
       {state === 'cancelled' && (
         <>
           <Icon name="event_busy" size={40} color="#EF4444" />
-          <h3>Booking cancelled</h3>
-          <p>Your call has been cancelled. You are welcome to book another time.</p>
+          <h3>{t.cancelledTitle}</h3>
+          <p>{t.cancelledText}</p>
           <SmartLink href="/book-a-call" className="hero-btn hero-btn-primary">
-            <span>Book a new time</span>
+            <span>{t.bookNew}</span>
             <Icon name="arrow_forward" size={20} color="#fff" />
           </SmartLink>
         </>
@@ -69,7 +71,7 @@ export function ManageBooking() {
       {state === 'ready' && b && (
         <>
           <Icon name="event_available" size={40} color="#1A56DB" />
-          <h3>Your booked call</h3>
+          <h3>{t.manageTitle}</h3>
           <div className="bk-summary">
             <div>
               <Icon name="person" size={20} color="#1A56DB" />
@@ -90,7 +92,7 @@ export function ManageBooking() {
           {b.meetLink && !past && (
             <a className="hero-btn hero-btn-primary" href={b.meetLink} target="_blank" rel="noopener noreferrer">
               <Icon name="videocam" size={20} color="#fff" />
-              <span>Join Google Meet</span>
+              <span>{t.joinMeet}</span>
             </a>
           )}
           {err && <div className="bk-err">{err}</div>}
@@ -98,14 +100,14 @@ export function ManageBooking() {
             <div className="bk-done-btns">
               <a className="hero-btn hero-btn-ghost" href={`/api/booking/ics?token=${token}`}>
                 <Icon name="download" size={20} color="#1A56DB" />
-                <span>Add to calendar</span>
+                <span>{t.addToCalendar}</span>
               </a>
               <button className="hero-btn hero-btn-danger" onClick={cancel} disabled={busy}>
-                {busy ? <span className="cf-spin" /> : <span>Cancel booking</span>}
+                {busy ? <span className="cf-spin" /> : <span>{t.cancelBooking}</span>}
               </button>
             </div>
           ) : (
-            <p>This call has already taken place.</p>
+            <p>{t.pastNote}</p>
           )}
         </>
       )}

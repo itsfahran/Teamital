@@ -49,7 +49,7 @@ export default async function Page({ params }: Params) {
         <div className="bhero-in bhero-in-post">
           <Link href={ROUTES.blog} className="bback">
             <Icon name="arrow_back" size={18} />
-            All articles
+            {c.labels.backToAll}
           </Link>
           <span className={cx('bpill', 'bpill-tone', `tone-${post.tone}`)}>{post.category}</span>
           <h1 className="bpost-title">{post.title}</h1>
@@ -59,7 +59,7 @@ export default async function Page({ params }: Params) {
             <span>
               <span className="bpost-author">{c.authorName}</span>
               <span className="bpost-meta">
-                {formatDate(post.date)} · {post.readMins} min read
+                {formatDate(post.date)} · {post.readMins} {c.labels.minRead}
               </span>
             </span>
           </div>
@@ -73,7 +73,7 @@ export default async function Page({ params }: Params) {
           <aside className="btake">
             <div className="btake-t">
               <Icon name="lightbulb" size={20} color="#1A56DB" />
-              Key takeaways
+              {c.labels.takeaways}
             </div>
             <ul>
               {post.takeaways.map((t, i) => (
@@ -112,7 +112,7 @@ export default async function Page({ params }: Params) {
 
         {related.length > 0 && (
           <div className="brel">
-            <h2 className="brel-t">Keep reading</h2>
+            <h2 className="brel-t">{c.labels.keepReading}</h2>
             <div className="bgrid">
               {related.map((p) => (
                 <Link key={p.slug} href={`/blog/${p.slug}`} className="bcard">
@@ -123,7 +123,9 @@ export default async function Page({ params }: Params) {
                     <div className="bmeta">
                       <span>{formatDate(p.date)}</span>
                       <span className="bmeta-dot" />
-                      <span>{p.readMins} min read</span>
+                      <span>
+                        {p.readMins} {c.labels.minRead}
+                      </span>
                     </div>
                   </div>
                 </Link>

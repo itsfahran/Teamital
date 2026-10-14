@@ -148,6 +148,7 @@ export function WhiteLabelPage({ c: WL }: { c: WLContent }) {
         <div className="wl-in">
           <SectionHead title={WL.solutions.title} intro={WL.solutions.intro} />
           <ProfilesShowcase
+            labels={WL.labels}
             profiles={[
               { ...WL.solutions.admin, icon: 'admin_panel_settings', tone: 'blue' },
               { ...WL.solutions.employee, icon: 'badge', tone: 'green' },
