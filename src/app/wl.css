@@ -530,3 +530,4 @@
 .wlp-plans { grid-template-columns: 1fr; }
 @container (min-width: 560px) { .wlp-plans { grid-template-columns: repeat(2, 1fr); } }
 .wl-sec-flush { padding-top: 0; }
+.wlp-unit { font-size: 16px; font-weight: 600; color: #6b7280; margin-left: 2px; }
