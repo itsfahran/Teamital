@@ -235,14 +235,12 @@ export const PRIVACY_POLICY: PolicyBlock[] = [
     "t": "bullets",
     "items": [
       "Amazon Web Services (AWS)",
-      "Supabase",
       "Stripe",
       "Revolut",
       "Firebase",
       "Google Maps",
       "Google Analytics",
       "Cloudflare",
-      "Resend",
       "Firebase Crashlytics"
     ]
   },
@@ -257,10 +255,6 @@ export const PRIVACY_POLICY: PolicyBlock[] = [
   {
     "t": "p",
     "text": "Teamital is hosted using Amazon Web Services (AWS) with server infrastructure located in Ireland / Europe."
-  },
-  {
-    "t": "p",
-    "text": "We also use Supabase as part of our database infrastructure."
   },
   {
     "t": "p",

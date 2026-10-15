@@ -157,8 +157,8 @@ export const CHROME = {
     pricingLabel: 'Pricing',
     buttons: {
       signIn: { show: true, label: 'Sign In', href: ROUTES.signIn },
-      signUp: { show: true, label: 'Sign Up', href: ROUTES.signUp },
-      trial: { show: true, label: '14-Day Free Trial', href: ROUTES.signUp },
+      signUp: { show: false, label: 'Sign Up', href: ROUTES.signUp },
+      trial: { show: true, label: 'Start 14-Days Free Trial', href: ROUTES.signUp },
       demo: { show: true, label: 'Schedule Demo', shortLabel: 'Schedule demo', href: ROUTES.bookCall },
     },
     menus: HEADER_MENUS,
