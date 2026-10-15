@@ -82,6 +82,7 @@ export function Footer() {
         <div className="ft-bottom">
           <div className="ft-copy">
             © {year} {SITE.displayName}. {f.copyright}
+            {f.credit && <span className="ft-credit"> · {f.credit}</span>}
           </div>
           <div className="ft-bottom-links">
             {f.bottomLinks.map((l, i) => (

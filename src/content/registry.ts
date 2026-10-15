@@ -146,6 +146,7 @@ CONTENT_PAGES.push(
       footer: "Footer",
       "footer.columns": "Link columns",
       "footer.bottomLinks": "Bottom bar links",
+      "footer.credit": "Credit line next to the copyright (leave empty to hide)",
       "footer.social": "Social links (name: linkedin, x, youtube, facebook, instagram, pinterest, tiktok)",
     },
   },

@@ -434,3 +434,5 @@ img {
 .rt hr { border: 0; border-top: 1px solid #e5e7eb; margin: 1em 0; }
 .rt mark { background: #fef08a; padding: 0 2px; border-radius: 3px; }
 .rt code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
+
+.ft-credit { font-weight: 600; color: #1a56db; }
