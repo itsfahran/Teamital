@@ -208,7 +208,7 @@ export const CHROME = {
     ],
     availableLabel: 'Available for:',
     copyright: 'All rights reserved.',
-    credit: 'Built by Shahrukh',
+    credit: '',
     bottomLinks: [
       { label: 'Privacy', href: ROUTES.privacyPolicy },
       { label: 'Terms', href: ROUTES.terms },
