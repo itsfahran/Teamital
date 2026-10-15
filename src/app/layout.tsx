@@ -52,9 +52,9 @@ export const metadata: Metadata = {
   applicationName: 'Teamital',
   manifest: '/manifest.webmanifest',
   icons: {
-    icon: [{ url: '/brand-logo.png', type: 'image/png' }],
-    shortcut: '/brand-logo.png',
-    apple: '/brand-logo.png',
+    icon: [{ url: '/favicon.jpg', type: 'image/jpeg' }],
+    shortcut: '/favicon.jpg',
+    apple: '/favicon.jpg',
   },
   openGraph: {
     title: 'Teamital — Workforce tools that keep your team in sync',
