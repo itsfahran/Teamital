@@ -33,7 +33,7 @@ export const POLICY_META: Record<PolicyKey, { title: string; short: string; path
     short: 'Cookies',
     path: '/cookie-policy',
     icon: 'cookie',
-    tone: 'amber',
+    tone: 'blue',
     subtitle: 'How and why we use cookies and similar technologies.',
     chips: [['Transparent', 'visibility'], ['Your choices', 'toggle_on']],
   },
