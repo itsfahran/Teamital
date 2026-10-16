@@ -69,7 +69,7 @@ export const ROUTES = {
 
 /** Slugs handled by dedicated routes: never served from the CMS. */
 export const RESERVED_SLUGS = new Set([
-  'preview', 'leads',
+  'preview', 'leads', 'sitemap-xml',
   'sign-in', 'sign-up', 'confirm-signup', 'forgot-password', 'pricing', 'contact',
   'privacy-policy', 'delete-account', 'reset-password', 'about', 'features', 'security',
   'security-policy', 'terms', 'terms-and-conditions', 'cookies', 'cookie-policy', 'careers',

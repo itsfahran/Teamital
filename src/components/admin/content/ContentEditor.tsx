@@ -59,6 +59,19 @@ function Leaf({ label, k, parentKey, value, onChange }: { label: string; k: stri
         <RichTextEditor value={value} onChange={onChange} />
       </div>
     );
+  if (key === 'changefreq' || key === 'priority') {
+    const opts = key === 'changefreq' ? ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never'] : ['1.0', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1'];
+    return (
+      <label className="cx-field">
+        <span className="cx-label">{label}</span>
+        <select className="adm-input" value={value} onChange={(e) => onChange(e.target.value)}>
+          {[...new Set([value, ...opts])].map((t) => (
+            <option key={t}>{t}</option>
+          ))}
+        </select>
+      </label>
+    );
+  }
   if (key === 'tone')
     return (
       <label className="cx-field">
