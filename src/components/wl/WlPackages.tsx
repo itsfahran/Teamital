@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { plainText } from '@/lib/content/utils';
 import { ROUTES } from '@/lib/config';
 import type { WLContent } from '@/content/white-label';
@@ -8,22 +7,12 @@ import { Icon, SmartLink, cx } from '../ui';
 
 /** Monthly / yearly package cards (same card design as the pricing page). Content comes from the CMS. */
 export function WlPackages({ c }: { c: WLContent['packages'] }) {
-  const [yearly, setYearly] = useState(false);
-  const cards = yearly ? c.yearly : c.monthly;
-  const tabs = [
-    { label: c.monthlyTab, on: !yearly, set: () => setYearly(false) },
-    { label: c.yearlyTab, on: yearly, set: () => setYearly(true) },
-  ];
+  // The "1 Year" tab is hidden: only monthly packages are offered, so the toggle is not shown.
+  const yearly = false;
+  const cards = c.monthly;
 
   return (
     <div className="wlp">
-      <div className="pr-toggle" role="tablist" aria-label="Billing period">
-        {tabs.map((t, i) => (
-          <button type="button" role="tab" aria-selected={t.on} key={i} className={cx('seg', t.on && 'seg-on')} onClick={t.set}>
-            {t.label}
-          </button>
-        ))}
-      </div>
 
       <div className="plans-wrap wlp-wrap" key={String(yearly)}>
         <div className="plans wlp-plans">
