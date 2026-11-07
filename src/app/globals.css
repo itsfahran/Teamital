@@ -213,7 +213,7 @@ img {
 .ft-accent { height: 3px; margin: -1px -48px 0; background: linear-gradient(90deg, #1a56db, #0ea5e9 60%, #1a56db); }
 .ft-inner { max-width: 1180px; margin: 0 auto; padding-top: 56px; }
 
-.ft-main { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 2.4fr); gap: 48px; }
+.ft-main { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 2.4fr); gap: 48px; }
 .ft-brand { min-width: 0; }
 .ft-logo-box { display: inline-block; margin-left: -6px; }
 .ft-logo-box .brand-logo { height: 72px; width: 240px; object-position: left center; }
@@ -275,7 +275,7 @@ img {
 .ft-link { font-size: 14px; color: #4b5563; transition: color 150ms ease, padding-left 150ms ease; }
 .ft-link:hover, .ft-link:focus-visible { color: #1a56db; padding-left: 4px; }
 
-.ft-avail-top { margin-top: 20px; }
+.ft-avail-top { position: absolute; right: 0; bottom: 0; }
 .ft-avail-top .avail { gap: 12px; }
 .ft-avail-top .avail-label { font-size: 15px; }
 .ft-bottom { margin-top: 40px; }
@@ -335,6 +335,7 @@ img {
 
 @media (max-width: 960px) {
   .ft-main { grid-template-columns: 1fr; gap: 40px; }
+  .ft-avail-top { position: static; }
   .ft-tag { max-width: 560px; }
 }
 @media (max-width: 699.98px) {

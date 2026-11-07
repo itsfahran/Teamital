@@ -71,9 +71,6 @@ export function Footer() {
                 </a>
               ))}
             </div>
-            <div className="ft-avail-top">
-              <AvailableFor label={f.availableLabel} align="left" />
-            </div>
           </div>
 
           <nav className="ft-cols" aria-label="Footer">
@@ -92,6 +89,10 @@ export function Footer() {
               </div>
             ))}
           </nav>
+
+          <div className="ft-avail-top">
+            <AvailableFor label={f.availableLabel} align="left" />
+          </div>
         </div>
 
         <div className="ft-bottom">
