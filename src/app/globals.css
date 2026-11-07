@@ -275,7 +275,10 @@ img {
 .ft-link { font-size: 14px; color: #4b5563; transition: color 150ms ease, padding-left 150ms ease; }
 .ft-link:hover, .ft-link:focus-visible { color: #1a56db; padding-left: 4px; }
 
-.ft-avail { margin-top: 48px; padding: 22px 0; border-top: 1px solid #e5e7eb; }
+.ft-avail-top { margin-top: 20px; }
+.ft-avail-top .avail { gap: 12px; }
+.ft-avail-top .avail-label { font-size: 15px; }
+.ft-bottom { margin-top: 40px; }
 
 /* "Available for:" row: centered, no background */
 .avail { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }

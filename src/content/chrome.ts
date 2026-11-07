@@ -167,6 +167,7 @@ export const CHROME = {
     tagline: 'Complete workforce intelligence in one place: attendance, GPS, leave, tasks and live insights for every team.',
     email: SITE.contactEmail,
     address: 'Kandoy House, 2 Fairview Strand, Clontarf West, Dublin, D03 R8P3, Ireland',
+    whatsapp: '+353871509829',
     columns: [
       {
         title: 'Product',
@@ -206,7 +207,7 @@ export const CHROME = {
         ],
       },
     ],
-    availableLabel: 'Available for:',
+    availableLabel: 'Available on:',
     copyright: 'All rights reserved.',
     credit: '',
     bottomLinks: [
